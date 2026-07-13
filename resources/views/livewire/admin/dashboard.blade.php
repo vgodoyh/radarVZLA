@@ -3,7 +3,7 @@
 
     <div class="card">
         <div class="card-body">
-            Panel administrativo de Denuncias Vzla
+            Panel administrativo de Radar Vzla
         </div>
     </div>
 </div>

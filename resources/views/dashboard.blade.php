@@ -1,573 +1,203 @@
-<div>
-    <div class="row">
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-body p-3">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Denuncias recibidas</p>
-                    <h5 class="font-weight-bolder">0</h5>
-                    <p class="mb-0">
-                        <span class="text-success text-sm font-weight-bolder">Hoy</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
-  <title>
-    Argon Dashboard 3 by Creative Tim
-  </title>
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-  <!-- Nucleo Icons -->
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.1.0" rel="stylesheet" />
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radar Venezuela</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('assets/js/radar-dashboard.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('assets/css/radar-dashboard.css') }}">
+<body>
+  <div class="radar-dashboard">
+      <section class="ong-hero">
+          <div class="container-fluid px-4 px-xl-5">
+              <div class="row g-0">
+                  @php
+                      $ongs = [
+                          ['sigla' => 'AJ', 'nombre' => 'Acceso a la Justicia', 'texto' => 'Información sobre el traslado de causas vinculadas a delitos de terrorismo desde los juzgados competentes hacia los tribunales ordinarios penales.'],
+                          ['sigla' => 'OVFN', 'nombre' => 'Observatorio Venezolano de Fake News', 'texto' => 'Detección, análisis y alfabetización digital para incentivar la comunicación para la democracia.'],
+                          ['sigla' => 'JEP', 'nombre' => 'Justicia, Encuentro y Perdón', 'texto' => 'Registro, documentación y seguimiento de detenciones arbitrarias y asesinatos por persecución política en Venezuela.'],
+                          ['sigla' => 'OBU', 'nombre' => 'Observatorio de Universidades', 'texto' => 'Noticias sobre educación universitaria, protestas, denuncias y derechos de la comunidad universitaria.'],
+                      ];
+                  @endphp
 
-<body class="g-sidenav-show   bg-gray-200">
+                  @foreach($ongs as $ong)
+                      <div class="col-12 col-md-6 col-xl-3 ong-column">
+                          <div class="ong-card-hero">
+                              <div class="d-flex align-items-center gap-3 mb-3">
+                                  <div class="ong-logo-placeholder">{{ $ong['sigla'] }}</div>
+                                  <h2>{{ $ong['nombre'] }}</h2>
+                              </div>
+                              <p>{{ $ong['texto'] }}</p>
+                          </div>
+                      </div>
+                  @endforeach
+              </div>
+          </div>
+      </section>
 
-  
-  <main class="main-content position-relative border-radius-lg ">
-    <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
-      <div class="container-fluid py-1 px-3">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
-            <li class="breadcrumb-item text-sm text-white active" aria-current="page">Dashboard</li>
-          </ol>
-          <h6 class="font-weight-bolder text-white mb-0">Dashboard</h6>
-        </nav>
-        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-            <div class="input-group">
-              <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-              <input type="text" class="form-control" placeholder="Type here...">
-            </div>
-          </div>
-          <ul class="navbar-nav  justify-content-end">
-            <li class="nav-item d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-white font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">Sign In</span>
+      <main class="container-fluid px-4 px-xl-5 py-4">
+          <section class="dashboard-section period-section">
+              <div>
+                  <span class="section-kicker">Cabecera de quincena</span>
+                  <div class="period-card mt-2">
+                      <div class="period-icon"><i class="bi bi-calendar3"></i></div>
+                      <div>
+                          <strong>1 – 15 de mayo de 2026</strong>
+                          <small>Quincena en curso</small>
+                      </div>
+                  </div>
+              </div>
+              <a href="#" class="btn btn-radar">
+                  Publicar informe de quincena
+                  <i class="bi bi-cloud-arrow-up"></i>
               </a>
-            </li>
-            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
-                <div class="sidenav-toggler-inner">
-                  <i class="sidenav-toggler-line bg-white"></i>
-                  <i class="sidenav-toggler-line bg-white"></i>
-                  <i class="sidenav-toggler-line bg-white"></i>
-                </div>
-              </a>
-            </li>
-            <li class="nav-item px-3 d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-white p-0">
-                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
-              </a>
-            </li>
-            <li class="nav-item dropdown pe-2 d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-bell cursor-pointer"></i>
-              </a>
-              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="javascript:;">
-                    <div class="d-flex py-1">
-                      <div class="my-auto">
-                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          <span class="font-weight-bold">New message</span> from Laur
-                        </h6>
-                        <p class="text-xs text-secondary mb-0">
-                          <i class="fa fa-clock me-1"></i>
-                          13 minutes ago
-                        </p>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-                <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="javascript:;">
-                    <div class="d-flex py-1">
-                      <div class="my-auto">
-                        <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          <span class="font-weight-bold">New album</span> by Travis Scott
-                        </h6>
-                        <p class="text-xs text-secondary mb-0">
-                          <i class="fa fa-clock me-1"></i>
-                          1 day
-                        </p>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item border-radius-md" href="javascript:;">
-                    <div class="d-flex py-1">
-                      <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                          <title>credit-card</title>
-                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                            <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                              <g transform="translate(1716.000000, 291.000000)">
-                                <g transform="translate(453.000000, 454.000000)">
-                                  <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                  <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
-                                </g>
-                              </g>
-                            </g>
-                          </g>
-                        </svg>
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          Payment successfully completed
-                        </h6>
-                        <p class="text-xs text-secondary mb-0">
-                          <i class="fa fa-clock me-1"></i>
-                          2 days
-                        </p>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <!-- End Navbar -->
-    <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Today's Money</p>
-                    <h5 class="font-weight-bolder">
-                      $53,000
-                    </h5>
-                    <p class="mb-0">
-                      <span class="text-success text-sm font-weight-bolder">+55%</span>
-                      since yesterday
-                    </p>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Today's Users</p>
-                    <h5 class="font-weight-bolder">
-                      2,300
-                    </h5>
-                    <p class="mb-0">
-                      <span class="text-success text-sm font-weight-bolder">+3%</span>
-                      since last week
-                    </p>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
-                    <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">New Clients</p>
-                    <h5 class="font-weight-bolder">
-                      +3,462
-                    </h5>
-                    <p class="mb-0">
-                      <span class="text-danger text-sm font-weight-bolder">-2%</span>
-                      since last quarter
-                    </p>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                    <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-sm-6">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Sales</p>
-                    <h5 class="font-weight-bolder">
-                      $103,430
-                    </h5>
-                    <p class="mb-0">
-                      <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
-                    </p>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-                    <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mt-4">
-        <div class="col-lg-7 mb-lg-0 mb-4">
-          <div class="card z-index-2 h-100">
-            <div class="card-header pb-0 pt-3 bg-transparent">
-              <h6 class="text-capitalize">Sales overview</h6>
-              <p class="text-sm mb-0">
-                <i class="fa fa-arrow-up text-success"></i>
-                <span class="font-weight-bold">4% more</span> in 2021
-              </p>
-            </div>
-            <div class="card-body p-3">
-              <div class="chart">
-                <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-5">
-          <div class="card card-carousel overflow-hidden h-100 p-0">
-            <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-              <div class="carousel-inner border-radius-lg h-100">
-                <div class="carousel-item h-100 active" style="background-image: url('../assets/img/carousel-1.jpg');
-      background-size: cover;">
-                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                    <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                      <i class="ni ni-camera-compact text-dark opacity-10"></i>
-                    </div>
-                    <h5 class="text-white mb-1">Get started with Argon</h5>
-                    <p>There’s nothing I really wanted to do in life that I wasn’t able to get good at.</p>
-                  </div>
-                </div>
-                <div class="carousel-item h-100" style="background-image: url('../assets/img/carousel-2.jpg');
-      background-size: cover;">
-                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                    <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                      <i class="ni ni-bulb-61 text-dark opacity-10"></i>
-                    </div>
-                    <h5 class="text-white mb-1">Faster way to create web pages</h5>
-                    <p>That’s my skill. I’m not really specifically talented at anything except for the ability to learn.</p>
-                  </div>
-                </div>
-                <div class="carousel-item h-100" style="background-image: url('../assets/img/carousel-3.jpg');
-      background-size: cover;">
-                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                    <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                      <i class="ni ni-trophy text-dark opacity-10"></i>
-                    </div>
-                    <h5 class="text-white mb-1">Share with us your design tips!</h5>
-                    <p>Don’t be afraid to be wrong because you can’t learn anything from a compliment.</p>
-                  </div>
-                </div>
-              </div>
-              <button class="carousel-control-prev w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button class="carousel-control-next w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mt-4">
-        <div class="col-lg-7 mb-lg-0 mb-4">
-          <div class="card ">
-            <div class="card-header pb-0 p-3">
-              <div class="d-flex justify-content-between">
-                <h6 class="mb-2">Sales by Country</h6>
-              </div>
-            </div>
-            <div class="table-responsive">
-              <table class="table align-items-center ">
-                <tbody>
-                  <tr>
-                    <td class="w-30">
-                      <div class="d-flex px-2 py-1 align-items-center">
-                        <div>
-                          <img src="../assets/img/icons/flags/US.png" alt="Country flag">
-                        </div>
-                        <div class="ms-4">
-                          <p class="text-xs font-weight-bold mb-0">Country:</p>
-                          <h6 class="text-sm mb-0">United States</h6>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Sales:</p>
-                        <h6 class="text-sm mb-0">2500</h6>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Value:</p>
-                        <h6 class="text-sm mb-0">$230,900</h6>
-                      </div>
-                    </td>
-                    <td class="align-middle text-sm">
-                      <div class="col text-center">
-                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>
-                        <h6 class="text-sm mb-0">29.9%</h6>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="w-30">
-                      <div class="d-flex px-2 py-1 align-items-center">
-                        <div>
-                          <img src="../assets/img/icons/flags/DE.png" alt="Country flag">
-                        </div>
-                        <div class="ms-4">
-                          <p class="text-xs font-weight-bold mb-0">Country:</p>
-                          <h6 class="text-sm mb-0">Germany</h6>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Sales:</p>
-                        <h6 class="text-sm mb-0">3.900</h6>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Value:</p>
-                        <h6 class="text-sm mb-0">$440,000</h6>
-                      </div>
-                    </td>
-                    <td class="align-middle text-sm">
-                      <div class="col text-center">
-                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>
-                        <h6 class="text-sm mb-0">40.22%</h6>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="w-30">
-                      <div class="d-flex px-2 py-1 align-items-center">
-                        <div>
-                          <img src="../assets/img/icons/flags/GB.png" alt="Country flag">
-                        </div>
-                        <div class="ms-4">
-                          <p class="text-xs font-weight-bold mb-0">Country:</p>
-                          <h6 class="text-sm mb-0">Great Britain</h6>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Sales:</p>
-                        <h6 class="text-sm mb-0">1.400</h6>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Value:</p>
-                        <h6 class="text-sm mb-0">$190,700</h6>
-                      </div>
-                    </td>
-                    <td class="align-middle text-sm">
-                      <div class="col text-center">
-                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>
-                        <h6 class="text-sm mb-0">23.44%</h6>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="w-30">
-                      <div class="d-flex px-2 py-1 align-items-center">
-                        <div>
-                          <img src="../assets/img/icons/flags/BR.png" alt="Country flag">
-                        </div>
-                        <div class="ms-4">
-                          <p class="text-xs font-weight-bold mb-0">Country:</p>
-                          <h6 class="text-sm mb-0">Brasil</h6>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Sales:</p>
-                        <h6 class="text-sm mb-0">562</h6>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Value:</p>
-                        <h6 class="text-sm mb-0">$143,960</h6>
-                      </div>
-                    </td>
-                    <td class="align-middle text-sm">
-                      <div class="col text-center">
-                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>
-                        <h6 class="text-sm mb-0">32.14%</h6>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-5">
-          <div class="card">
-            <div class="card-header pb-0 p-3">
-              <h6 class="mb-0">Categories</h6>
-            </div>
-            <div class="card-body p-3">
-              <ul class="list-group">
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                      <i class="ni ni-mobile-button text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                      <h6 class="mb-1 text-dark text-sm">Devices</h6>
-                      <span class="text-xs">250 in stock, <span class="font-weight-bold">346+ sold</span></span>
-                    </div>
-                  </div>
-                  <div class="d-flex">
-                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
-                  </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                      <i class="ni ni-tag text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                      <h6 class="mb-1 text-dark text-sm">Tickets</h6>
-                      <span class="text-xs">123 closed, <span class="font-weight-bold">15 open</span></span>
-                    </div>
-                  </div>
-                  <div class="d-flex">
-                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
-                  </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                      <i class="ni ni-box-2 text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                      <h6 class="mb-1 text-dark text-sm">Error logs</h6>
-                      <span class="text-xs">1 is active, <span class="font-weight-bold">40 closed</span></span>
-                    </div>
-                  </div>
-                  <div class="d-flex">
-                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
-                  </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                      <i class="ni ni-satisfied text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                      <h6 class="mb-1 text-dark text-sm">Happy users</h6>
-                      <span class="text-xs font-weight-bold">+ 430</span>
-                    </div>
-                  </div>
-                  <div class="d-flex">
-                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <footer class="footer pt-3  ">
-        <div class="container-fluid">
-          <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-6 mb-lg-0 mb-4">
-              <div class="copyright text-center text-sm text-muted text-lg-start">
-                © <script>
-                  document.write(new Date().getFullYear())
-                </script>,
-                made with <i class="fa fa-heart"></i> by
-                <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
-                for a better web.
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  </main>
+          </section>
 
-  
+          <section class="dashboard-section border-top pt-4">
+              <div class="section-heading">
+                  <h3>Cifras clave</h3>
+                  <span>Comparación con la quincena anterior</span>
+              </div>
+
+              @php
+                  $metrics = [
+                      ['icon' => 'bi-people-fill', 'label' => 'Total de presos políticos', 'value' => '1.875', 'change' => '5,2%', 'delta' => '+93', 'tone' => 'blue', 'up' => true],
+                      ['icon' => 'bi-diagram-3-fill', 'label' => 'Nuevas detenciones', 'value' => '142', 'change' => '18,3%', 'delta' => '+22', 'tone' => 'purple', 'up' => false],
+                      ['icon' => 'bi-person-standing-dress', 'label' => 'Mujeres', 'value' => '234', 'change' => '6,4%', 'delta' => '+14', 'tone' => 'pink', 'up' => true],
+                      ['icon' => 'bi-droplet-fill', 'label' => 'Asesinatos', 'value' => '23', 'change' => '21,1%', 'delta' => '+4', 'tone' => 'red', 'up' => false],
+                      ['icon' => 'bi-unlock-fill', 'label' => 'Liberaciones', 'value' => '87', 'change' => '12,9%', 'delta' => '+10', 'tone' => 'green', 'up' => true],
+                  ];
+              @endphp
+
+              <div class="row g-3">
+                  @foreach($metrics as $metric)
+                      <div class="col-12 col-sm-6 col-xl">
+                          <article class="metric-card tone-{{ $metric['tone'] }}">
+                              <div class="metric-top">
+                                  <i class="bi {{ $metric['icon'] }} metric-icon"></i>
+                                  <span>{{ $metric['label'] }}</span>
+                              </div>
+                              <strong class="metric-value">{{ $metric['value'] }}</strong>
+                              <div class="metric-change {{ $metric['up'] ? 'positive' : 'negative' }}">
+                                  <i class="bi {{ $metric['up'] ? 'bi-arrow-up' : 'bi-arrow-up' }}"></i>
+                                  {{ $metric['change'] }} <span>({{ $metric['delta'] }})</span>
+                              </div>
+                          </article>
+                      </div>
+                  @endforeach
+              </div>
+          </section>
+
+          <section class="dashboard-section featured-panel">
+              <div class="section-heading mb-3"><h3>Indicador destacado del mes</h3></div>
+              <div class="row g-4 align-items-stretch">
+                  <div class="col-12 col-xl-6">
+                      <div class="chart-card h-100">
+                          <h4>Traslados de causas por terrorismo a tribunales ordinarios</h4>
+                          <p>Número de causas trasladadas por quincena</p>
+                          <canvas id="featuredChart" height="135"></canvas>
+                      </div>
+                  </div>
+                  <div class="col-12 col-xl-6">
+                      <div class="analysis-card h-100">
+                          <p>Durante la primera quincena se registraron 78 traslados de causas vinculadas a delitos de terrorismo desde juzgados especializados hacia tribunales ordinarios penales.</p>
+                          <p>La cifra representa un aumento respecto al período anterior y plantea alertas sobre transparencia, competencia judicial y debido proceso.</p>
+                          <div class="slim-links mt-auto">
+                              <a href="#"><i class="bi bi-file-earmark-text"></i> Nota de prensa <i class="bi bi-box-arrow-up-right"></i></a>
+                              <a href="#"><i class="bi bi-twitter-x"></i> Hilo en Twitter / X <i class="bi bi-box-arrow-up-right"></i></a>
+                              <a href="#"><i class="bi bi-globe2"></i> Ver más en la web <i class="bi bi-box-arrow-up-right"></i></a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
+
+          <section class="dashboard-section">
+              <div class="section-heading"><h3>Grupos de indicadores</h3></div>
+              @php
+                  $groups = [
+                      ['icon'=>'bi-people-fill','title'=>'Perfil sociodemográfico','items'=>['Edad','Género','Grupo social']],
+                      ['icon'=>'bi-bank','title'=>'Situación jurídica','items'=>['Delitos imputados','Abusos procesales','Acceso a abogado']],
+                      ['icon'=>'bi-heart-pulse-fill','title'=>'Indicadores críticos de salud','items'=>['Condiciones de salud','Atención médica','Enfermedades crónicas']],
+                      ['icon'=>'bi-shield-fill','title'=>'Contexto represivo','items'=>['Responsables','Torturas y tratos crueles','Aislamiento']],
+                      ['icon'=>'bi-person-hearts','title'=>'Grupos vulnerables y nacionalidad','items'=>['Grupos vulnerables','Nacionalidad','Pueblos indígenas']],
+                      ['icon'=>'bi-geo-alt-fill','title'=>'Distribución geográfica','items'=>['Por estado','Centros clandestinos','Traslados de detenidos']],
+                      ['icon'=>'bi-graph-up-arrow','title'=>'Evolución temporal','items'=>['Tendencias','Pico histórico','Base de datos acumulada']],
+                      ['icon'=>'bi-megaphone-fill','title'=>'Visibilidad e incidencia','items'=>['Cobertura mediática','Alertas a relatores ONU','Comunicados emitidos']],
+                  ];
+              @endphp
+
+              <div class="row g-3">
+                  @foreach($groups as $index => $group)
+                      <div class="col-12 col-md-6 col-xl-3">
+                          <article class="indicator-card h-100">
+                              <i class="bi {{ $group['icon'] }} indicator-icon"></i>
+                              <div>
+                                  <h4>{{ $index + 1 }}. {{ $group['title'] }}</h4>
+                                  <ul>
+                                      @foreach($group['items'] as $item)<li>{{ $item }}</li>@endforeach
+                                  </ul>
+                                  <a href="#">Ver indicadores <i class="bi bi-arrow-right"></i></a>
+                              </div>
+                          </article>
+                      </div>
+                  @endforeach
+              </div>
+          </section>
+
+          <section class="dashboard-section university-panel">
+              <div class="section-heading align-items-start">
+                  <div>
+                      <h3>Observatorio de Universidades</h3>
+                      <p>Protestas, denuncias, tipos de denuncia y temas principales vinculados con la educación universitaria en Venezuela.</p>
+                  </div>
+              </div>
+
+              <ul class="nav radar-tabs" id="universityTabs" role="tablist">
+                  <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#protestas">Protestas</button></li>
+                  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#denuncias">Denuncias</button></li>
+                  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tipos">Tipos de denuncia</button></li>
+                  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#temas">Temas</button></li>
+              </ul>
+
+              <div class="tab-content pt-3">
+                  <div class="tab-pane fade show active" id="protestas">
+                      <div class="row g-3">
+                          <div class="col-12 col-xl-4"><div class="chart-card"><h4>Histórico de protestas</h4><canvas id="protestsChart"></canvas></div></div>
+                          <div class="col-12 col-xl-4"><div class="chart-card"><h4>Histórico de denuncias</h4><canvas id="complaintsChart"></canvas></div></div>
+                          <div class="col-12 col-md-6 col-xl-2"><div class="chart-card"><h4>Tipos de denuncia</h4><canvas id="typesChart"></canvas></div></div>
+                          <div class="col-12 col-md-6 col-xl-2"><div class="chart-card"><h4>Temas principales</h4><canvas id="topicsChart"></canvas></div></div>
+                      </div>
+                  </div>
+                  <div class="tab-pane fade" id="denuncias"><div class="empty-tab">Contenido detallado de denuncias.</div></div>
+                  <div class="tab-pane fade" id="tipos"><div class="empty-tab">Derechos económicos y sociales / Derechos civiles y políticos.</div></div>
+                  <div class="tab-pane fade" id="temas"><div class="empty-tab">Infraestructura, providencias estudiantiles y salarios.</div></div>
+              </div>
+          </section>
+
+          <section class="dashboard-section x-section">
+              <div class="section-heading"><h3>Últimos posts en X</h3></div>
+              <div class="row g-3">
+                  @foreach($ongs as $ong)
+                      <div class="col-12 col-md-6 col-xl-3">
+                          <article class="x-card h-100">
+                              <div class="x-card-head">
+                                  <div class="ong-logo-placeholder small">{{ $ong['sigla'] }}</div>
+                                  <div><strong>{{ $ong['nombre'] }}</strong><small>@organizacion</small></div>
+                                  <i class="bi bi-twitter-x ms-auto"></i>
+                              </div>
+                              <p>Publicación reciente de la organización con información destacada, cifras y enlaces relacionados con su área de trabajo.</p>
+                              <div class="x-card-footer"><span>15 mayo 2026</span><a href="#">Ver en X <i class="bi bi-box-arrow-up-right"></i></a></div>
+                          </article>
+                      </div>
+                  @endforeach
+              </div>
+          </section>
+      </main>
+  </div>
 </body>
 
-</html>
+
+    
+

@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>{{ $title ?? 'Denuncias Vzla' }}</title>
+<title>{{ $title ?? 'Radar Vzla' }}</title>
 
 <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
 

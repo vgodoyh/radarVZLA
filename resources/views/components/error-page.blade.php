@@ -206,7 +206,7 @@
         @endif
 
         <div class="footer-brand">
-            <span>DENUNCIAS VZLA</span>
+            <span>RADAR VZLA</span>
         </div>
     </div>
 </body>

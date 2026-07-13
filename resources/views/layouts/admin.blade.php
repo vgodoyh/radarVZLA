@@ -4,7 +4,7 @@
     @include('admin.partials.head')
 </head>
 
-<body class="g-sidenav-show bg-gray-200">
+<body class="g-sidenav-show bg-gray-100">
 
     @include('admin.partials.sidebar')
 

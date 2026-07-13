@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Denuncias Vzla'),
+    'name' => env('APP_NAME', 'Radar Vzla'),
 
     /*
     |--------------------------------------------------------------------------
