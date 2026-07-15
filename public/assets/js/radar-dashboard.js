@@ -31,3 +31,41 @@ new Chart(document.getElementById('topicsChart'), {
     data:{labels:['Infraestructura','Providencias','Salarios'],datasets:[{data:[42,28,30],backgroundColor:['#2873c7','#9163b6','#df5a91'],borderRadius:2}]},
     options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{display:false,max:50},y:{grid:{display:false},ticks:{font:{size:9},color:'#465164'}}}}
 });
+
+new Chart(document.getElementById('protestsComplaintsChart'), {
+    type: 'line',
+    data: {
+        labels: ['2020', '2021', '2022', '2023', '2024'],
+        datasets: [
+            { label: 'Protestas', data: protestsData, borderColor: '#2a78d6', backgroundColor: 'rgba(42,120,214,0.1)', fill: true, tension: 0.35, borderWidth: 2, pointRadius: 3 },
+            { label: 'Denuncias', data: complaintsData, borderColor: '#1baf7a', backgroundColor: 'rgba(27,175,122,0.1)', fill: true, tension: 0.35, borderWidth: 2, pointRadius: 3, borderDash: [5, 3] }
+        ]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+new Chart(document.getElementById('complaintTypeByYearChart'), {
+    type: 'bar',
+    data: {
+        labels: ['2020', '2021', '2022', '2023', '2024'],
+        datasets: [
+            { label: 'Derechos económicos y sociales', data: economicSocialData, backgroundColor: '#2a78d6', borderRadius: 4 },
+            { label: 'Derechos civiles y políticos', data: civilPoliticalData, backgroundColor: '#e34948', borderRadius: 4 }
+        ]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { stacked: true, grid: { display: false } },
+            y: { stacked: true, beginAtZero: true }
+        }
+    }
+});

@@ -34,5 +34,12 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'twitter' => [
+        'key' => env('RAPIDAPI_TWITTER_KEY'),
+        'host' => env(
+            'RAPIDAPI_TWITTER_HOST',
+            'twitter-api45.p.rapidapi.com'
+        ),
+    ],
 
 ];
