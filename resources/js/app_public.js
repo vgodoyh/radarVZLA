@@ -30,7 +30,7 @@ const build = (id, config) => { const el = document.getElementById(id); if (el) 
 
 const years = ['2020', '2021', '2022', '2023', '2024'];
 
-build('featuredChart', { type: 'bar', data: { labels: ['Jul 23', 'Aug 23', 'Sep 23', 'Oct 23', 'Nov 23', 'Dec 23', 'Jan 24', 'Feb 24', 'Mar 24', 'Apr 24', '1-15 May'], datasets: [{ data: [32, 48, 57, 56, 61, 45, 59, 64, 82, 62, 78], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } } });
+build('featuredChart', { type: 'bar', data: { labels: ['Ene 26', 'Feb 26', 'Mar 26', 'Abr 26', 'May 26', 'Jun 26', 'Jul 26'], datasets: [{ data: [32, 48, 57, 56, 61, 45, 59], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } } });
 
 // Protestas y denuncias combinadas en un solo gráfico de línea
 build('protestsComplaintsChart', {

@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Services\FakeNewsVenezuelaService;
+use App\Services\AccesoJusticiaService;
 use App\Services\TwitterService;
+use Illuminate\Support\Facades\Http;
+
 use Illuminate\View\View;
 
 class PublicDashboardController extends Controller
 {
     public function index(
                         TwitterService $twitterService,
-                        FakeNewsVenezuelaService $fakeNewsVenezuelaService
+                        FakeNewsVenezuelaService $fakeNewsVenezuelaService,
+                        AccesoJusticiaService $accesoJusticiaService
                     ): View 
     {
         $stats = [
@@ -89,7 +93,7 @@ class PublicDashboardController extends Controller
                 'name' => 'Observatorio de Universidades',
                 'username' => 'obuvenezuela',
                 'logo' => asset(
-                    'assets/img/organizations/obu.png'
+                    'assets/img/organizations/obu-blanco.png'
                 ),
                 'logo_x' => asset(
                     'assets/img/organizations/obu-x.png'
@@ -105,20 +109,57 @@ class PublicDashboardController extends Controller
             return $organization;
         });
 
-        /*
-        * Publicaciones de X del Observatorio Venezolano de Fake News.
-        */
+        /*Publicaciones de X del Acceso a la Justicia #AlertaLegal. */
+        $response = Http::timeout(15)
+            ->connectTimeout(5)
+            ->retry(2, 500)
+            ->withHeaders([
+                'X-RapidAPI-Key' => config('services.twitter.key'),
+                'X-RapidAPI-Host' => config('services.twitter.host'),
+            ])
+            ->get('https://twitter-api45.p.rapidapi.com/search.php', [
+                'query' => 'from:AccesoAJusticia #AlertaLegal',
+                'search_type' => 'Latest',
+            ]);
+
+        $alertasLegales = collect($response->json('timeline', []))
+            ->take(7)
+            ->map(function (array $post) {
+                $username = $post['screen_name'] ?? 'AccesoAJusticia';
+                $tweetId = $post['tweet_id'] ?? null;
+
+                return [
+                    'id' => $tweetId,
+                    'text' => $post['text'] ?? '',
+                    'created_at' => $post['created_at'] ?? null,
+                    'likes' => $post['favorites'] ?? 0,
+                    'retweets' => $post['retweets'] ?? 0,
+                    'image' => $post['media']['photo'][0]['media_url_https']
+                        ?? $post['media']['photo'][0]['media_url']
+                        ?? null,
+                    'url' => $tweetId
+                        ? "https://x.com/{$username}/status/{$tweetId}"
+                        : "https://x.com/{$username}",
+                ];
+            })
+            ->values();
+
+         /*Publicaciones del sitio web.
+        * Devuelve:
+        * $postsAccesoJusticia['prensa']
+        * $postsAccesoJusticia['persecucion_politica']*/
+        $postsAccesoJusticia = $accesoJusticiaService->getLatestPosts(4);
+
+
+        /*Publicaciones de X del Observatorio Venezolano de Fake News.*/
         $postsFakeNewsX = $twitterService->getLatestPosts(
             'observatoriofn',7
         );
 
-        /*
-        * Publicaciones del sitio web.
-        *
+        /*Publicaciones del sitio web.
         * Devuelve:
         * $postsFakeNewsWeb['en_profundidad']
-        * $postsFakeNewsWeb['noti_fake']
-        */
+        * $postsFakeNewsWeb['noti_fake']*/
         $postsFakeNewsWeb = $fakeNewsVenezuelaService->getLatestPosts(4);
 
         $economicSocialItems = [
@@ -171,6 +212,8 @@ class PublicDashboardController extends Controller
                 'organizations',
                 'economicSocialItems',
                 'civilPoliticalItems',
+                'alertasLegales',
+                'postsAccesoJusticia',
                 'postsFakeNewsX',
                 'postsFakeNewsWeb',
                 'years',

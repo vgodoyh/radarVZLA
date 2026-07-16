@@ -20,6 +20,8 @@ return [
     //ACCESO JUSTICIA
     'acceso_justicia' => 'Acceso a la Justicia',
     'accesojusticia_title' => 'Rule of Law and Justice Observatory',
+    'prensa' => 'News',
+    'art_pp' => 'Political Persecution Articles',
 
     //JUSTICIA, ENCUENTRO Y PERDÓN
     'jep' => 'Justicia, Encuentro y Perdón',
@@ -98,7 +100,7 @@ return [
     ],
     'groups'=>[
         ['title'=>'Sociodemographic profile','items'=>['Age','Gender','Social group'],'icon'=>'bi bi-people-fill'],
-        ['title'=>'Legal situation','items'=>['Charges','Procedural abuses','Access to counsel'],'icon'=>'bi bi-balance-scale'],
+        ['title'=>'Legal situation','items'=>['Charges','Procedural abuses','Access to counsel'],'icon'=>'fa-solid fa-gavel'],
         ['title'=>'Critical health indicators','items'=>['Health conditions','Medical care','Chronic illnesses'],'icon'=>'bi bi-heart-pulse-fill'],
         ['title'=>'Repressive context','items'=>['Responsible actors','Torture','Isolation'],'icon'=>'bi bi-shield-exclamation'],
         ['title'=>'Vulnerable groups and nationality','items'=>['Vulnerable groups','Nationality','Indigenous peoples'],'icon'=>'bi bi-person-hearts'],

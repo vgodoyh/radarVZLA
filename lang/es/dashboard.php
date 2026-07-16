@@ -21,6 +21,8 @@ return [
     //ACCESO JUSTICIA
     'acceso_justicia' => 'Acceso a la Justicia',
     'accesojusticia_title' => 'Observatorio de Derecho y Justicia',
+    'prensa' => 'Notas de prensa',
+    'art_pp' => 'Artículos de persecusión política',
 
     //JUSTICIA, ENCUENTRO Y PERDÓN
     'jep' => 'Justicia, Encuentro y Perdón',
@@ -103,7 +105,7 @@ return [
 
         ['title'=>'Situación jurídica',
          'items'=>['Delitos imputados','Abusos procesales','Acceso a abogado'],
-         'icon'=>'bi bi-balance-scale'],
+         'icon'=>'fa-solid fa-gavel'],
 
         ['title'=>'Indicadores críticos de salud',
          'items'=>['Condiciones de salud','Atención médica','Enfermedades crónicas'],

@@ -85,10 +85,309 @@
                 </div>
             </div>
             <div class="row g-3">
-                
+                <div class="col-4">                                            
+                    <article class="organization-feed h-100">
+
+                        <header class="organization-feed__header">
+                            <div class="organization-feed__identity">
+                                <div class="organization-feed__logo">
+                                    <img
+                                        src="{{ $organizations[1]['logo_x'] }}"
+                                        alt="{{ $organizations[1]['name'] }}"
+                                    >
+                                </div>
+
+                                <div class="organization-feed__meta">
+                                    <h3>{{ $organizations[1]['name'] }}</h3>
+
+                                    <a
+                                        href="https://x.com/{{ $organizations[1]['username'] }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {{ '@' . $organizations[1]['username'] }}
+                                    </a>
+                                    <div class="alert-legal ms-2">
+                                        <span>#AlertaLegal</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="organization-feed__posts">
+                            @forelse ($alertasLegales as $alerta)                                
+                                <a
+                                        href="{{ $alerta['url'] }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="feed-post"
+                                    >
+                                    <div class="feed-post__image">
+                                        @if ($alerta['image'])
+                                            <img
+                                                src="{{ $alerta['image'] }}"
+                                                alt=""
+                                                loading="lazy"
+                                            >
+                                        @else
+                                            <div class="feed-post__placeholder">
+                                                <i class="bi bi-twitter-x"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="feed-post__content">
+                                        <p class="feed-post__title">
+                                            {{ \Illuminate\Support\Str::limit(
+                                                $alerta['text'],
+                                                90
+                                            ) }}
+                                        </p>
+
+                                        @if ($alerta['created_at'])
+                                            <time class="feed-post__time">
+                                                {{ \Carbon\Carbon::parse($alerta['created_at'])->diffForHumans() }}
+                                            </time>
+                                        @endif
+                                    </div>
+                                </a>
+                            @empty
+                                <div class="feed-empty">
+                                    <i class="bi bi-info-circle"></i>
+
+                                    <p>
+                                        No fue posible cargar las publicaciones
+                                        de esta organización.
+                                    </p>
+                                </div>
+                            @endforelse
+                        </div>
+                        <footer class="organization-feed__footer">
+                            <a
+                                href="https://x.com/{{ $organizations[1]['username'] }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {{ __('dashboard.view_on_x') }}
+
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </footer>
+                    </article>
+                </div>
+
+                <div class="col-4">
+                    <div class="article-panel article-panel--profundidad">
+                        <div class="article-panel__header">
+                            <div class="article-panel__heading">
+                                <p class="article-panel__title">
+                                    <span class="article-panel__dot"></span>
+                                    {{ __('dashboard.prensa') }}
+                                </p>
+                            </div>
+                            <span class="article-panel__count">{{ count($postsAccesoJusticia['prensa']) }}</span>
+                        </div>
+
+                        <div class="article-list">
+                            @forelse ($postsAccesoJusticia['prensa'] as $post)
+                                <a href="{{ $post['url'] }}" target="_blank" rel="noopener noreferrer" class="article-card">
+                                    @if (!empty($post['imagen']))
+                                        <img class="article-card__thumb" src="{{ $post['imagen'] }}" alt="{{ $post['titulo'] }}">
+                                    @else
+                                        <div class="article-card__thumb article-card__thumb--icon">
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </div>
+                                    @endif
+
+                                    <div class="article-card__body">
+                                        <p class="article-card__title">{{ $post['titulo'] }}</p>
+
+                                        @if (!empty($post['contenido']))
+                                            <p class="article-card__excerpt">
+                                                {{ \Illuminate\Support\Str::limit($post['contenido'], 180) }}
+                                            </p>
+                                        @endif
+
+                                        <div class="article-card__footer">
+                                            @if (!empty($post['fecha']))
+                                                <span class="article-card__meta">
+                                                    <i class="bi bi-calendar3"></i>
+                                                    @if (!empty($post['fecha']))
+                                                        <small class="text-muted">
+                                                            {{ \Carbon\Carbon::parse($post['fecha'])
+                                                                ->locale('es')
+                                                                ->translatedFormat('d \d\e F \d\e Y') }}
+                                                        </small>
+                                                    @endif
+                                                </span>
+                                            @endif
+
+                                            <span class="article-card__action">
+                                                {{ __('dashboard.ver_publicacion') }}
+                                                <i class="bi bi-chevron-right"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            @empty
+                                <p class="text-muted small mb-0">No se pudieron cargar las publicaciones de En profundidad.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="article-panel article-panel--profundidad">
+                        <div class="article-panel__header">
+                            <div class="article-panel__heading">
+                                <p class="article-panel__title">
+                                    <span class="article-panel__dot"></span>
+                                    {{ __('dashboard.art_pp') }}
+                                </p>
+                            </div>
+                            <span class="article-panel__count">{{ count($postsAccesoJusticia['persecucion_politica']) }}</span>
+                        </div>
+
+                        <div class="article-list">
+                            @forelse ($postsAccesoJusticia['persecucion_politica'] as $post)
+                                <a href="{{ $post['url'] }}" target="_blank" rel="noopener noreferrer" class="article-card">
+                                    @if (!empty($post['imagen']))
+                                        <img class="article-card__thumb" src="{{ $post['imagen'] }}" alt="{{ $post['titulo'] }}">
+                                    @else
+                                        <div class="article-card__thumb article-card__thumb--icon">
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </div>
+                                    @endif
+
+                                    <div class="article-card__body">
+                                        <p class="article-card__title">{{ $post['titulo'] }}</p>
+
+                                        @if (!empty($post['contenido']))
+                                            <p class="article-card__excerpt">
+                                                {{ \Illuminate\Support\Str::limit($post['contenido'], 180) }}
+                                            </p>
+                                        @endif
+
+                                        <div class="article-card__footer">
+                                            @if (!empty($post['fecha']))
+                                                <span class="article-card__meta">
+                                                    <i class="bi bi-calendar3"></i>
+                                                    @if (!empty($post['fecha']))
+                                                        <small class="text-muted">
+                                                            {{ \Carbon\Carbon::parse($post['fecha'])
+                                                                ->locale('es')
+                                                                ->translatedFormat('d \d\e F \d\e Y') }}
+                                                        </small>
+                                                    @endif
+                                                </span>
+                                            @endif
+
+                                            <span class="article-card__action">
+                                                {{ __('dashboard.ver_publicacion') }}
+                                                <i class="bi bi-chevron-right"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            @empty
+                                <p class="text-muted small mb-0">No se pudieron cargar las publicaciones de Noti-fake.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="horizontal light mt-0">
+
+        {{--OBSERVATORIO DE UNIVERSIDADES - OBU --}}
+        <section class="mb-5" style="margin-top:50px;">
+            <div class="section-heading mb-4">
+                <div class="section-heading__inner">
+                    <span class="section-eyebrow">
+                        {{ __('dashboard.universities') }}
+                    </span>
+
+                    <h2>{{ __('dashboard.university_title') }}</h2>
+                </div>
             </div>
 
+            <div class="row g-4">
+                <div class="col-6">
+                    <div class="chart-panel">
+                        <div class="chart-legend mb-2">
+                            <span><i class="legend-dot" style="background:#0b3769"></i> {{ __('dashboard.protests') }}</span>
+                            <span><i class="legend-dot" style="background:#FFD23F"></i> {{ __('dashboard.complaints') }}</span>
+                        </div>
+                        <canvas id="protestsComplaintsChart" height="90"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="chart-panel">
+                        <div class="chart-legend mb-2">
+                            <span><i class="legend-dot" style="background:#1f66d1"></i> {{ __('dashboard.economic_social_complaints') }}</span>
+                            <span><i class="legend-dot" style="background:#00B89C"></i> {{ __('dashboard.civil_political_complaints') }}</span>
+                        </div>
+                        <canvas id="complaintTypeByYearChart" height="90"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="complaint-card">
+                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
+
+                        <div class="complaint-card__list">
+                            @foreach ($economicSocialItems as $item)
+                                <div class="complaint-item">
+                                    <div class="complaint-item__icon complaint-item__icon--blue">
+                                        <i class="bi {{ $item['icon'] }}"></i>
+                                    </div>
+                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
+                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="complaint-card">
+                        <p class="complaint-card__title">{{ __('dashboard.civil_political_complaints') }}</p>
+
+                        <div class="complaint-card__list">
+                            @foreach ($civilPoliticalItems as $item)
+                                <div class="complaint-item">
+                                    <div class="complaint-item__icon complaint-item__icon--red">
+                                        <i class="bi {{ $item['icon'] }}"></i>
+                                    </div>
+                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
+                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="complaint-card">
+                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
+
+                        <div class="complaint-card__list">
+                            @foreach ($economicSocialItems as $item)
+                                <div class="complaint-item">
+                                    <div class="complaint-item__icon complaint-item__icon--blue">
+                                        <i class="bi {{ $item['icon'] }}"></i>
+                                    </div>
+                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
+                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </section>
+
+        <hr class="horizontal light mt-0">
 
         {{-- FAKE NEWS --}}
         <section class="mb-5" style="margin-top:50px;">
@@ -102,7 +401,7 @@
             </div>
 
             <div class="row g-3">
-               <div class="col-4">
+                <div class="col-4">
                     <div class="article-panel article-panel--profundidad">
                         <div class="article-panel__header">
                             <div class="article-panel__heading">
@@ -313,6 +612,8 @@
             </div>
         </section>
 
+        <hr class="horizontal light mt-0">
+
         {{-- JEP --}}
         <section class="mb-5" style="margin-top:50px;">
             <div class="section-heading mb-4">
@@ -327,26 +628,26 @@
         </section>
 
         <section class="mb-4" style="margin-top:50px;">
-            <div class="section-heading">
-                <div>
-                    <span class="section-eyebrow">{{ __('dashboard.key_figures') }}</span>
-                    <h2>{{ __('dashboard.snapshot') }}</h2>
+            <div class="subsection-heading">
+                <div class="subsection-heading__top">
+                    <span class="subsection-heading__dot"></span>
+                    <span class="subsection-heading__label">{{ __('dashboard.key_figures') }}</span>
                 </div>
-                <small>{{ __('dashboard.comparison') }}</small>
+                <p class="subsection-heading__desc">{{ __('dashboard.snapshot') }}</p>
             </div>
 
             <div class="row g-3">
                 @foreach ($stats as $stat)
                     <div class="col-12 col-sm-6 col-xl">
-                        <article class="metric-card h-100">
+                        <article class="metric-card {{ $stat['trend'] === 'up-danger' ? 'metric-card--danger' : '' }} h-100">
                             <div class="metric-top">
                                 <span class="metric-icon"><i class="bi {{ $stat['icon'] }}"></i></span>
-                                <span>{{ $stat['label'] }}</span>
+                                <span class="metric-label">{{ $stat['label'] }}</span>
                             </div>
-                            <strong>{{ $stat['value'] }}</strong>
-                            <small class="{{ $stat['trend'] === 'up-danger' ? 'text-danger' : 'text-success' }}">
+                            <div class="metric-value">{{ $stat['value'] }}</div>
+                            <span class="metric-trend {{ $stat['trend'] === 'up-danger' ? 'metric-trend--down' : 'metric-trend--up' }}">
                                 <i class="bi bi-arrow-up"></i> {{ $stat['change'] }}
-                            </small>
+                            </span>
                         </article>
                     </div>
                 @endforeach
@@ -364,7 +665,7 @@
             <div class="row g-4 align-items-stretch">
                 <div class="col-12 col-lg-7">
                     <div class="chart-panel h-100">
-                        <canvas id="featuredChart" height="120"></canvas>
+                        <canvas id="featuredChart"></canvas>
                     </div>
                 </div>
                 <div class="col-12 col-lg-5">
@@ -380,119 +681,39 @@
             </div>
         </section>
 
-        <section class="mb-4">
-            <div class="section-heading">
-                <div>
-                    <span class="section-eyebrow">{{ __('dashboard.indicator_groups') }}</span>
-                    <h2>{{ __('dashboard.explore_data') }}</h2>
+        <section class="mb-4" style="margin-top: 30px;" >
+            <div class="subsection-heading">
+                <div class="subsection-heading__top">
+                    <span class="subsection-heading__dot"></span>
+                    <span class="subsection-heading__label">{{ __('dashboard.indicator_groups') }}</span>
                 </div>
+                <p class="subsection-heading__desc">{{ __('dashboard.explore_data') }}</p>
             </div>
 
             <div class="row g-3">
-                @foreach (__('dashboard.groups') as $group)
-                    <div class="col-12 col-md-6 col-xl-3">
-                        <article class="indicator-card h-100">
-                            <div class="indicator-icon"><i class="{{ $group['icon'] }}"></i></div>
-                            <h3>{{ $group['title'] }}</h3>
-                            <ul>
-                                @foreach ($group['items'] as $item)
-                                    <li>{{ $item }}</li>
-                                @endforeach
-                            </ul>
-                            <a href="#">{{ __('dashboard.view_indicators') }} <i class="bi bi-arrow-right"></i></a>
-                        </article>
-                    </div>
-                @endforeach
-            </div>
-        </section>
-
-        {{--OBSERVATORIO DE UNIVERSIDADES - OBU --}}
-        <section class="mb-5" style="margin-top:50px;">
-            <div class="section-heading mb-4">
-                <div class="section-heading__inner">
-                    <span class="section-eyebrow">
-                        {{ __('dashboard.universities') }}
-                    </span>
-
-                    <h2>{{ __('dashboard.university_title') }}</h2>
-                </div>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-6">
-                    <div class="chart-panel">
-                        <div class="chart-legend mb-2">
-                            <span><i class="legend-dot" style="background:#0b3769"></i> {{ __('dashboard.protests') }}</span>
-                            <span><i class="legend-dot" style="background:#FFD23F"></i> {{ __('dashboard.complaints') }}</span>
+            @foreach (__('dashboard.groups') as $group)
+                <div class="col-12 col-md-6 col-xl-3">
+                    <article class="indicator-card h-100">
+                        <div class="indicator-card__header">
+                            <div class="indicator-card__icon"><i class="{{ $group['icon'] }}"></i></div>
+                            <h3 class="indicator-card__title">{{ $group['title'] }}</h3>
                         </div>
-                        <canvas id="protestsComplaintsChart" height="90"></canvas>
-                    </div>
-                </div>
 
-                <div class="col-6">
-                    <div class="chart-panel">
-                        <div class="chart-legend mb-2">
-                            <span><i class="legend-dot" style="background:#1f66d1"></i> {{ __('dashboard.economic_social_complaints') }}</span>
-                            <span><i class="legend-dot" style="background:#00B89C"></i> {{ __('dashboard.civil_political_complaints') }}</span>
-                        </div>
-                        <canvas id="complaintTypeByYearChart" height="90"></canvas>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <div class="complaint-card">
-                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
-
-                        <div class="complaint-card__list">
-                            @foreach ($economicSocialItems as $item)
-                                <div class="complaint-item">
-                                    <div class="complaint-item__icon complaint-item__icon--blue">
-                                        <i class="bi {{ $item['icon'] }}"></i>
-                                    </div>
-                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
-                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
-                                </div>
+                        <div class="indicator-card__tags">
+                            @foreach ($group['items'] as $item)
+                                <span class="indicator-card__tag">{{ $item }}</span>
                             @endforeach
                         </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="complaint-card">
-                        <p class="complaint-card__title">{{ __('dashboard.civil_political_complaints') }}</p>
 
-                        <div class="complaint-card__list">
-                            @foreach ($civilPoliticalItems as $item)
-                                <div class="complaint-item">
-                                    <div class="complaint-item__icon complaint-item__icon--red">
-                                        <i class="bi {{ $item['icon'] }}"></i>
-                                    </div>
-                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
-                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
+                        <a href="#" class="indicator-card__link">
+                            {{ __('dashboard.view_indicators') }}
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </article>
                 </div>
-                <div class="col-4">
-                    <div class="complaint-card">
-                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
-
-                        <div class="complaint-card__list">
-                            @foreach ($economicSocialItems as $item)
-                                <div class="complaint-item">
-                                    <div class="complaint-item__icon complaint-item__icon--blue">
-                                        <i class="bi {{ $item['icon'] }}"></i>
-                                    </div>
-                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
-                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-        </section>
+            @endforeach
+        </div>
+        </section>   
 
         {{-- PUBLICACIONES DE X --}}
         <section class="mb-5" style="margin-top:50px;">
