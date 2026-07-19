@@ -85,7 +85,6 @@
                 </div>
             </div>
             <div class="row g-3">
-                {{--TWEET X ALERTA LEGAL --}}
                 <div class="col-6">                                            
                     <article class="organization-feed h-100">
 
@@ -140,7 +139,7 @@
                                         <p class="feed-post__title">
                                             {{ \Illuminate\Support\Str::limit(
                                                 $alerta['text'],
-                                                150
+                                                90
                                             ) }}
                                         </p>
 
@@ -176,90 +175,125 @@
                     </article>
                 </div>
 
-                {{-- ÚLTIMO ALERTALEGAL --}}
-                <div class="col-6">
-                    <div class="article-panel article-panel--prensa">
+                {{--<div class="col-4">
+                    <div class="article-panel article-panel--profundidad">
                         <div class="article-panel__header">
                             <div class="article-panel__heading">
-                                <span class="article-panel__dot"></span>
                                 <p class="article-panel__title">
-                                    {{ __('dashboard.last_post') }}
+                                    <span class="article-panel__dot"></span>
+                                    {{ __('dashboard.prensa') }}
                                 </p>
                             </div>
-
-                            @if (count($alertasLegales) > 0 && $alertasLegales[0]['created_at'])
-                                <span class="article-panel__count">
-                                    {{ \Carbon\Carbon::parse($alertasLegales[0]['created_at'])->translatedFormat('d M, H:i') }}
-                                </span>
-                            @endif
+                            <span class="article-panel__count">{{ count($postsAccesoJusticia['prensa']) }}</span>
                         </div>
 
-                        <div>
-                            @if (count($alertasLegales) > 0)
-                                @php
-                                    $tweet = $alertasLegales[0];
+                        <div class="article-list">
+                            @forelse ($postsAccesoJusticia['prensa'] as $post)
+                                <a href="{{ $post['url'] }}" target="_blank" rel="noopener noreferrer" class="article-card">
+                                    @if (!empty($post['imagen']))
+                                        <img class="article-card__thumb" src="{{ $post['imagen'] }}" alt="{{ $post['titulo'] }}">
+                                    @else
+                                        <div class="article-card__thumb article-card__thumb--icon">
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </div>
+                                    @endif
 
-                                    // Escapamos el texto completo (sin recortar ni colapsar saltos de línea)
-                                    $safeText = e($tweet['text']);
+                                    <div class="article-card__body">
+                                        <p class="article-card__title">{{ $post['titulo'] }}</p>
 
-                                    // Resaltamos hashtags en azul
-                                    $highlighted = preg_replace(
-                                        '/#(\w+)/u',
-                                        '<span class="prensa-post__hashtag">#$1</span>',
-                                        $safeText
-                                    );
-                                @endphp
-
-                                <div class="prensa-post">
-                                    <div class="prensa-post__image">
-                                        @if ($tweet['image'])
-                                            <img src="{{ $tweet['image'] }}" alt="" loading="lazy">
-                                        @else
-                                            <div class="prensa-post__placeholder">
-                                                <i class="bi bi-twitter-x"></i>
-                                            </div>
+                                        @if (!empty($post['contenido']))
+                                            <p class="article-card__excerpt">
+                                                {{ \Illuminate\Support\Str::limit($post['contenido'], 180) }}
+                                            </p>
                                         @endif
-                                    </div>
 
-                                    <div class="prensa-post__content">
-                                        <p class="prensa-post__text">
-                                            {!! $highlighted !!}
-                                        </p>
-
-                                        <div class="prensa-post__meta">
-                                            @if ($tweet['created_at'])
-                                                <time class="prensa-post__time">
-                                                    {{ \Carbon\Carbon::parse($tweet['created_at'])->diffForHumans() }}
-                                                </time>
+                                        <div class="article-card__footer">
+                                            @if (!empty($post['fecha']))
+                                                <span class="article-card__meta">
+                                                    <i class="bi bi-calendar3"></i>
+                                                    @if (!empty($post['fecha']))
+                                                        <small class="text-muted">
+                                                            {{ \Carbon\Carbon::parse($post['fecha'])
+                                                                ->locale('es')
+                                                                ->translatedFormat('d \d\e F \d\e Y') }}
+                                                        </small>
+                                                    @endif
+                                                </span>
                                             @endif
 
-                                            <span class="prensa-post__stat">
-                                                <i class="bi bi-heart"></i> {{ $tweet['likes'] }}
+                                            <span class="article-card__action">
+                                                {{ __('dashboard.ver_publicacion') }}
+                                                <i class="bi bi-chevron-right"></i>
                                             </span>
-                                            <span class="prensa-post__stat">
-                                                <i class="bi bi-repeat"></i> {{ $tweet['retweets'] }}
-                                            </span>
-                                        </div>
-
-                                        <div class="prensa-post__footer">
-                                            <a
-                                                href="{{ $tweet['url'] }}"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                class="prensa-post__link"
-                                            >
-                                                Ver en X
-                                                <i class="bi bi-box-arrow-up-right"></i>
-                                            </a>
                                         </div>
                                     </div>
-                                </div>
-                            @else
-                                <p class="text-muted small mb-0">No se cargó la última publicación de #AlertaLegal.</p>
-                            @endif
+                                </a>
+                            @empty
+                                <p class="text-muted small mb-0">No se pudieron cargar las publicaciones de En profundidad.</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
+
+                <div class="col-4">
+                    <div class="article-panel article-panel--profundidad">
+                        <div class="article-panel__header">
+                            <div class="article-panel__heading">
+                                <p class="article-panel__title">
+                                    <span class="article-panel__dot"></span>
+                                    {{ __('dashboard.art_pp') }}
+                                </p>
+                            </div>
+                            <span class="article-panel__count">{{ count($postsAccesoJusticia['persecucion_politica']) }}</span>
+                        </div>
+
+                        <div class="article-list">
+                            @forelse ($postsAccesoJusticia['persecucion_politica'] as $post)
+                                <a href="{{ $post['url'] }}" target="_blank" rel="noopener noreferrer" class="article-card">
+                                    @if (!empty($post['imagen']))
+                                        <img class="article-card__thumb" src="{{ $post['imagen'] }}" alt="{{ $post['titulo'] }}">
+                                    @else
+                                        <div class="article-card__thumb article-card__thumb--icon">
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </div>
+                                    @endif
+
+                                    <div class="article-card__body">
+                                        <p class="article-card__title">{{ $post['titulo'] }}</p>
+
+                                        @if (!empty($post['contenido']))
+                                            <p class="article-card__excerpt">
+                                                {{ \Illuminate\Support\Str::limit($post['contenido'], 180) }}
+                                            </p>
+                                        @endif
+
+                                        <div class="article-card__footer">
+                                            @if (!empty($post['fecha']))
+                                                <span class="article-card__meta">
+                                                    <i class="bi bi-calendar3"></i>
+                                                    @if (!empty($post['fecha']))
+                                                        <small class="text-muted">
+                                                            {{ \Carbon\Carbon::parse($post['fecha'])
+                                                                ->locale('es')
+                                                                ->translatedFormat('d \d\e F \d\e Y') }}
+                                                        </small>
+                                                    @endif
+                                                </span>
+                                            @endif
+
+                                            <span class="article-card__action">
+                                                {{ __('dashboard.ver_publicacion') }}
+                                                <i class="bi bi-chevron-right"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            @empty
+                                <p class="text-muted small mb-0">No se pudieron cargar las publicaciones de Noti-fake.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>--}}
             </div>
         </section>
 

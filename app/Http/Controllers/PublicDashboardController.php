@@ -14,7 +14,7 @@ class PublicDashboardController extends Controller
     public function index(
                         TwitterService $twitterService,
                         FakeNewsVenezuelaService $fakeNewsVenezuelaService,
-                        AccesoJusticiaService $accesoJusticiaService
+                        //AccesoJusticiaService $accesoJusticiaService
                     ): View 
     {
         $stats = [
@@ -143,12 +143,12 @@ class PublicDashboardController extends Controller
                 ];
             })
             ->values();
-
+            
          /*Publicaciones del sitio web.
         * Devuelve:
         * $postsAccesoJusticia['prensa']
         * $postsAccesoJusticia['persecucion_politica']*/
-        $postsAccesoJusticia = $accesoJusticiaService->getLatestPosts(4);
+        //$postsAccesoJusticia = $accesoJusticiaService->getLatestPosts(4);
 
 
         /*Publicaciones de X del Observatorio Venezolano de Fake News.*/
@@ -213,7 +213,7 @@ class PublicDashboardController extends Controller
                 'economicSocialItems',
                 'civilPoliticalItems',
                 'alertasLegales',
-                'postsAccesoJusticia',
+                //'postsAccesoJusticia',
                 'postsFakeNewsX',
                 'postsFakeNewsWeb',
                 'years',

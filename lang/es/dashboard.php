@@ -55,6 +55,7 @@ return [
     'civil_political_complaints' => 'Denuncias por derechos políticos y civiles',
 
     'latest_posts'=>'Últimos posts',
+    'last_post'=>'Último post',
     'from_x'=>'Actividad reciente en X',
     'view_on_x'=>'Ver en X',
 

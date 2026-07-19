@@ -55,6 +55,7 @@ return [
     'civil_political_complaints' => 'Reports of Civil and Political Rights Violations',
 
     'latest_posts'=>'Latest posts',
+    'last_post'=>'Last post',
     'from_x'=>'Recent activity on X',
     'view_on_x'=>'View on X',
     
