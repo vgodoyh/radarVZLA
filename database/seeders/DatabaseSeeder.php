@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Organization;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,6 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        foreach (config('dashboard.organizations') as $organization) {
+            Organization::updateOrCreate(['slug' => $organization['slug']], $organization + ['active' => true]);
+        }
+
         $this->call(AdminUserSeeder::class);
     }
 }

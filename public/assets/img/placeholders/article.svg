@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title">
+  <title id="title">Pulso Venezuela</title>
+  <rect width="640" height="360" fill="#0b3769"/>
+  <circle cx="320" cy="180" r="96" fill="none" stroke="#00e5c7" stroke-width="8" opacity=".75"/>
+  <circle cx="320" cy="180" r="48" fill="none" stroke="#ffd23f" stroke-width="6" opacity=".9"/>
+  <path d="M320 180 430 92" stroke="#00e5c7" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="320" cy="180" r="9" fill="#fff"/>
+</svg>

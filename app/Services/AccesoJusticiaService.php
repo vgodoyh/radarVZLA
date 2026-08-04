@@ -746,7 +746,7 @@ class AccesoJusticiaService
         string $url
     ): array {
         return Cache::remember(
-            'acceso-justicia-detail-v10.' . md5($url),
+            'acceso-justicia-detail-v10.'.md5($url),
             now()->addHours(6),
             function () use ($url): array {
                 try {
@@ -951,10 +951,10 @@ class AccesoJusticiaService
 
         libxml_use_internal_errors(true);
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
 
         $loaded = $dom->loadHTML(
-            '<?xml encoding="UTF-8">' . $html,
+            '<?xml encoding="UTF-8">'.$html,
             LIBXML_NOERROR |
             LIBXML_NOWARNING |
             LIBXML_NONET
@@ -994,10 +994,10 @@ class AccesoJusticiaService
         }
 
         if (Str::startsWith($url, '//')) {
-            return 'https:' . $url;
+            return 'https:'.$url;
         }
 
-        return self::BASE_URL . '/' . ltrim(
+        return self::BASE_URL.'/'.ltrim(
             $url,
             '/'
         );
@@ -1025,8 +1025,8 @@ class AccesoJusticiaService
     {
         return [
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                . 'AppleWebKit/537.36 (KHTML, like Gecko) '
-                . 'Chrome/150.0.0.0 Safari/537.36',
+                .'AppleWebKit/537.36 (KHTML, like Gecko) '
+                .'Chrome/150.0.0.0 Safari/537.36',
 
             'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 
@@ -1034,7 +1034,7 @@ class AccesoJusticiaService
 
             'Cache-Control' => 'no-cache',
 
-            'Referer' => self::BASE_URL . '/',
+            'Referer' => self::BASE_URL.'/',
         ];
     }
 }

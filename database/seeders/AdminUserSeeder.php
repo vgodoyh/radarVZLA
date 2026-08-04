@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class AdminUserSeeder extends Seeder
 {
@@ -13,7 +15,7 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-         User::updateOrCreate(
+        $user = User::updateOrCreate(
             ['email' => 'vanessa.godoy.h@gmail.com'],
             [
                 'name' => 'Vanessa Godoy',
@@ -21,5 +23,11 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('-0607EdM@*'),
             ]
         );
+
+        $permissions = collect(['manage users', 'manage roles', 'manage permissions', 'manage social networks'])
+            ->map(fn (string $name) => Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']));
+        $role = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $role->syncPermissions($permissions);
+        $user->syncRoles([$role]);
     }
 }

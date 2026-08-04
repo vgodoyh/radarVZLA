@@ -41,7 +41,7 @@ class TipoRedSocialController extends Controller
     public function update(Request $request, TipoRedSocial $tipo_red_social)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:tipo_red_social,name,' . $tipo_red_social->id,
+            'name' => 'required|string|max:255|unique:tipo_red_social,name,'.$tipo_red_social->id,
         ]);
 
         $tipo_red_social->update([

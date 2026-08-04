@@ -8,11 +8,10 @@
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <a href="{{ route('dashboard.public') }}" class="brand text-decoration-none">
                     <img
-                        src="{{ asset('assets/img/logos/radar-vzla.png') }}"
-                        alt="Radar Vzla" class="w-25"
+                        src="{{ asset('assets/img/logos/pulso-venezuela.png') }}"
+                        alt="Pulso Vzla" style="width: 20% !important;"
                     >
                 </a>
-
                 <div class="d-flex align-items-center gap-3">
                     <div class="datetime text-end text-white-50" id="rv-datetime">
                         <div class="fw-semibold text-white" id="rv-time"></div>
@@ -39,7 +38,7 @@
                                         alt="{{ $organization['name'] }}"
                                         class="img-fluid">
                                 </div>
-                                <h2 class="text-white">{{ $organization['name'] }}</h2>
+                                {{--<h2 class="text-white">{{ $organization['name'] }}</h2>--}}
                                 <p>{{ $organization['description'] }}</p>
                             </article>
                         </a>
@@ -74,6 +73,253 @@
 
         <hr class="horizontal light mt-0">
 
+        {{-- JEP --}}
+        <section class="mb-5" style="margin-top:50px;">
+            <div class="section-heading mb-4">
+                <div class="section-heading__inner_jep">
+                    <span class="section-eyebrow-jep">
+                        {{ __('dashboard.jep') }}
+                    </span>
+
+                    <h2 class="text-jep-light">{{ __('dashboard.jep_title') }}</h2>
+                </div>
+            </div>
+        </section>
+        {{-- CARD ESTADISTICOS --}}
+        <section class="mb-4" style="margin-top:50px;">
+            <div class="subsection-heading">
+                <div class="subsection-heading__top">
+                    <span class="subsection-heading__dot_jep"></span>
+                    <span class="subsection-heading__label">{{ __('dashboard.key_figures') }}</span>
+                </div>
+            </div>
+
+            <div class="row g-3 align-items-stretch mb-4">
+                {{-- Columna izquierda: total + desglose 2x2 --}}
+                <div class="col-12 col-lg-6">
+                    <div class="kpi-split-panel">
+
+                        <div class="kpi-split-panel__primary">
+                            <div class="kpi-primary__label">{{ __('dashboard.stats.political_prisoners') }}</div>
+                            <div class="kpi-primary__value">1.875</div>
+                            <span class="kpi-primary__pill">
+                                <i class="bi bi-arrow-up"></i>+5,2%
+                            </span>
+                        </div>
+
+                        <div class="kpi-split-panel__grid">
+
+                            <div class="kpi-item">
+                                <div class="kpi-item__label">{{ __('dashboard.stats.women') }}</div>
+                                <div class="kpi-item__row">
+                                    <span class="kpi-item__value">234</span>
+                                    <span class="kpi-item__trend">
+                                        <i class="bi bi-caret-up-fill"></i>6,4%
+                                    </span>
+                                </div>
+                                <span class="kpi-item__underline"></span>
+                            </div>
+
+                            <div class="kpi-item">
+                                <div class="kpi-item__label">{{ __('dashboard.stats.seriously_ill') }}</div>
+                                <div class="kpi-item__row">
+                                    <span class="kpi-item__value">142</span>
+                                    <span class="kpi-item__trend">
+                                        <i class="bi bi-caret-up-fill"></i>18,3%
+                                    </span>
+                                </div>
+                                <span class="kpi-item__underline"></span>
+                            </div>
+
+                            <div class="kpi-item">
+                                <div class="kpi-item__label">{{ __('dashboard.stats.foreign_dual_nationals') }}</div>
+                                <div class="kpi-item__row">
+                                    <span class="kpi-item__value">23</span>
+                                    <span class="kpi-item__trend">
+                                        <i class="bi bi-caret-up-fill"></i>21,1%
+                                    </span>
+                                </div>
+                                <span class="kpi-item__underline"></span>
+                            </div>
+
+                            <div class="kpi-item kpi-item--positive">
+                                <div class="kpi-item__label">{{ __('dashboard.stats.releases') }}</div>
+                                <div class="kpi-item__row">
+                                    <span class="kpi-item__value">87</span>
+                                    <span class="kpi-item__trend">
+                                        <i class="bi bi-caret-up-fill"></i>12,9%
+                                    </span>
+                                </div>
+                                <span class="kpi-item__underline"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Columna derecha: criterios de contabilización --}}
+                <div class="col-12 col-lg-6">
+                    <div class="key-figures-panel__criteria">
+                        <div class="key-figures-panel__criteria-header">
+                            <i class="bi bi-clipboard-check text-jep-light"></i>
+                            <span>{{ __('dashboard.key_figures_criteria_label') }}</span>
+                        </div>
+
+                        <p class="key-figures-panel__criteria-intro">{{ __('dashboard.key_figures_intro') }}</p>
+
+                        <div class="criteria-grid">
+                            @foreach (__('dashboard.key_figures_criteria') as $index => $criterion)
+                                <div class="criteria-item">
+                                    <span class="criteria-item__num">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                    <p class="criteria-item__text">{{ $criterion }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <p class="key-figures-panel__criteria-note">{{ __('dashboard.key_figures_note') }}</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="section-card featured-section mb-4">
+
+                <div class="row g-4 align-items-stretch">
+                    <div class="col-12 col-lg-7">
+                        <div class="chart-panel h-100">
+                            <canvas id="featuredChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-5">
+                        <div class="analysis-panel h-100">
+                            <div class="subsection-heading">
+                                <div class="subsection-heading__top">
+                                    <span class="subsection-heading__dot_jep"></span>
+                                    <span class="subsection-heading__label">{{ __('dashboard.featured_indicator') }}</span>
+                                </div>
+                            </div>
+                            <p>{{ __('dashboard.featured_analysis') }}</p>
+                            <div class="slim-links">
+                                <a href="#"><i class="bi bi-file-earmark-text"></i>{{ __('dashboard.press_release') }}<i class="bi bi-arrow-up-right"></i></a>
+                                <a href="#"><i class="bi bi-twitter-x"></i>{{ __('dashboard.x_thread') }}<i class="bi bi-arrow-up-right"></i></a>
+                                <a href="#"><i class="bi bi-globe2"></i>{{ __('dashboard.full_website') }}<i class="bi bi-arrow-up-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="key-figures-panel">
+
+                <div class="key-figures-panel__stats">
+                    @foreach ($stats as $stat)
+                        @php
+                            $isPositive = ($stat['sentiment'] ?? 'negative') === 'positive';
+                            $direction  = $stat['direction'] ?? 'up';
+                        @endphp
+
+                        <article class="stat-cell {{ $isPositive ? 'stat-cell--positive' : '' }}">
+                            <div class="stat-cell__head">
+                                <span class="stat-cell__icon">
+                                    <i class="{{ $stat['icon'] }}"></i>
+                                </span>
+                                <span class="stat-cell__label">{{ $stat['label'] }}</span>
+                            </div>
+
+                            <div class="stat-cell__value">{{ $stat['value'] }}</div>
+
+                            <div class="stat-cell__trend">
+                                <i class="bi bi-arrow-{{ $direction }}"></i>{{ $stat['change'] }}
+                            </div>
+                            <div class="stat-cell__period">{{ __('dashboard.stats.vs_previous_month') }}</div>
+                        </article>
+                    @endforeach
+                </div>
+
+                <div class="key-figures-panel__criteria">
+                    <div class="key-figures-panel__criteria-header">
+                        <i class="bi bi-clipboard-check text-jep-light"></i>
+                        <span>{{ __('dashboard.key_figures_criteria_label') }}</span>
+                    </div>
+
+                    <p class="key-figures-panel__criteria-intro">{{ __('dashboard.key_figures_intro') }}</p>
+
+                    <div class="criteria-grid">
+                        @foreach (__('dashboard.key_figures_criteria') as $index => $criterion)
+                            <div class="criteria-item">
+                                <span class="criteria-item__num">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                <p class="criteria-item__text">{{ $criterion }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <p class="key-figures-panel__criteria-note">{{ __('dashboard.key_figures_note') }}</p>
+                </div>           
+        
+                <div class="section-card featured-section mb-4">
+
+                    <div class="row g-4 align-items-stretch">
+                        <div class="col-12 col-lg-7">
+                            <div class="chart-panel h-100">
+                                <canvas id="featuredChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-5">
+                            <div class="analysis-panel h-100">
+                                <div class="subsection-heading">
+                                    <div class="subsection-heading__top">
+                                        <span class="subsection-heading__dot_jep"></span>
+                                        <span class="subsection-heading__label">{{ __('dashboard.featured_indicator') }}</span>
+                                    </div>
+                                </div>
+                                <p>{{ __('dashboard.featured_analysis') }}</p>
+                                <div class="slim-links">
+                                    <a href="#"><i class="bi bi-file-earmark-text"></i>{{ __('dashboard.press_release') }}<i class="bi bi-arrow-up-right"></i></a>
+                                    <a href="#"><i class="bi bi-twitter-x"></i>{{ __('dashboard.x_thread') }}<i class="bi bi-arrow-up-right"></i></a>
+                                    <a href="#"><i class="bi bi-globe2"></i>{{ __('dashboard.full_website') }}<i class="bi bi-arrow-up-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="mb-4" style="margin-top: 30px;" >
+            <div class="subsection-heading">
+                <div class="subsection-heading__top">
+                    <span class="subsection-heading__dot"></span>
+                    <span class="subsection-heading__label">{{ __('dashboard.indicator_groups') }}</span>
+                </div>
+                <p class="subsection-heading__desc">{{ __('dashboard.explore_data') }}</p>
+            </div>
+
+            <div class="row g-3">
+                @foreach (__('dashboard.groups') as $group)
+                    <div class="col-12 col-md-6 col-xl-3">
+                        <article class="indicator-card h-100">
+                            <div class="indicator-card__header">
+                                <div class="indicator-card__icon"><i class="{{ $group['icon'] }}"></i></div>
+                                <h3 class="indicator-card__title">{{ $group['title'] }}</h3>
+                            </div>
+
+                            <div class="indicator-card__tags">
+                                @foreach ($group['items'] as $item)
+                                    <span class="indicator-card__tag">{{ $item }}</span>
+                                @endforeach
+                            </div>
+
+                            <a href="#" class="indicator-card__link">
+                                {{ __('dashboard.view_indicators') }}
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </article>
+                    </div>
+                @endforeach
+            </div>
+        </section>  
+
         {{-- ACCESO A LA JUSTICIA --}}
         <section class="mb-5" style="margin-top:50px;">
             <div class="section-heading mb-4">
@@ -85,6 +331,7 @@
                 </div>
             </div>
             <div class="row g-3">
+                {{--TWEET X ALERTA LEGAL --}}
                 <div class="col-6">                                            
                     <article class="organization-feed h-100">
 
@@ -139,7 +386,7 @@
                                         <p class="feed-post__title">
                                             {{ \Illuminate\Support\Str::limit(
                                                 $alerta['text'],
-                                                90
+                                                150
                                             ) }}
                                         </p>
 
@@ -175,216 +422,91 @@
                     </article>
                 </div>
 
-                {{--<div class="col-4">
-                    <div class="article-panel article-panel--profundidad">
+                {{-- ÚLTIMO ALERTALEGAL --}}
+                <div class="col-6">
+                    <div class="article-panel article-panel--prensa">
                         <div class="article-panel__header">
                             <div class="article-panel__heading">
+                                <span class="article-panel__dot"></span>
                                 <p class="article-panel__title">
-                                    <span class="article-panel__dot"></span>
-                                    {{ __('dashboard.prensa') }}
+                                    {{ __('dashboard.last_post') }}
                                 </p>
                             </div>
-                            <span class="article-panel__count">{{ count($postsAccesoJusticia['prensa']) }}</span>
+
+                            @if (count($alertasLegales) > 0 && $alertasLegales[0]['created_at'])
+                                <span class="article-panel__count">
+                                    {{ \Carbon\Carbon::parse($alertasLegales[0]['created_at'])->translatedFormat('d M, H:i') }}
+                                </span>
+                            @endif
                         </div>
 
-                        <div class="article-list">
-                            @forelse ($postsAccesoJusticia['prensa'] as $post)
-                                <a href="{{ $post['url'] }}" target="_blank" rel="noopener noreferrer" class="article-card">
-                                    @if (!empty($post['imagen']))
-                                        <img class="article-card__thumb" src="{{ $post['imagen'] }}" alt="{{ $post['titulo'] }}">
-                                    @else
-                                        <div class="article-card__thumb article-card__thumb--icon">
-                                            <i class="bi bi-file-earmark-text"></i>
-                                        </div>
-                                    @endif
+                        <div>
+                            @if (count($alertasLegales) > 0)
+                                @php
+                                    $tweet = $alertasLegales[0];
 
-                                    <div class="article-card__body">
-                                        <p class="article-card__title">{{ $post['titulo'] }}</p>
+                                    // Escapamos el texto completo (sin recortar ni colapsar saltos de línea)
+                                    $safeText = e($tweet['text']);
 
-                                        @if (!empty($post['contenido']))
-                                            <p class="article-card__excerpt">
-                                                {{ \Illuminate\Support\Str::limit($post['contenido'], 180) }}
-                                            </p>
+                                    // Resaltamos hashtags en azul
+                                    $highlighted = preg_replace(
+                                        '/#(\w+)/u',
+                                        '<span class="prensa-post__hashtag">#$1</span>',
+                                        $safeText
+                                    );
+                                @endphp
+
+                                <div class="prensa-post">
+                                    <div class="prensa-post__image">
+                                        @if ($tweet['image'])
+                                            <img src="{{ $tweet['image'] }}" alt="" loading="lazy">
+                                        @else
+                                            <div class="prensa-post__placeholder">
+                                                <i class="bi bi-twitter-x"></i>
+                                            </div>
                                         @endif
+                                    </div>
 
-                                        <div class="article-card__footer">
-                                            @if (!empty($post['fecha']))
-                                                <span class="article-card__meta">
-                                                    <i class="bi bi-calendar3"></i>
-                                                    @if (!empty($post['fecha']))
-                                                        <small class="text-muted">
-                                                            {{ \Carbon\Carbon::parse($post['fecha'])
-                                                                ->locale('es')
-                                                                ->translatedFormat('d \d\e F \d\e Y') }}
-                                                        </small>
-                                                    @endif
-                                                </span>
+                                    <div class="prensa-post__content">
+                                        <p class="prensa-post__text">
+                                            {!! $highlighted !!}
+                                        </p>
+
+                                        <div class="prensa-post__meta">
+                                            @if ($tweet['created_at'])
+                                                <time class="prensa-post__time">
+                                                    {{ \Carbon\Carbon::parse($tweet['created_at'])->diffForHumans() }}
+                                                </time>
                                             @endif
 
-                                            <span class="article-card__action">
-                                                {{ __('dashboard.ver_publicacion') }}
-                                                <i class="bi bi-chevron-right"></i>
+                                            <span class="prensa-post__stat">
+                                                <i class="bi bi-heart"></i> {{ $tweet['likes'] }}
+                                            </span>
+                                            <span class="prensa-post__stat">
+                                                <i class="bi bi-repeat"></i> {{ $tweet['retweets'] }}
                                             </span>
                                         </div>
-                                    </div>
-                                </a>
-                            @empty
-                                <p class="text-muted small mb-0">No se pudieron cargar las publicaciones de En profundidad.</p>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-4">
-                    <div class="article-panel article-panel--profundidad">
-                        <div class="article-panel__header">
-                            <div class="article-panel__heading">
-                                <p class="article-panel__title">
-                                    <span class="article-panel__dot"></span>
-                                    {{ __('dashboard.art_pp') }}
-                                </p>
-                            </div>
-                            <span class="article-panel__count">{{ count($postsAccesoJusticia['persecucion_politica']) }}</span>
-                        </div>
-
-                        <div class="article-list">
-                            @forelse ($postsAccesoJusticia['persecucion_politica'] as $post)
-                                <a href="{{ $post['url'] }}" target="_blank" rel="noopener noreferrer" class="article-card">
-                                    @if (!empty($post['imagen']))
-                                        <img class="article-card__thumb" src="{{ $post['imagen'] }}" alt="{{ $post['titulo'] }}">
-                                    @else
-                                        <div class="article-card__thumb article-card__thumb--icon">
-                                            <i class="bi bi-file-earmark-text"></i>
-                                        </div>
-                                    @endif
-
-                                    <div class="article-card__body">
-                                        <p class="article-card__title">{{ $post['titulo'] }}</p>
-
-                                        @if (!empty($post['contenido']))
-                                            <p class="article-card__excerpt">
-                                                {{ \Illuminate\Support\Str::limit($post['contenido'], 180) }}
-                                            </p>
-                                        @endif
-
-                                        <div class="article-card__footer">
-                                            @if (!empty($post['fecha']))
-                                                <span class="article-card__meta">
-                                                    <i class="bi bi-calendar3"></i>
-                                                    @if (!empty($post['fecha']))
-                                                        <small class="text-muted">
-                                                            {{ \Carbon\Carbon::parse($post['fecha'])
-                                                                ->locale('es')
-                                                                ->translatedFormat('d \d\e F \d\e Y') }}
-                                                        </small>
-                                                    @endif
-                                                </span>
-                                            @endif
-
-                                            <span class="article-card__action">
-                                                {{ __('dashboard.ver_publicacion') }}
-                                                <i class="bi bi-chevron-right"></i>
-                                            </span>
+                                        <div class="prensa-post__footer">
+                                            <a
+                                                href="{{ $tweet['url'] }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="prensa-post__link"
+                                            >
+                                                Ver en X
+                                                <i class="bi bi-box-arrow-up-right"></i>
+                                            </a>
                                         </div>
                                     </div>
-                                </a>
-                            @empty
-                                <p class="text-muted small mb-0">No se pudieron cargar las publicaciones de Noti-fake.</p>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>--}}
-            </div>
-        </section>
-
-        <hr class="horizontal light mt-0">
-
-        {{--OBSERVATORIO DE UNIVERSIDADES - OBU --}}
-        <section class="mb-5" style="margin-top:50px;">
-            <div class="section-heading mb-4">
-                <div class="section-heading__inner">
-                    <span class="section-eyebrow">
-                        {{ __('dashboard.universities') }}
-                    </span>
-
-                    <h2>{{ __('dashboard.university_title') }}</h2>
-                </div>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-6">
-                    <div class="chart-panel">
-                        <div class="chart-legend mb-2">
-                            <span><i class="legend-dot" style="background:#0b3769"></i> {{ __('dashboard.protests') }}</span>
-                            <span><i class="legend-dot" style="background:#FFD23F"></i> {{ __('dashboard.complaints') }}</span>
-                        </div>
-                        <canvas id="protestsComplaintsChart" height="90"></canvas>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="chart-panel">
-                        <div class="chart-legend mb-2">
-                            <span><i class="legend-dot" style="background:#1f66d1"></i> {{ __('dashboard.economic_social_complaints') }}</span>
-                            <span><i class="legend-dot" style="background:#00B89C"></i> {{ __('dashboard.civil_political_complaints') }}</span>
-                        </div>
-                        <canvas id="complaintTypeByYearChart" height="90"></canvas>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <div class="complaint-card">
-                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
-
-                        <div class="complaint-card__list">
-                            @foreach ($economicSocialItems as $item)
-                                <div class="complaint-item">
-                                    <div class="complaint-item__icon complaint-item__icon--blue">
-                                        <i class="bi {{ $item['icon'] }}"></i>
-                                    </div>
-                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
-                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
                                 </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="complaint-card">
-                        <p class="complaint-card__title">{{ __('dashboard.civil_political_complaints') }}</p>
-
-                        <div class="complaint-card__list">
-                            @foreach ($civilPoliticalItems as $item)
-                                <div class="complaint-item">
-                                    <div class="complaint-item__icon complaint-item__icon--red">
-                                        <i class="bi {{ $item['icon'] }}"></i>
-                                    </div>
-                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
-                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="complaint-card">
-                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
-
-                        <div class="complaint-card__list">
-                            @foreach ($economicSocialItems as $item)
-                                <div class="complaint-item">
-                                    <div class="complaint-item__icon complaint-item__icon--blue">
-                                        <i class="bi {{ $item['icon'] }}"></i>
-                                    </div>
-                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
-                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
-                                </div>
-                            @endforeach
+                            @else
+                                <p class="text-muted small mb-0">No se cargó la última publicación de #AlertaLegal.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
-            
         </section>
 
         <hr class="horizontal light mt-0">
@@ -614,106 +736,97 @@
 
         <hr class="horizontal light mt-0">
 
-        {{-- JEP --}}
+        {{--OBSERVATORIO DE UNIVERSIDADES - OBU --}}
         <section class="mb-5" style="margin-top:50px;">
             <div class="section-heading mb-4">
                 <div class="section-heading__inner">
                     <span class="section-eyebrow">
-                        {{ __('dashboard.jep') }}
+                        {{ __('dashboard.universities') }}
                     </span>
 
-                    <h2>{{ __('dashboard.jep_title') }}</h2>
-                </div>
-            </div>
-        </section>
-
-        <section class="mb-4" style="margin-top:50px;">
-            <div class="subsection-heading">
-                <div class="subsection-heading__top">
-                    <span class="subsection-heading__dot"></span>
-                    <span class="subsection-heading__label">{{ __('dashboard.key_figures') }}</span>
-                </div>
-                <p class="subsection-heading__desc">{{ __('dashboard.snapshot') }}</p>
-            </div>
-
-            <div class="row g-3">
-                @foreach ($stats as $stat)
-                    <div class="col-12 col-sm-6 col-xl">
-                        <article class="metric-card {{ $stat['trend'] === 'up-danger' ? 'metric-card--danger' : '' }} h-100">
-                            <div class="metric-top">
-                                <span class="metric-icon"><i class="bi {{ $stat['icon'] }}"></i></span>
-                                <span class="metric-label">{{ $stat['label'] }}</span>
-                            </div>
-                            <div class="metric-value">{{ $stat['value'] }}</div>
-                            <span class="metric-trend {{ $stat['trend'] === 'up-danger' ? 'metric-trend--down' : 'metric-trend--up' }}">
-                                <i class="bi bi-arrow-up"></i> {{ $stat['change'] }}
-                            </span>
-                        </article>
-                    </div>
-                @endforeach
-            </div>
-        </section>
-
-        <section class="section-card featured-section mb-4">
-            <div class="section-heading mb-4">
-                <div>
-                    <span class="section-eyebrow">{{ __('dashboard.featured_indicator') }}</span>
-                    <h2>{{ __('dashboard.featured_title') }}</h2>
+                    <h2>{{ __('dashboard.university_title') }}</h2>
                 </div>
             </div>
 
-            <div class="row g-4 align-items-stretch">
-                <div class="col-12 col-lg-7">
-                    <div class="chart-panel h-100">
-                        <canvas id="featuredChart"></canvas>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-5">
-                    <div class="analysis-panel h-100">
-                        <p>{{ __('dashboard.featured_analysis') }}</p>
-                        <div class="slim-links">
-                            <a href="#"><i class="bi bi-file-earmark-text"></i>{{ __('dashboard.press_release') }}<i class="bi bi-arrow-up-right"></i></a>
-                            <a href="#"><i class="bi bi-twitter-x"></i>{{ __('dashboard.x_thread') }}<i class="bi bi-arrow-up-right"></i></a>
-                            <a href="#"><i class="bi bi-globe2"></i>{{ __('dashboard.full_website') }}<i class="bi bi-arrow-up-right"></i></a>
+            <div class="row g-4">
+                <div class="col-6">
+                    <div class="chart-panel">
+                        <div class="chart-legend mb-2">
+                            <span><i class="legend-dot" style="background:var(--navy-2)"></i> {{ __('dashboard.protests') }}</span>
+                            <span><i class="legend-dot" style="background:var(--gold)"></i> {{ __('dashboard.complaints') }}</span>
                         </div>
+                        <canvas id="protestsComplaintsChart" height="90"></canvas>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <section class="mb-4" style="margin-top: 30px;" >
-            <div class="subsection-heading">
-                <div class="subsection-heading__top">
-                    <span class="subsection-heading__dot"></span>
-                    <span class="subsection-heading__label">{{ __('dashboard.indicator_groups') }}</span>
-                </div>
-                <p class="subsection-heading__desc">{{ __('dashboard.explore_data') }}</p>
-            </div>
-
-            <div class="row g-3">
-            @foreach (__('dashboard.groups') as $group)
-                <div class="col-12 col-md-6 col-xl-3">
-                    <article class="indicator-card h-100">
-                        <div class="indicator-card__header">
-                            <div class="indicator-card__icon"><i class="{{ $group['icon'] }}"></i></div>
-                            <h3 class="indicator-card__title">{{ $group['title'] }}</h3>
+                <div class="col-6">
+                    <div class="chart-panel">
+                        <div class="chart-legend mb-2">
+                            <span><i class="legend-dot" style="background:var(--blue)"></i> {{ __('dashboard.economic_social_complaints') }}</span>
+                            <span><i class="legend-dot" style="background:var(--accent)"></i> {{ __('dashboard.civil_political_complaints') }}</span>
                         </div>
+                        <canvas id="complaintTypeByYearChart" height="90"></canvas>
+                    </div>
+                </div>
 
-                        <div class="indicator-card__tags">
-                            @foreach ($group['items'] as $item)
-                                <span class="indicator-card__tag">{{ $item }}</span>
+                <div class="col-4">
+                    <div class="complaint-card">
+                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
+
+                        <div class="complaint-card__list">
+                            @foreach ($economicSocialItems as $item)
+                                <div class="complaint-item">
+                                    <div class="complaint-item__icon complaint-item__icon--blue">
+                                        <i class="bi {{ $item['icon'] }}"></i>
+                                    </div>
+                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
+                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
+                                </div>
                             @endforeach
                         </div>
-
-                        <a href="#" class="indicator-card__link">
-                            {{ __('dashboard.view_indicators') }}
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </article>
+                    </div>
                 </div>
-            @endforeach
-        </div>
-        </section>   
+                <div class="col-4">
+                    <div class="complaint-card">
+                        <p class="complaint-card__title">{{ __('dashboard.civil_political_complaints') }}</p>
+
+                        <div class="complaint-card__list">
+                            @foreach ($civilPoliticalItems as $item)
+                                <div class="complaint-item">
+                                    <div class="complaint-item__icon complaint-item__icon--red">
+                                        <i class="bi {{ $item['icon'] }}"></i>
+                                    </div>
+                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
+                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="complaint-card">
+                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
+
+                        <div class="complaint-card__list">
+                            @foreach ($economicSocialItems as $item)
+                                <div class="complaint-item">
+                                    <div class="complaint-item__icon complaint-item__icon--blue">
+                                        <i class="bi {{ $item['icon'] }}"></i>
+                                    </div>
+                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
+                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+
+        <hr class="horizontal light mt-0">
+
+         
 
         {{-- PUBLICACIONES DE X --}}
         <section class="mb-5" style="margin-top:50px;">

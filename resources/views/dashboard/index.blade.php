@@ -3,791 +3,158 @@
 @section('title', __('dashboard.meta_title'))
 
 @section('content')
-    <header class="hero-section">
-        <div class="container-fluid px-4 px-xl-5 py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                <a href="{{ route('dashboard.public') }}" class="brand text-decoration-none">
-                    <img
-                        src="{{ asset('assets/img/logos/radar-vzla.png') }}"
-                        alt="Radar Vzla" class="w-25"
+
+    <div class="home-surface">
+
+        {{-- =====================================================
+             HERO
+        ====================================================== --}}
+        <header class="hero-section hero-section--light">
+            <div class="container-fluid px-4 px-xl-5 py-4">
+
+                {{-- Selector de idioma --}}
+                <div class="d-flex justify-content-end mb-1">
+                    <div
+                        class="language-switcher language-switcher--light"
+                        aria-label="{{ __('dashboard.language') }}"
                     >
-                </a>
+                        <i class="bi bi-globe2"></i>
 
-                <div class="d-flex align-items-center gap-3">
-                    <div class="datetime text-end text-white-50" id="rv-datetime">
-                        <div class="fw-semibold text-white" id="rv-time"></div>
-                        <div class="small text-uppercase-first" id="rv-date"></div>
-                    </div>
+                        <a
+                            href="{{ route('language.switch', 'es') }}"
+                            class="{{ app()->isLocale('es') ? 'active' : '' }}"
+                        >
+                            ES
+                        </a>
 
-                    <div class="language-switcher" aria-label="{{ __('dashboard.language') }}">
-                        <a href="{{ route('language.switch', 'es') }}" class="{{ app()->isLocale('es') ? 'active' : '' }}">ES</a>
-                        <span>/</span>
-                        <a href="{{ route('language.switch', 'en') }}" class="{{ app()->isLocale('en') ? 'active' : '' }}">EN</a>
-                    </div>
-                </div>
-            </div>
+                        <span class="language-switcher__separator">|</span>
 
-            <div class="row g-3">
-                @foreach (__('dashboard.organizations') as $organization)
-                    <div class="col-12 col-md-6 col-xl-3">
-                        <a href="{{ $organization['url'] }}"
-                            target="_blank" style="text-decoration: none;">
-                            <article class="organization-card h-100">                        
-                                <div class="organization-logo">
-                                    <img
-                                        src="{{ $organization['logo'] }}"
-                                        alt="{{ $organization['name'] }}"
-                                        class="img-fluid">
-                                </div>
-                                <h2 class="text-white">{{ $organization['name'] }}</h2>
-                                <p>{{ $organization['description'] }}</p>
-                            </article>
+                        <a
+                            href="{{ route('language.switch', 'en') }}"
+                            class="{{ app()->isLocale('en') ? 'active' : '' }}"
+                        >
+                            EN
                         </a>
                     </div>
-                @endforeach
-            </div>
-            <script>
-                function rvUpdateClock() {
-                    const now = new Date();
-                    const locale = document.documentElement.lang === 'en' ? 'en-US' : 'es-VE';
-                    document.getElementById('rv-time').textContent =
-                        now.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
-                    let dateStr = now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-                    document.getElementById('rv-date').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
-                }
-                rvUpdateClock();
-                setInterval(rvUpdateClock, 30000);
-            </script>
-        </div>
-    </header>
-
-    <main class="container-fluid px-4 px-xl-5 py-4 dashboard-shell">
-        <div class="tagline-wrapper">
-            <p class="tagline mb-4">
-                <span>{{ __('dashboard.tagline_1') }}</span>
-                <span class="tagline__dot"></span>
-                <span>{{ __('dashboard.tagline_2') }}</span>
-                <span class="tagline__dot"></span>
-                <span>{{ __('dashboard.tagline_3') }}</span>
-            </p>
-        </div>
-
-        <hr class="horizontal light mt-0">
-
-        {{-- ACCESO A LA JUSTICIA --}}
-        <section class="mb-5" style="margin-top:50px;">
-            <div class="section-heading mb-4">
-                <div class="section-heading__inner">
-                    <span class="section-eyebrow">
-                        {{ __('dashboard.acceso_justicia') }}
-                    </span>
-                    <h2>{{ __('dashboard.accesojusticia_title') }}</h2>
                 </div>
-            </div>
-            <div class="row g-3">
-                {{--TWEET X ALERTA LEGAL --}}
-                <div class="col-6">                                            
-                    <article class="organization-feed h-100">
 
-                        <header class="organization-feed__header">
-                            <div class="organization-feed__identity">
-                                <div class="organization-feed__logo">
-                                    <img
-                                        src="{{ $organizations[1]['logo_x'] }}"
-                                        alt="{{ $organizations[1]['name'] }}"
-                                    >
-                                </div>
+                <div class="row align-items-start g-4">
 
-                                <div class="organization-feed__meta">
-                                    <h3>{{ $organizations[1]['name'] }}</h3>
+                    {{-- Contenido principal --}}
+                    <div class="col-12 col-lg-6">
 
-                                    <a
-                                        href="https://x.com/{{ $organizations[1]['username'] }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {{ '@' . $organizations[1]['username'] }}
-                                    </a>
-                                    <div class="alert-legal ms-2">
-                                        <span>#AlertaLegal</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </header>
-                        <div class="organization-feed__posts">
-                            @forelse ($alertasLegales as $alerta)                                
-                                <a
-                                        href="{{ $alerta['url'] }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="feed-post"
-                                    >
-                                    <div class="feed-post__image">
-                                        @if ($alerta['image'])
-                                            <img
-                                                src="{{ $alerta['image'] }}"
-                                                alt=""
-                                                loading="lazy"
-                                            >
-                                        @else
-                                            <div class="feed-post__placeholder">
-                                                <i class="bi bi-twitter-x"></i>
-                                            </div>
-                                        @endif
-                                    </div>
-
-                                    <div class="feed-post__content">
-                                        <p class="feed-post__title">
-                                            {{ \Illuminate\Support\Str::limit(
-                                                $alerta['text'],
-                                                150
-                                            ) }}
-                                        </p>
-
-                                        @if ($alerta['created_at'])
-                                            <time class="feed-post__time">
-                                                {{ \Carbon\Carbon::parse($alerta['created_at'])->diffForHumans() }}
-                                            </time>
-                                        @endif
-                                    </div>
-                                </a>
-                            @empty
-                                <div class="feed-empty">
-                                    <i class="bi bi-info-circle"></i>
-
-                                    <p>
-                                        No fue posible cargar las publicaciones
-                                        de esta organización.
-                                    </p>
-                                </div>
-                            @endforelse
-                        </div>
-                        <footer class="organization-feed__footer">
-                            <a
-                                href="https://x.com/{{ $organizations[1]['username'] }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                        <a
+                            href="{{ route('dashboard.public') }}"
+                            class="hero-isotype d-inline-flex text-decoration-none"
+                            aria-label="{{ __('dashboard.site_name') }}"
+                        >
+                            <img
+                                src="{{ asset('assets/img/isotipo-pulso.png') }}"
+                                alt="{{ __('dashboard.site_name') }}"
                             >
-                                {{ __('dashboard.view_on_x') }}
+                        </a>
 
-                                <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </footer>
-                    </article>
-                </div>
+                        <h1 class="hero-title">
+                            {{ __('dashboard.hero_title_1') }}<br>
+                            {{ __('dashboard.hero_title_2') }}<br>
 
-                {{-- ÚLTIMO ALERTALEGAL --}}
-                <div class="col-6">
-                    <div class="article-panel article-panel--prensa">
-                        <div class="article-panel__header">
-                            <div class="article-panel__heading">
-                                <span class="article-panel__dot"></span>
-                                <p class="article-panel__title">
-                                    {{ __('dashboard.last_post') }}
-                                </p>
-                            </div>
-
-                            @if (count($alertasLegales) > 0 && $alertasLegales[0]['created_at'])
-                                <span class="article-panel__count">
-                                    {{ \Carbon\Carbon::parse($alertasLegales[0]['created_at'])->translatedFormat('d M, H:i') }}
-                                </span>
-                            @endif
-                        </div>
-
-                        <div>
-                            @if (count($alertasLegales) > 0)
-                                @php
-                                    $tweet = $alertasLegales[0];
-
-                                    // Escapamos el texto completo (sin recortar ni colapsar saltos de línea)
-                                    $safeText = e($tweet['text']);
-
-                                    // Resaltamos hashtags en azul
-                                    $highlighted = preg_replace(
-                                        '/#(\w+)/u',
-                                        '<span class="prensa-post__hashtag">#$1</span>',
-                                        $safeText
-                                    );
-                                @endphp
-
-                                <div class="prensa-post">
-                                    <div class="prensa-post__image">
-                                        @if ($tweet['image'])
-                                            <img src="{{ $tweet['image'] }}" alt="" loading="lazy">
-                                        @else
-                                            <div class="prensa-post__placeholder">
-                                                <i class="bi bi-twitter-x"></i>
-                                            </div>
-                                        @endif
-                                    </div>
-
-                                    <div class="prensa-post__content">
-                                        <p class="prensa-post__text">
-                                            {!! $highlighted !!}
-                                        </p>
-
-                                        <div class="prensa-post__meta">
-                                            @if ($tweet['created_at'])
-                                                <time class="prensa-post__time">
-                                                    {{ \Carbon\Carbon::parse($tweet['created_at'])->diffForHumans() }}
-                                                </time>
-                                            @endif
-
-                                            <span class="prensa-post__stat">
-                                                <i class="bi bi-heart"></i> {{ $tweet['likes'] }}
-                                            </span>
-                                            <span class="prensa-post__stat">
-                                                <i class="bi bi-repeat"></i> {{ $tweet['retweets'] }}
-                                            </span>
-                                        </div>
-
-                                        <div class="prensa-post__footer">
-                                            <a
-                                                href="{{ $tweet['url'] }}"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                class="prensa-post__link"
-                                            >
-                                                Ver en X
-                                                <i class="bi bi-box-arrow-up-right"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @else
-                                <p class="text-muted small mb-0">No se cargó la última publicación de #AlertaLegal.</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <hr class="horizontal light mt-0">
-
-        {{--OBSERVATORIO DE UNIVERSIDADES - OBU --}}
-        <section class="mb-5" style="margin-top:50px;">
-            <div class="section-heading mb-4">
-                <div class="section-heading__inner">
-                    <span class="section-eyebrow">
-                        {{ __('dashboard.universities') }}
-                    </span>
-
-                    <h2>{{ __('dashboard.university_title') }}</h2>
-                </div>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-6">
-                    <div class="chart-panel">
-                        <div class="chart-legend mb-2">
-                            <span><i class="legend-dot" style="background:#0b3769"></i> {{ __('dashboard.protests') }}</span>
-                            <span><i class="legend-dot" style="background:#FFD23F"></i> {{ __('dashboard.complaints') }}</span>
-                        </div>
-                        <canvas id="protestsComplaintsChart" height="90"></canvas>
-                    </div>
-                </div>
-
-                <div class="col-6">
-                    <div class="chart-panel">
-                        <div class="chart-legend mb-2">
-                            <span><i class="legend-dot" style="background:#1f66d1"></i> {{ __('dashboard.economic_social_complaints') }}</span>
-                            <span><i class="legend-dot" style="background:#00B89C"></i> {{ __('dashboard.civil_political_complaints') }}</span>
-                        </div>
-                        <canvas id="complaintTypeByYearChart" height="90"></canvas>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <div class="complaint-card">
-                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
-
-                        <div class="complaint-card__list">
-                            @foreach ($economicSocialItems as $item)
-                                <div class="complaint-item">
-                                    <div class="complaint-item__icon complaint-item__icon--blue">
-                                        <i class="bi {{ $item['icon'] }}"></i>
-                                    </div>
-                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
-                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="complaint-card">
-                        <p class="complaint-card__title">{{ __('dashboard.civil_political_complaints') }}</p>
-
-                        <div class="complaint-card__list">
-                            @foreach ($civilPoliticalItems as $item)
-                                <div class="complaint-item">
-                                    <div class="complaint-item__icon complaint-item__icon--red">
-                                        <i class="bi {{ $item['icon'] }}"></i>
-                                    </div>
-                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
-                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="complaint-card">
-                        <p class="complaint-card__title">{{ __('dashboard.economic_social_complaints') }}</p>
-
-                        <div class="complaint-card__list">
-                            @foreach ($economicSocialItems as $item)
-                                <div class="complaint-item">
-                                    <div class="complaint-item__icon complaint-item__icon--blue">
-                                        <i class="bi {{ $item['icon'] }}"></i>
-                                    </div>
-                                    <span class="complaint-item__label">{{ $item['label'] }}</span>
-                                    <span class="complaint-item__value">{{ $item['value'] }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-        </section>
-
-        <hr class="horizontal light mt-0">
-
-        {{-- FAKE NEWS --}}
-        <section class="mb-5" style="margin-top:50px;">
-            <div class="section-heading mb-4">
-                <div class="section-heading__inner">
-                    <span class="section-eyebrow">
-                        {{ __('dashboard.fake_news') }}
-                    </span>
-                    <h2>{{ __('dashboard.fakenews_title') }}</h2>
-                </div>
-            </div>
-
-            <div class="row g-3">
-                <div class="col-4">
-                    <div class="article-panel article-panel--profundidad">
-                        <div class="article-panel__header">
-                            <div class="article-panel__heading">
-                                <p class="article-panel__title">
-                                    <span class="article-panel__dot"></span>
-                                    {{ __('dashboard.en_profundidad') }}
-                                </p>
-                                <p class="article-panel__subtitle">{{ __('dashboard.enprofundidad_title') }}</p>
-                            </div>
-                            <span class="article-panel__count">{{ count($postsFakeNewsWeb['en_profundidad']) }}</span>
-                        </div>
-
-                        <div class="article-list">
-                            @forelse ($postsFakeNewsWeb['en_profundidad'] as $post)
-                                <a href="{{ $post['url'] }}" target="_blank" rel="noopener noreferrer" class="article-card">
-                                    @if (!empty($post['imagen']))
-                                        <img class="article-card__thumb" src="{{ $post['imagen'] }}" alt="{{ $post['titulo'] }}">
-                                    @else
-                                        <div class="article-card__thumb article-card__thumb--icon">
-                                            <i class="bi bi-file-earmark-text"></i>
-                                        </div>
-                                    @endif
-
-                                    <div class="article-card__body">
-                                        <p class="article-card__title">{{ $post['titulo'] }}</p>
-
-                                        @if (!empty($post['contenido']))
-                                            <p class="article-card__excerpt">
-                                                {{ \Illuminate\Support\Str::limit($post['contenido'], 180) }}
-                                            </p>
-                                        @endif
-
-                                        <div class="article-card__footer">
-                                            @if (!empty($post['fecha']))
-                                                <span class="article-card__meta">
-                                                    <i class="bi bi-calendar3"></i>
-                                                    @if (!empty($post['fecha']))
-                                                        <small class="text-muted">
-                                                            {{ \Carbon\Carbon::parse($post['fecha'])
-                                                                ->locale('es')
-                                                                ->translatedFormat('d \d\e F \d\e Y') }}
-                                                        </small>
-                                                    @endif
-                                                </span>
-                                            @endif
-
-                                            <span class="article-card__action">
-                                                {{ __('dashboard.ver_publicacion') }}
-                                                <i class="bi bi-chevron-right"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </a>
-                            @empty
-                                <p class="text-muted small mb-0">No se pudieron cargar las publicaciones de En profundidad.</p>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <div class="article-panel article-panel--fake">
-                        <div class="article-panel__header">
-                            <div class="article-panel__heading">
-                                <p class="article-panel__title">
-                                    <span class="article-panel__dot"></span>
-                                    {{ __('dashboard.noti_fake') }}
-                                </p>
-                                <p class="article-panel__subtitle">{{ __('dashboard.notifake_title') }}</p>
-                            </div>
-                            <span class="article-panel__count">{{ count($postsFakeNewsWeb['noti_fake']) }}</span>
-                        </div>
-
-                        <div class="article-list">
-                            @forelse ($postsFakeNewsWeb['noti_fake'] as $post)
-                                <a href="{{ $post['url'] }}" target="_blank" rel="noopener noreferrer" class="article-card">
-                                    @if (!empty($post['imagen']))
-                                        <img class="article-card__thumb" src="{{ $post['imagen'] }}" alt="{{ $post['titulo'] }}">
-                                    @else
-                                        <div class="article-card__thumb article-card__thumb--icon">
-                                            <i class="bi bi-file-earmark-text"></i>
-                                        </div>
-                                    @endif
-
-                                    <div class="article-card__body">
-                                        <p class="article-card__title">{{ $post['titulo'] }}</p>
-
-                                        @if (!empty($post['contenido']))
-                                            <p class="article-card__excerpt">
-                                                {{ \Illuminate\Support\Str::limit($post['contenido'], 180) }}
-                                            </p>
-                                        @endif
-
-                                        <div class="article-card__footer">
-                                            @if (!empty($post['fecha']))
-                                                <span class="article-card__meta">
-                                                    <i class="bi bi-calendar3"></i>
-                                                    @if (!empty($post['fecha']))
-                                                        <small class="text-muted">
-                                                            {{ \Carbon\Carbon::parse($post['fecha'])
-                                                                ->locale('es')
-                                                                ->translatedFormat('d \d\e F \d\e Y') }}
-                                                        </small>
-                                                    @endif
-                                                </span>
-                                            @endif
-
-                                            <span class="article-card__action">
-                                                {{ __('dashboard.ver_publicacion') }}
-                                                <i class="bi bi-chevron-right"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </a>
-                            @empty
-                                <p class="text-muted small mb-0">No se pudieron cargar las publicaciones de Noti-fake.</p>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-4">                                            
-                    <article class="organization-feed h-100">
-
-                        <header class="organization-feed__header">
-                            <div class="organization-feed__identity">
-                                <div class="organization-feed__logo">
-                                    <img
-                                        src="{{ $organizations[0]['logo_x'] }}"
-                                        alt="{{ $organizations[0]['name'] }}"
-                                    >
-                                </div>
-
-                                <div class="organization-feed__meta">
-                                    <h3>{{ $organizations[0]['name'] }}</h3>
-
-                                    <a
-                                        href="https://x.com/{{ $organizations[0]['username'] }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {{ '@' . $organizations[0]['username'] }}
-                                    </a>
-                                </div>
-                            </div>
-                        </header>
-                        <div class="organization-feed__posts">
-                            @forelse ($postsFakeNewsX as $post)                                
-                                <a
-                                        href="{{ $post['url'] }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="feed-post"
-                                    >
-                                    <div class="feed-post__image">
-                                        @if ($post['image'])
-                                            <img
-                                                src="{{ $post['image'] }}"
-                                                alt=""
-                                                loading="lazy"
-                                            >
-                                        @else
-                                            <div class="feed-post__placeholder">
-                                                <i class="bi bi-twitter-x"></i>
-                                            </div>
-                                        @endif
-                                    </div>
-
-                                    <div class="feed-post__content">
-                                        <p class="feed-post__title">
-                                            {{ \Illuminate\Support\Str::limit(
-                                                $post['text'],
-                                                90
-                                            ) }}
-                                        </p>
-
-                                        @if ($post['created_at'])
-                                            <time class="feed-post__time">
-                                                {{ \Carbon\Carbon::parse($post['created_at'])->diffForHumans() }}
-                                            </time>
-                                        @endif
-                                    </div>
-                                </a>
-                            @empty
-                                <div class="feed-empty">
-                                    <i class="bi bi-info-circle"></i>
-
-                                    <p>
-                                        No fue posible cargar las publicaciones
-                                        de esta organización.
-                                    </p>
-                                </div>
-                            @endforelse
-                        </div>
-                        <footer class="organization-feed__footer">
-                            <a
-                                href="https://x.com/{{ $organizations[0]['username'] }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {{ __('dashboard.view_on_x') }}
-
-                                <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </footer>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <hr class="horizontal light mt-0">
-
-        {{-- JEP --}}
-        <section class="mb-5" style="margin-top:50px;">
-            <div class="section-heading mb-4">
-                <div class="section-heading__inner">
-                    <span class="section-eyebrow">
-                        {{ __('dashboard.jep') }}
-                    </span>
-
-                    <h2>{{ __('dashboard.jep_title') }}</h2>
-                </div>
-            </div>
-        </section>
-
-        <section class="mb-4" style="margin-top:50px;">
-            <div class="subsection-heading">
-                <div class="subsection-heading__top">
-                    <span class="subsection-heading__dot"></span>
-                    <span class="subsection-heading__label">{{ __('dashboard.key_figures') }}</span>
-                </div>
-                <p class="subsection-heading__desc">{{ __('dashboard.snapshot') }}</p>
-            </div>
-
-            <div class="row g-3">
-                @foreach ($stats as $stat)
-                    <div class="col-12 col-sm-6 col-xl">
-                        <article class="metric-card {{ $stat['trend'] === 'up-danger' ? 'metric-card--danger' : '' }} h-100">
-                            <div class="metric-top">
-                                <span class="metric-icon"><i class="bi {{ $stat['icon'] }}"></i></span>
-                                <span class="metric-label">{{ $stat['label'] }}</span>
-                            </div>
-                            <div class="metric-value">{{ $stat['value'] }}</div>
-                            <span class="metric-trend {{ $stat['trend'] === 'up-danger' ? 'metric-trend--down' : 'metric-trend--up' }}">
-                                <i class="bi bi-arrow-up"></i> {{ $stat['change'] }}
+                            <span>
+                                {{ __('dashboard.hero_title_3') }}
                             </span>
-                        </article>
-                    </div>
-                @endforeach
-            </div>
-        </section>
+                        </h1>
 
-        <section class="section-card featured-section mb-4">
-            <div class="section-heading mb-4">
-                <div>
-                    <span class="section-eyebrow">{{ __('dashboard.featured_indicator') }}</span>
-                    <h2>{{ __('dashboard.featured_title') }}</h2>
-                </div>
-            </div>
+                        <span class="hero-badge">
+                            {{ __('dashboard.hero_badge') }}
+                        </span>
 
-            <div class="row g-4 align-items-stretch">
-                <div class="col-12 col-lg-7">
-                    <div class="chart-panel h-100">
-                        <canvas id="featuredChart"></canvas>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-5">
-                    <div class="analysis-panel h-100">
-                        <p>{{ __('dashboard.featured_analysis') }}</p>
-                        <div class="slim-links">
-                            <a href="#"><i class="bi bi-file-earmark-text"></i>{{ __('dashboard.press_release') }}<i class="bi bi-arrow-up-right"></i></a>
-                            <a href="#"><i class="bi bi-twitter-x"></i>{{ __('dashboard.x_thread') }}<i class="bi bi-arrow-up-right"></i></a>
-                            <a href="#"><i class="bi bi-globe2"></i>{{ __('dashboard.full_website') }}<i class="bi bi-arrow-up-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                        <p class="hero-description">
+                            {{ __('dashboard.hero_description') }}
+                        </p>
 
-        <section class="mb-4" style="margin-top: 30px;" >
-            <div class="subsection-heading">
-                <div class="subsection-heading__top">
-                    <span class="subsection-heading__dot"></span>
-                    <span class="subsection-heading__label">{{ __('dashboard.indicator_groups') }}</span>
-                </div>
-                <p class="subsection-heading__desc">{{ __('dashboard.explore_data') }}</p>
-            </div>
+                        <form
+                            action="#"
+                            method="GET"
+                            class="hero-search"
+                        >
+                            <div class="hero-search__field">
+                                <i class="bi bi-search"></i>
 
-            <div class="row g-3">
-            @foreach (__('dashboard.groups') as $group)
-                <div class="col-12 col-md-6 col-xl-3">
-                    <article class="indicator-card h-100">
-                        <div class="indicator-card__header">
-                            <div class="indicator-card__icon"><i class="{{ $group['icon'] }}"></i></div>
-                            <h3 class="indicator-card__title">{{ $group['title'] }}</h3>
-                        </div>
-
-                        <div class="indicator-card__tags">
-                            @foreach ($group['items'] as $item)
-                                <span class="indicator-card__tag">{{ $item }}</span>
-                            @endforeach
-                        </div>
-
-                        <a href="#" class="indicator-card__link">
-                            {{ __('dashboard.view_indicators') }}
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </article>
-                </div>
-            @endforeach
-        </div>
-        </section>   
-
-        {{-- PUBLICACIONES DE X --}}
-        <section class="mb-5" style="margin-top:50px;">
-            <div class="section-heading mb-4">
-                <div class="section-heading__inner">
-                    <span class="section-eyebrow">
-                        {{ __('dashboard.social_media') }}
-                    </span>
-
-                    <h2>{{ __('dashboard.latest_org_posts') }}</h2>
-                </div>
-            </div>
-
-            <div class="row g-3">
-                @foreach ($organizations as $organization)
-                    <div class="col-6 col-xl-3">
-                        <article class="organization-feed h-100">
-                            <header class="organization-feed__header">
-                                <div class="organization-feed__identity">
-                                    <div class="organization-feed__logo">
-                                        <img
-                                            src="{{ $organization['logo_x'] }}"
-                                            alt="{{ $organization['name'] }}"
-                                        >
-                                    </div>
-
-                                    <div class="organization-feed__meta">
-                                        <h3>{{ $organization['name'] }}</h3>
-
-                                        <a
-                                            href="https://x.com/{{ $organization['username'] }}"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {{ '@' . $organization['username'] }}
-                                        </a>
-                                    </div>
-                                </div>
-                            </header>
-
-                            <div class="organization-feed__posts">
-                                @forelse ($organization['posts']->take(2) as $post)
-                                    <a
-                                        href="{{ $post['url'] }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="feed-post"
-                                    >
-                                        <div class="feed-post__image">
-                                            @if ($post['image'])
-                                                <img
-                                                    src="{{ $post['image'] }}"
-                                                    alt=""
-                                                    loading="lazy"
-                                                >
-                                            @else
-                                                <div class="feed-post__placeholder">
-                                                    <i class="bi bi-twitter-x"></i>
-                                                </div>
-                                            @endif
-                                        </div>
-
-                                        <div class="feed-post__content">
-                                            <p class="feed-post__title">
-                                                {{ \Illuminate\Support\Str::limit(
-                                                    $post['text'],
-                                                    90
-                                                ) }}
-                                            </p>
-
-                                            @if ($post['created_at'])
-                                                <time class="feed-post__time">
-                                                    {{ \Carbon\Carbon::parse($post['created_at'])->diffForHumans() }}
-                                                </time>
-                                            @endif
-                                        </div>
-                                    </a>
-                                @empty
-                                    <div class="feed-empty">
-                                        <i class="bi bi-info-circle"></i>
-
-                                        <p>
-                                            No fue posible cargar las publicaciones
-                                            de esta organización.
-                                        </p>
-                                    </div>
-                                @endforelse
+                                <input
+                                    type="search"
+                                    name="search"
+                                    placeholder="{{ __('dashboard.search_placeholder') }}"
+                                    aria-label="{{ __('dashboard.search_placeholder') }}"
+                                >
                             </div>
 
-                            <footer class="organization-feed__footer">
-                                <a
-                                    href="https://x.com/{{ $organization['username'] }}"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {{ __('dashboard.view_on_x') }}
-
-                                    <i class="bi bi-arrow-right"></i>
-                                </a>
-                            </footer>
-                        </article>
+                            <button
+                                type="submit"
+                                class="hero-search__button"
+                            >
+                                {{ __('dashboard.search_button') }}
+                            </button>
+                        </form>
                     </div>
-                @endforeach
-            </div>
-        </section>    
-    </main>
 
-    {{-- FOOTER --}}
+                    {{-- Mapa y actualización --}}
+                    <div class="col-12 col-lg-6 position-relative hero-map-column">
+
+                        <div class="hero-map" aria-hidden="true">
+                            <img
+                                src="{{ asset('assets/img/mapa-venezuela-radar.svg') }}"
+                                alt=""
+                            >
+                        </div>
+
+                        <div class="hero-update-card">
+                            <div class="hero-update-card__heading">
+                                <i class="bi bi-calendar2-check"></i>
+
+                                <span>
+                                    {{ __('dashboard.data_updated') }}
+                                </span>
+                            </div>
+
+                            <div class="hero-update-card__date">
+                                {{ now('America/Caracas')
+                                    ->locale(app()->getLocale())
+                                    ->translatedFormat('d M Y') }}
+                            </div>
+
+                            <div class="hero-update-card__divider"></div>
+
+                            <div class="hero-update-card__time">
+                                <i class="bi bi-clock"></i>
+                                <span id="rv-time"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
+        {{-- =====================================================
+             PANORAMA
+        ====================================================== --}}
+        <main class="dashboard-main">
+            <div class="dashboard-main__container px-4 px-xl-5">
+
+                <section
+                    id="panorama"
+                    class="dashboard-panorama"
+                >
+                    @include('dashboard.partials.panorama')
+                </section>
+
+            </div>
+        </main>
+
+    </div>
+
+    {{-- =====================================================
+         FOOTER
+    ====================================================== --}}
     <footer class="site-footer">
         <div class="site-footer__container">
 
@@ -796,13 +163,15 @@
                 <div class="site-footer__brand">
                     <div class="site-footer__logo-row">
                         <img
-                            src="{{ asset('assets/img/logos/radar-vzla.png') }}"
-                            alt="Radar Venezuela"
+                            src="{{ asset('assets/img/isotipo-pulso.png') }}"
+                            alt="Pulso Venezuela"
                             class="site-footer__logo"
                         >
                     </div>
 
-                    <p>{{ __('dashboard.footer_description') }}</p>
+                    <p>
+                        {{ __('dashboard.footer_description') }}
+                    </p>
                 </div>
 
                 <div class="site-footer__col">
@@ -811,16 +180,35 @@
                     </p>
 
                     <div class="site-footer__links">
-                        <a href="https://accesoalajusticia.org" target="_blank" rel="noopener noreferrer">
+                        <a
+                            href="https://accesoalajusticia.org"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             Acceso a la Justicia
                         </a>
-                        <a href="https://fakenewsvenezuela.org" target="_blank" rel="noopener noreferrer">
+
+                        <a
+                            href="https://fakenewsvenezuela.org"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             Observatorio Fake News
                         </a>
-                        <a href="https://jepvenezuela.com" target="_blank" rel="noopener noreferrer">
+
+                        <a
+                            href="https://jepvenezuela.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             JEP Venezuela
                         </a>
-                        <a href="https://observatoriodeuniversidades.com" target="_blank" rel="noopener noreferrer">
+
+                        <a
+                            href="https://observatoriodeuniversidades.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             Observatorio de Universidades
                         </a>
                     </div>
@@ -829,12 +217,18 @@
                 <div class="site-footer__col">
                     <div class="site-footer__status">
                         <span class="site-footer__status-dot"></span>
-                        <span>{{ __('dashboard.data_updated') }}</span>
+
+                        <span>
+                            {{ __('dashboard.data_updated') }}
+                        </span>
                     </div>
 
                     <p class="site-footer__sync">
                         {{ __('dashboard.last_sync') }}<br>
-                        {{ $lastSync ?? now()->format('d/m/Y, H:i') }}
+
+                        <strong>
+                            {{ $lastSync ?? now()->format('d/m/Y, H:i') }}
+                        </strong>
                     </p>
                 </div>
 
@@ -842,10 +236,37 @@
 
             <div class="site-footer__bottom">
                 <p>
-                    &copy; {{ date('Y') }} Radar Venezuela.
-                    {{ __('dashboard.footer_disclaimer') }}
+                    &copy; {{ date('Y') }} Pulso Venezuela.
                 </p>
             </div>
+
         </div>
     </footer>
+
+    <script>
+        function rvUpdateClock() {
+            const now = new Date();
+
+            const locale =
+                document.documentElement.lang === 'en'
+                    ? 'en-US'
+                    : 'es-VE';
+
+            const timeElement = document.getElementById('rv-time');
+
+            if (!timeElement) {
+                return;
+            }
+
+            timeElement.textContent = now.toLocaleTimeString(locale, {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        rvUpdateClock();
+
+        setInterval(rvUpdateClock, 30000);
+    </script>
+
 @endsection

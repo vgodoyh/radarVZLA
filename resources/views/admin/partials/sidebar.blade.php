@@ -110,7 +110,7 @@
 
     <div class="sidenav-footer mx-2">
         <div class="card card-plain shadow-none">
-            <img class="w-50 mx-auto" src="{{ asset('assets/img/logos/radar-vzla.png') }}" alt="logo_radar_vzla">
+            <img class="w-50 mx-auto" src="{{ asset('assets/img/logos/pulso-venezuela.png') }}" alt="Pulso Venezuela">
 
             <div class="card-body text-center p-3 w-100 pt-0">
                 <p class="mt-2 mb-0 text-xs text-white">

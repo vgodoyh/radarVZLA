@@ -8,7 +8,10 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/admin.css',
+                'resources/css/app_public.css',
+                'resources/css/public-hero.css',
                 'resources/js/app.js',
+                'resources/js/app_public.js',
                 'resources/js/passkeys.js',
             ],
             refresh: true,

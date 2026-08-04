@@ -11,6 +11,7 @@ class PermissionController extends Controller
     public function index()
     {
         $permission = Permission::orderBy('id', 'desc')->get();
+
         return view('permission.index', compact('permission'));
     }
 
@@ -22,7 +23,7 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:permissions,name,NULL,id,guard_name,' . ($request->guard_name ?? 'web'),
+            'name' => 'required|string|max:255|unique:permissions,name,NULL,id,guard_name,'.($request->guard_name ?? 'web'),
         ]);
 
         Permission::create([
@@ -43,7 +44,7 @@ class PermissionController extends Controller
     public function update(Request $request, Permission $permission)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id . ',id,guard_name,' . ($request->guard_name ?? $permission->guard_name),
+            'name' => 'required|string|max:255|unique:permissions,name,'.$permission->id.',id,guard_name,'.($request->guard_name ?? $permission->guard_name),
         ]);
 
         $permission->update([

@@ -228,7 +228,7 @@ class FakeNewsVenezuelaService
 
             if (! Str::startsWith(
                 $postUrl,
-                self::BASE_URL . '/'
+                self::BASE_URL.'/'
             )) {
                 continue;
             }
@@ -298,7 +298,7 @@ class FakeNewsVenezuelaService
     private function getPostDetails(string $url): array
     {
         return Cache::remember(
-            'fake-news-post-details-v3.' . md5($url),
+            'fake-news-post-details-v3.'.md5($url),
             now()->addHours(6),
             function () use ($url): array {
                 try {
@@ -872,10 +872,10 @@ class FakeNewsVenezuelaService
 
         libxml_use_internal_errors(true);
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
 
         $loaded = $dom->loadHTML(
-            '<?xml encoding="UTF-8">' . $html,
+            '<?xml encoding="UTF-8">'.$html,
             LIBXML_NOERROR | LIBXML_NOWARNING
         );
 
@@ -906,10 +906,10 @@ class FakeNewsVenezuelaService
         }
 
         if (Str::startsWith($url, '//')) {
-            return 'https:' . $url;
+            return 'https:'.$url;
         }
 
-        return self::BASE_URL . '/' . ltrim(
+        return self::BASE_URL.'/'.ltrim(
             $url,
             '/'
         );
@@ -936,8 +936,8 @@ class FakeNewsVenezuelaService
     {
         return [
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                . 'AppleWebKit/537.36 (KHTML, like Gecko) '
-                . 'Chrome/150.0.0.0 Safari/537.36',
+                .'AppleWebKit/537.36 (KHTML, like Gecko) '
+                .'Chrome/150.0.0.0 Safari/537.36',
 
             'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 
