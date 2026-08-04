@@ -53,7 +53,8 @@ class PublicDashboardTest extends TestCase
             ->get(route('organizations.acceso-justicia'))
             ->assertOk()
             ->assertSee('publicaciones')
-            ->assertSee('Buscar en publicaciones de #AlertaLegal');
+            ->assertSee('Buscar en publicaciones de #AlertaLegal')
+            ->assertSee('Pendiente de sincronización');
 
         $this->withSession(['locale' => 'en'])
             ->get(route('organizations.acceso-justicia'))

@@ -46,6 +46,10 @@ class SyncDashboardData implements ShouldQueue
                     );
                     $count++;
                 }
+
+                if ($posts->isNotEmpty()) {
+                    $organization->update(['last_synced_at' => now()]);
+                }
             }
 
             $run->update(['status' => 'completed', 'finished_at' => now(), 'summary' => ['publications' => $count]]);

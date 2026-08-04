@@ -74,6 +74,7 @@ class DashboardQueryService
             'slug' => $organization->slug,
             'name' => $organization->name,
             'username' => $organization->x_username,
+            'website_url' => $organization->website_url,
             'logo' => asset($organization->logo_path),
             'logo_x' => asset($organization->x_logo_path ?: $organization->logo_path),
             'color' => $organization->color,
@@ -86,7 +87,7 @@ class DashboardQueryService
      */
     private function fallbackOrganization(array $item): array
     {
-        return ['slug' => $item['slug'], 'name' => $item['name'], 'username' => $item['x_username'], 'logo' => asset($item['logo_path']), 'logo_x' => asset($item['x_logo_path']), 'color' => $item['color'], 'posts' => collect()];
+        return ['slug' => $item['slug'], 'name' => $item['name'], 'username' => $item['x_username'], 'website_url' => $item['website_url'] ?? null, 'logo' => asset($item['logo_path']), 'logo_x' => asset($item['x_logo_path']), 'color' => $item['color'], 'posts' => collect()];
     }
 
     /** @param array<string, mixed>|null $organization
@@ -130,7 +131,7 @@ class DashboardQueryService
 
         $value = DashboardSyncRun::query()->where('status', 'completed')->latest('finished_at')->value('finished_at');
 
-        return is_string($value) ? Carbon::parse($value)->format('d/m/Y, H:i') : null;
+        return filled($value) ? Carbon::parse($value, 'UTC')->toIso8601String() : null;
     }
 
     /** @return array<int, array<string, mixed>> */

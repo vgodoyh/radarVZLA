@@ -32,6 +32,34 @@ const years = ['2020', '2021', '2022', '2023', '2024'];
 
 build('featuredChart', { type: 'bar', data: { labels: ['Ene 26', 'Feb 26', 'Mar 26', 'Abr 26', 'May 26', 'Jun 26', 'Jul 26'], datasets: [{ data: [32, 48, 57, 56, 61, 45, 59], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } } });
 
+const jepTrendsCanvas = document.getElementById('jepTrendsChart');
+if (jepTrendsCanvas) {
+    const labels = JSON.parse(jepTrendsCanvas.dataset.labels || '[]');
+    const values = JSON.parse(jepTrendsCanvas.dataset.values || '[]');
+
+    new Chart(jepTrendsCanvas, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                backgroundColor: ['#dcebff', '#dcebff', '#bdd7ff', '#bdd7ff', '#98c2ff', '#76adff', '#5d99fb', '#1769f6'],
+                borderRadius: 7,
+                borderSkipped: false,
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
+                y: { beginAtZero: false, suggestedMin: 1200, grid: { color: '#e8eef7' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            },
+        },
+    });
+}
+
 // Protestas y denuncias combinadas en un solo gráfico de línea
 build('protestsComplaintsChart', {
     type: 'line',

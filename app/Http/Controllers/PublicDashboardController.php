@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use App\Services\DashboardQueryService;
+use App\Services\FakeNewsVenezuelaService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class PublicDashboardController extends Controller
@@ -27,6 +28,7 @@ class PublicDashboardController extends Controller
         $data = $dashboard->get();
         $organization = $data['organizations']->firstWhere('slug', 'acceso-justicia');
         $search = Str::limit(trim((string) $request->query('q', '')), 100, '');
+        $organizationLastSync = null;
 
         abort_unless($organization, 404);
 
@@ -34,6 +36,7 @@ class PublicDashboardController extends Controller
             $organizationModel = Organization::query()
                 ->where('slug', 'acceso-justicia')
                 ->firstOrFail();
+            $organizationLastSync = $organizationModel->last_synced_at?->toIso8601String();
 
             $posts = $organizationModel->publications()
                 ->where('source', 'x')
@@ -63,17 +66,29 @@ class PublicDashboardController extends Controller
             ]);
         }
 
-        return view('dashboard.organizations.acceso-justicia', [
+        return view('dashboard.organizations.acceso', [
             ...$data,
             'organization' => $organization,
             'posts' => $posts,
             'search' => $search,
+            'lastSync' => $organizationLastSync,
         ]);
     }
 
-    public function fakeNews(DashboardQueryService $dashboard): View
-    {
-        return $this->organizationView($dashboard, 'dashboard.organizations.fake-news', 'fake-news');
+    public function fakeNews(
+        DashboardQueryService $dashboard,
+        FakeNewsVenezuelaService $fakeNews
+    ): View {
+        $data = $dashboard->get();
+        $organization = $data['organizations']->firstWhere('slug', 'fake-news');
+
+        abort_unless($organization, 404);
+
+        return view('dashboard.organizations.fake-news', [
+            ...$data,
+            'organization' => $organization,
+            'postsFakeNewsWeb' => $fakeNews->getLatestPosts(),
+        ]);
     }
 
     public function universidades(DashboardQueryService $dashboard): View

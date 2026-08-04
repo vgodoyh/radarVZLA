@@ -46,6 +46,10 @@ class BackfillAccesoLegalPosts extends Command
             );
         }
 
+        if ($posts->isNotEmpty()) {
+            $organization->update(['last_synced_at' => now()]);
+        }
+
         $this->components->info("{$posts->count()} publicaciones históricas procesadas.");
 
         return self::SUCCESS;
