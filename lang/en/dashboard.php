@@ -100,7 +100,7 @@ return [
             'description' => 'Open and auditable data',
         ],
     ],
-    'meta_title' => 'Radar VZLA',
+    'meta_title' => 'Pulso VZLA',
     'public_dashboard' => 'Public dashboard',
     'tagline' => 'Human Rights, Justice, and Disinformation.',
     'tagline_1' => 'Human Rights',

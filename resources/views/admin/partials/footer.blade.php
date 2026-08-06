@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 text-center text-sm text-muted">
-                © {{ date('Y') }} Radar Vzla - Todos los derechos reservados.
+                © {{ date('Y') }} Pulso Vzla - Todos los derechos reservados.
             </div>
         </div>
     </div>

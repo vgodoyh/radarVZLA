@@ -102,7 +102,7 @@ return [
             'description' => 'Datos abiertos y auditables',
         ],
     ],
-    'meta_title' => 'Radar VZLA',
+    'meta_title' => 'Pulso VZLA',
     'public_dashboard' => 'Dashboard público',
     'tagline' => 'Derechos Humanos, Justicia y Desinformación.',
     'tagline_1' => 'Derechos Humanos',
