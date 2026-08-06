@@ -70,30 +70,6 @@
                         <p class="hero-description">
                             {{ __('dashboard.hero_description') }}
                         </p>
-
-                        <form
-                            action="#"
-                            method="GET"
-                            class="hero-search"
-                        >
-                            <div class="hero-search__field">
-                                <i class="bi bi-search"></i>
-
-                                <input
-                                    type="search"
-                                    name="search"
-                                    placeholder="{{ __('dashboard.search_placeholder') }}"
-                                    aria-label="{{ __('dashboard.search_placeholder') }}"
-                                >
-                            </div>
-
-                            <button
-                                type="submit"
-                                class="hero-search__button"
-                            >
-                                {{ __('dashboard.search_button') }}
-                            </button>
-                        </form>
                     </div>
 
                     {{-- Mapa y actualización --}}
