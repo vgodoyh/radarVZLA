@@ -87,7 +87,6 @@
     width: 96px;
     height: 96px;
     object-fit: contain;
-
     filter: drop-shadow(0 8px 20px rgba(23, 105, 246, .12));
 }
 
@@ -126,8 +125,8 @@
 .hero-description {
     max-width: 640px;
     margin: 20px 0 0;
-    color: #52617b;
-    font-size: 1.05rem;
+    color: #0B1220;
+    font-size: 1.2rem;
     line-height: 1.7;
 }
 
@@ -264,7 +263,7 @@
 .hero-update-card {
     position: absolute;
     z-index: 10;
-    top: 35px;
+    top: 55px;
     right: 0;
     width: 230px;
     padding: 24px;

@@ -41,7 +41,7 @@
                 <div class="row align-items-start g-4">
 
                     {{-- Contenido principal --}}
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-7">
 
                         <a
                             href="{{ route('dashboard.public') }}"
@@ -54,7 +54,7 @@
                             >
                         </a>
 
-                        <h1 class="hero-title">
+                        <h1 class="hero-title" style="font-size: 45px;">
                             {{ __('dashboard.hero_title_1') }}<br>
                             {{ __('dashboard.hero_title_2') }}<br>
 
@@ -73,7 +73,7 @@
                     </div>
 
                     {{-- Mapa y actualización --}}
-                    <div class="col-12 col-lg-6 position-relative hero-map-column">
+                    <div class="col-12 col-lg-5 position-relative hero-map-column">
 
                         <div class="hero-map" aria-hidden="true">
                             <img
@@ -114,7 +114,7 @@
              PANORAMA
         ====================================================== --}}
         <main class="dashboard-main">
-            <div class="dashboard-main__container px-4 px-xl-5">
+            <div class="dashboard-main__container px-4">
 
                 <section
                     id="panorama"
