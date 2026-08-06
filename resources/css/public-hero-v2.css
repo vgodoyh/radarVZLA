@@ -109,104 +109,12 @@
     color: #1769f6;
 }
 
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    margin-top: 22px;
-    padding: 7px 14px;
-    color: #2365c9;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    background: #edf4ff;
-    border-radius: 8px;
-}
-
 .hero-description {
     max-width: 640px;
     margin: 20px 0 0;
     color: #52617b;
     font-size: 1.05rem;
     line-height: 1.7;
-}
-
-/* =========================================================
-   BUSCADOR
-   ========================================================= */
-
-.hero-search {
-    display: flex;
-    align-items: stretch;
-    width: 100%;
-    max-width: 690px;
-    margin-top: 28px;
-    gap: 12px;
-}
-
-.hero-search__field {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    min-width: 0;
-    height: 52px;
-    padding: 0 18px;
-    background: #ffffff;
-    border: 1px solid #d5dfec;
-    border-radius: 12px;
-    box-shadow: 0 5px 18px rgba(31, 53, 86, 0.04);
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.hero-search__field:focus-within {
-    border-color: #5794ff;
-    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.09);
-}
-
-.hero-search__field i {
-    flex: 0 0 auto;
-    margin-right: 12px;
-    color: #53647f;
-    font-size: 1.12rem;
-}
-
-.hero-search__field input {
-    width: 100%;
-    min-width: 0;
-    color: #14233f;
-    font-size: 0.95rem;
-    background: transparent;
-    border: 0;
-    outline: 0;
-}
-
-.hero-search__field input::placeholder {
-    color: #8793a6;
-}
-
-.hero-search__button {
-    flex: 0 0 auto;
-    min-width: 110px;
-    height: 52px;
-    padding: 0 24px;
-    color: #ffffff;
-    font-weight: 700;
-    background: #1167f1;
-    border: 0;
-    border-radius: 12px;
-    box-shadow: 0 10px 24px rgba(17, 103, 241, 0.22);
-    transition:
-        transform 0.2s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.hero-search__button:hover {
-    background: #075bdc;
-    box-shadow: 0 14px 30px rgba(17, 103, 241, 0.3);
-    transform: translateY(-1px);
 }
 
 /* =========================================================
@@ -719,14 +627,6 @@
         font-size: 0.98rem;
     }
 
-    .hero-search {
-        flex-direction: column;
-    }
-
-    .hero-search__button {
-        width: 100%;
-    }
-
     .hero-map-column {
         min-height: 520px;
         overflow: hidden;
@@ -814,11 +714,6 @@
 
     .hero-title {
         font-size: 2.15rem;
-    }
-
-    .hero-badge {
-        font-size: 0.65rem;
-        letter-spacing: 0.06em;
     }
 
     .hero-map-column {
@@ -2263,5 +2158,179 @@ body {
 
     .dashboard-main {
         padding-bottom: 32px;
+    }
+}
+
+/* =========================================================
+   HOME V2 - COMPOSICIÓN COMPACTA
+   ========================================================= */
+
+.home-surface > .hero-section {
+    min-height: auto;
+    overflow: clip;
+}
+
+.home-surface > .hero-section > .container-fluid {
+    padding-top: 14px !important;
+    padding-bottom: 16px !important;
+}
+
+.home-surface > .hero-section .row {
+    min-height: auto;
+    align-items: center !important;
+}
+
+.home-surface .hero-isotype {
+    margin-bottom: 10px;
+}
+
+.home-surface .hero-title {
+    max-width: 590px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+    font-size: clamp(2.25rem, 3.7vw, 3.55rem);
+    line-height: 1.03;
+    letter-spacing: -.04em;
+}
+
+.home-surface .hero-description {
+    max-width: 540px;
+    margin: 0;
+    font-size: .92rem;
+    line-height: 1.55;
+}
+
+.home-surface .hero-map-column {
+    min-height: 380px;
+}
+
+.home-surface .hero-map {
+    top: -34px;
+    right: -30px;
+    width: 760px;
+    height: 440px;
+}
+
+.home-surface .hero-map img {
+    width: 800px;
+    max-height: 470px;
+}
+
+.home-surface .hero-update-card {
+    top: 22px;
+}
+
+.home-surface .dashboard-main__container {
+    padding-top: 4px !important;
+}
+
+.home-surface .dashboard-panorama,
+.home-surface .home-panorama {
+    margin-top: 0;
+}
+
+.home-surface .home-panorama {
+    padding-top: 4px;
+}
+
+.home-surface .home-panorama__heading {
+    margin-bottom: 12px;
+}
+
+.home-surface .home-panorama__list {
+    gap: 14px;
+}
+
+.home-surface .organization-summary {
+    min-height: 185px;
+}
+
+.home-surface .organization-summary__identity {
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+.home-surface .organization-summary__main {
+    padding: 18px 24px 12px;
+}
+
+.home-surface .organization-summary__eyebrow,
+.home-surface .organization-summary__eyebrow-fake {
+    margin-bottom: 10px;
+}
+
+.home-surface .organization-summary__meta {
+    padding-top: 10px;
+}
+
+.home-surface .organization-summary__main--jep {
+    padding-bottom: 8px;
+}
+
+.home-surface .organization-summary--jep .jep-monthly-alert {
+    margin-top: 10px;
+}
+
+.home-surface .organization-summary__meta--jep {
+    padding-top: 9px;
+    padding-bottom: 10px;
+}
+
+@media (max-width: 991.98px) {
+    .home-surface .hero-map-column {
+        min-height: 400px;
+        margin-top: 4px;
+    }
+
+    .home-surface .hero-map {
+        top: -28px;
+        width: 650px;
+        height: 450px;
+    }
+
+    .home-surface .hero-map img {
+        width: 610px;
+        max-height: 440px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .home-surface .hero-title {
+        margin-top: 8px;
+        margin-bottom: 12px;
+        font-size: clamp(2rem, 9vw, 2.4rem);
+    }
+
+    .home-surface .hero-description {
+        font-size: .9rem;
+    }
+
+    .home-surface .hero-map-column {
+        min-height: 380px;
+        margin-top: 0;
+    }
+
+    .home-surface .hero-map {
+        top: -5px;
+        width: 460px;
+        height: 340px;
+    }
+
+    .home-surface .hero-map img {
+        width: 420px;
+        max-height: 330px;
+    }
+
+    .home-surface .hero-update-card {
+        top: auto;
+        margin-top: 252px;
+    }
+
+    .home-surface .dashboard-main__container {
+        padding-top: 4px !important;
+    }
+
+    .home-surface .organization-summary__main {
+        padding: 16px 18px 12px;
     }
 }

@@ -62,7 +62,7 @@
                         <span>{{ __('dashboard.data_updated') }}</span>
                     </div>
                     <div class="hero-update-card__date {{ $lastSyncAt ? 'hero-update-card__date--synced' : '' }}">
-                        {{ $lastSyncAt ? $lastSyncAt->translatedFormat('d M. Y') : __('dashboard.pending_sync') }}
+                        {{ $lastSyncAt ? $lastSyncAt->translatedFormat('d M Y') : __('dashboard.pending_sync') }}
                     </div>
                     @if ($lastSyncAt)
                         <div class="hero-update-card__divider"></div>

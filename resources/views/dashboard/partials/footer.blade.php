@@ -17,14 +17,14 @@
                 <p class="site-footer__col-title">{{ __('dashboard.name_organizations') }}</p>
 
                 <div class="site-footer__links">
+                    <a href="https://jepvenezuela.com" target="_blank" rel="noopener noreferrer">
+                        JEP Venezuela
+                    </a>
                     <a href="https://accesoalajusticia.org" target="_blank" rel="noopener noreferrer">
                         Acceso a la Justicia
                     </a>
                     <a href="https://fakenewsvenezuela.org" target="_blank" rel="noopener noreferrer">
                         Observatorio Fake News
-                    </a>
-                    <a href="https://jepvenezuela.com" target="_blank" rel="noopener noreferrer">
-                        JEP Venezuela
                     </a>
                     <a href="https://observatoriodeuniversidades.com" target="_blank" rel="noopener noreferrer">
                         Observatorio de Universidades

@@ -15,7 +15,17 @@ class PublicDashboardController extends Controller
 {
     public function index(DashboardQueryService $dashboard): View
     {
-        return view('dashboard.index', $dashboard->get());
+        return $this->dashboardView($dashboard, 'dashboard.index');
+    }
+
+    public function indexV2(DashboardQueryService $dashboard): View
+    {
+        return $this->dashboardView($dashboard, 'dashboard.index_v2');
+    }
+
+    public function indexV3(DashboardQueryService $dashboard): View
+    {
+        return $this->dashboardView($dashboard, 'dashboard.index_v3');
     }
 
     public function jep(DashboardQueryService $dashboard): View
@@ -94,6 +104,11 @@ class PublicDashboardController extends Controller
     public function universidades(DashboardQueryService $dashboard): View
     {
         return $this->organizationView($dashboard, 'dashboard.organizations.universidades', 'universidades');
+    }
+
+    private function dashboardView(DashboardQueryService $dashboard, string $view): View
+    {
+        return view($view, $dashboard->get());
     }
 
     private function organizationView(

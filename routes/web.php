@@ -14,6 +14,12 @@ Route::get('/', [PublicDashboardController::class, 'index'])
 Route::get('/home', [PublicDashboardController::class, 'index'])
     ->name('home');
 
+Route::get('/home-v2', [PublicDashboardController::class, 'indexV2'])
+    ->name('dashboard.public.v2');
+
+Route::get('/home-v3', [PublicDashboardController::class, 'indexV3'])
+    ->name('dashboard.public.v3');
+
 Route::prefix('organizaciones')->name('organizations.')->group(function () {
     Route::get('/jep', [PublicDashboardController::class, 'jep'])->name('jep');
     Route::get('/acceso-justicia', [PublicDashboardController::class, 'accesoJusticia'])->name('acceso-justicia');
