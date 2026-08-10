@@ -147,7 +147,7 @@
         </section>
 
         <main class="dashboard-main">
-            <div class="dashboard-main__container px-4 px-xl-5">
+            <div class="dashboard-main__container dashboard-v2-container">
                 <section id="panorama" class="dashboard-panorama">
                     @include('dashboard.partials.panorama_v2')
                 </section>
@@ -155,5 +155,8 @@
         </main>
     </div>
 
-    @include('dashboard.partials.footer', ['lastSync' => $lastSync ?? null])
+    @include('dashboard.partials.footer', [
+        'lastSync' => $lastSync ?? null,
+        'containerClass' => 'dashboard-v2-container dashboard-v2-footer-container',
+    ])
 @endsection

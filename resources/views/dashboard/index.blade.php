@@ -4,13 +4,13 @@
 
 @section('content')
 
-    <div class="home-surface">
+    <div class="home-surface dashboard-v1">
 
         {{-- =====================================================
              HERO
         ====================================================== --}}
         <header class="hero-section hero-section--light">
-            <div class="container-fluid px-4 px-xl-5 py-4">
+            <div class="container-fluid dashboard-v1-shell py-4">
 
                 {{-- Selector de idioma --}}
                 <div class="d-flex justify-content-end mb-1">
@@ -146,7 +146,7 @@
              PANORAMA
         ====================================================== --}}
         <main class="dashboard-main">
-            <div class="dashboard-main__container px-4">
+            <div class="dashboard-main__container dashboard-v1-shell">
 
                 <section
                     id="panorama"
@@ -162,6 +162,7 @@
 
     @include('dashboard.partials.footer', [
         'lastSync' => $lastSync ?? null,
+        'containerClass' => 'dashboard-v1-shell',
     ])
 
     <script>

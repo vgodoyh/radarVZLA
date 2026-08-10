@@ -1,5 +1,5 @@
 <footer class="site-footer">
-    <div class="site-footer__container">
+    <div class="site-footer__container {{ $containerClass ?? '' }}">
         <div class="site-footer__top">
             <div class="site-footer__brand">
                 <div class="site-footer__logo-row">

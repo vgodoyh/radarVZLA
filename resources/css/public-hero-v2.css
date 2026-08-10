@@ -3706,3 +3706,74 @@ body {
     .panorama-secondary-card__header { align-items: flex-start; }
     .panorama-secondary-card__header img { width: 58px !important; height: 44px; }
 }
+
+/* =========================================================
+   PUBLIC DASHBOARD V2 - RESPONSIVE CONTENT WIDTH
+   ========================================================= */
+
+.dashboard-v2 .dashboard-main__container.dashboard-v2-container,
+.site-footer__container.dashboard-v2-footer-container {
+    width: min(calc(100% - 64px), 1376px);
+    max-width: none;
+    margin-inline: auto;
+    padding-inline: 0;
+}
+
+.dashboard-v2 .dashboard-panorama,
+.dashboard-v2 .home-panorama__list,
+.dashboard-v2 .panorama-jep,
+.dashboard-v2 .panorama-secondary-grid,
+.dashboard-v2 .panorama-jep > *,
+.dashboard-v2 .panorama-secondary-grid > * {
+    min-width: 0;
+}
+
+.dashboard-v2 .dashboard-panorama,
+.dashboard-v2 .home-panorama__list,
+.dashboard-v2 .panorama-jep,
+.dashboard-v2 .panorama-secondary-grid {
+    width: 100%;
+}
+
+@media (max-width: 1023.98px) {
+    .dashboard-v2 .dashboard-main__container.dashboard-v2-container,
+    .site-footer__container.dashboard-v2-footer-container {
+        width: min(calc(100% - 48px), 960px);
+    }
+}
+
+@media (max-width: 767.98px) {
+    .dashboard-v2 .dashboard-main__container.dashboard-v2-container,
+    .site-footer__container.dashboard-v2-footer-container {
+        width: min(calc(100% - 32px), 680px);
+    }
+}
+
+@media (min-width: 1600px) {
+    .dashboard-v2-container {
+        width: min(calc(100% - 80px), 1760px);
+    }
+
+    .dashboard-v2 .dashboard-main__container.dashboard-v2-container,
+    .site-footer__container.dashboard-v2-footer-container {
+        width: min(calc(100% - 80px), 1760px);
+    }
+
+    .dashboard-v2-hero {
+        gap: 64px;
+    }
+
+    .dashboard-v2-map img {
+        width: min(100%, 820px);
+        max-height: 540px;
+    }
+
+    .dashboard-v2-pulse__grid {
+        width: 100%;
+    }
+
+    .dashboard-v2 .panorama-jep,
+    .dashboard-v2 .panorama-secondary-grid {
+        gap: 22px;
+    }
+}
