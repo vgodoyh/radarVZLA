@@ -386,23 +386,78 @@
     .dashboard-v2-language { gap: 5px; padding-left: 14px; }
     .dashboard-v2-navigation { justify-content: flex-start; gap: 18px; overflow-x: auto; scrollbar-width: none; }
     .dashboard-v2-navigation a { flex: 0 0 auto; font-size: .7rem; }
-    .dashboard-v2-partners { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px; }
-    .dashboard-v2-partner { min-height: 86px; padding: 10px 16px; }
+    .dashboard-v2-partners {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        min-height: 78px;
+        padding: 6px;
+    }
+    .dashboard-v2-partner {
+        min-height: 66px;
+        padding: 6px 2px;
+        border-right: 0 !important;
+        border-bottom: 0 !important;
+    }
+    .dashboard-v2-partner:not(:last-child) {
+        border-right: 1px solid #e2e7ed !important;
+    }
     .dashboard-v2-partner::after { display: none; }
-    .dashboard-v2-partner:nth-child(-n+2) { border-bottom: 1px solid #e2e7ed; }
-    .dashboard-v2-partner:nth-child(odd) { border-right: 1px solid #e2e7ed; }
-    .dashboard-v2-partner img,
-    .dashboard-v2-partner--acceso img,
-    .dashboard-v2-partner--fake-news img,
-    .dashboard-v2-partner--jep img,
-    .dashboard-v2-partner--obu img { max-width: 135px; height: 58px; }
-    .dashboard-v2-partner--jep img { max-width: 65px; }
-    .dashboard-v2-hero { grid-template-columns: 1fr; gap: 30px; padding: 52px 0 40px; }
-    .dashboard-v2-hero-content h1 { font-size: clamp(2.7rem, 12vw, 4rem); }
-    .dashboard-v2-hero__country { font-size: .875rem; letter-spacing: .14em; }
-    .dashboard-v2-hero__line { width: 48px; margin: 14px 0 16px; }
-    .dashboard-v2-description p { font-size: 1rem; line-height: 1.6; }
-    .dashboard-v2-map img { width: min(100%, 520px); max-height: 330px; }
+    .dashboard-v2-partner img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+    .dashboard-v2-partner--acceso img { max-width: 92px; }
+    .dashboard-v2-partner--fake-news img { max-width: 88px; }
+    .dashboard-v2-partner--jep img { max-width: 58px; }
+    .dashboard-v2-partner--obu img { max-width: 88px; }
+    .dashboard-v2-hero {
+        position: relative;
+        grid-template-columns: 1fr;
+        gap: 0;
+        min-height: 0;
+        padding: 34px 0 32px;
+        overflow: hidden;
+    }
+    .dashboard-v2-hero-content {
+        min-width: 0;
+        z-index: 2;
+    }
+    .dashboard-v2-hero-content h1 {
+        max-width: 76%;
+        margin: 0 0 0 30px;
+        font-size: clamp(35px, 7vw, 40px);
+        line-height: 1.04;
+    }
+    .dashboard-v2-hero__country {
+        margin-top: 22px;
+        font-size: .875rem;
+        letter-spacing: .14em;
+    }
+    .dashboard-v2-hero__line { width: 48px; margin: 12px 0 16px 30px; }
+    .dashboard-v2-description { max-width: 100%; }
+    .dashboard-v2-description p {
+        margin-right: 0;
+        font-size: .875rem;
+        line-height: 1.55;
+    }
+    .dashboard-v2-update {
+        margin-top: 20px;
+        font-size: .875rem;
+    }
+    .dashboard-v2-map {
+        position: absolute;
+        z-index: 1;
+        top: 32px;
+        right: -42px;
+        width: min(62%, 280px);
+        pointer-events: none;
+    }
+    .dashboard-v2-map img {
+        width: 100%;
+        height: auto;
+        max-height: none;
+        opacity: .52;
+    }
     .dashboard-v2-pulse { padding: 48px 0 52px; }
     .dashboard-v2-pulse__heading { gap: 14px; margin-bottom: 36px; }
     .dashboard-v2-pulse__heading h2 { font-size: .72rem; letter-spacing: .15em; }
@@ -412,9 +467,6 @@
 }
 
 @media (max-width: 399.98px) {
-    .dashboard-v2-partners { grid-template-columns: 1fr; }
-    .dashboard-v2-partner { border-right: 0 !important; border-bottom: 1px solid #e2e7ed; }
-    .dashboard-v2-partner:last-child { border-bottom: 0; }
     .dashboard-v2-pulse__grid { grid-template-columns: 1fr; row-gap: 0; }
     .dashboard-v2-stat { padding: 28px 10px; border-top: 1px solid #e5e9ee; }
     .dashboard-v2-stat:first-child { padding-top: 0; border-top: 0; }
