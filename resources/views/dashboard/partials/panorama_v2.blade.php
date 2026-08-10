@@ -184,11 +184,6 @@
                     <span></span>
                     <a href="{{ route('organizations.acceso-justicia') }}">{{ __('dashboard.view_more_publications') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </footer>
-
-                <div class="panorama-access__hint">
-                    <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    <span>{{ __('dashboard.access_publication_hint') }}</span>
-                </div>
             </article>
 
             <article class="panorama-secondary-card panorama-fake-news">
