@@ -145,15 +145,7 @@
 
             {{-- Pie completo de JEP --}}
             <div class="organization-summary__meta organization-summary__meta--jep">
-                <span>
-                    <i class="bi bi-clock"></i>
-
-                    {{ __('dashboard.last_update') }}:
-
-                    {{ now('America/Caracas')
-                        ->locale(app()->getLocale())
-                        ->translatedFormat('d M Y') }}
-                </span>
+                <span></span>
 
                 <a href="{{ route('organizations.jep') }}">
                     {{ __('dashboard.view_full_dashboard') }}
@@ -221,13 +213,7 @@
                 </div>
 
                 <div class="organization-summary__meta">
-                    <span>
-                        <i class="bi bi-clock"></i>
-                        {{ __('dashboard.last_update') }}:
-                        {{ now('America/Caracas')
-                            ->locale(app()->getLocale())
-                            ->translatedFormat('d M Y') }}
-                    </span>
+                    <span></span>
 
                     <a href="{{ route('organizations.acceso-justicia') }}">
                         {{ __('dashboard.view_more_publications') }}
@@ -265,48 +251,78 @@
 
                     <div class="fake-news-left">
 
+                        @php
+                            /*
+                             * Datos temporales hasta implementar
+                             * la carga desde el panel administrativo.
+                             */
+                            $ovfnSocialNetworks = [
+                                [
+                                    'key' => 'tiktok',
+                                    'name' => 'Tik Tok',
+                                    'total' => 48,
+                                ],
+                                [
+                                    'key' => 'whatsapp',
+                                    'name' => 'WhatsApp',
+                                    'total' => 41,
+                                ],
+                                [
+                                    'key' => 'x',
+                                    'name' => 'X',
+                                    'total' => 17,
+                                ],
+                                [
+                                    'key' => 'instagram',
+                                    'name' => 'Instagram',
+                                    'total' => 16,
+                                ],
+                                [
+                                    'key' => 'facebook',
+                                    'name' => 'Facebook',
+                                    'total' => 11,
+                                ],
+                                
+                                
+                                
+                            ];
+
+                            $ovfnSocialTotal = collect($ovfnSocialNetworks)->sum('total');
+
+                            $ovfnSocialNetworks = collect($ovfnSocialNetworks)
+                                ->map(function ($network) use ($ovfnSocialTotal) {
+                                    $network['percentage'] = $ovfnSocialTotal > 0
+                                        ? round(($network['total'] / $ovfnSocialTotal) * 100, 1)
+                                        : 0;
+
+                                    return $network;
+                                });
+                        @endphp
+
                         <h4 class="overview-section-title">
-                            {{ __('dashboard.latest_content') }}
+                            {{ __('dashboard.where_it_spreads') }}
                         </h4>
 
-                        <div class="fake-news-metrics">
+                        <div class="panorama-ovfn__networks">
+                            @foreach ($ovfnSocialNetworks as $network)
+                                <div class="panorama-ovfn__network">
+                                    <span class="panorama-ovfn__network-icon" aria-hidden="true">
+                                        <i class="fa-brands fa-{{ $network['key'] === 'x' ? 'x-twitter' : $network['key'] }}"></i>
+                                    </span>
 
-                            <div class="fake-news-metric">
-                                <span class="fake-news-metric__icon">
-                                    <i class="bi bi-patch-check"></i>
-                                </span>
+                                    <span class="panorama-ovfn__network-name">
+                                        {{ $network['name'] }}
+                                    </span>
 
-                                <div>
-                                    <small>{{ __('dashboard.verifications_published') }}</small>
-                                    <strong>24</strong>
-                                    <span>{{ __('dashboard.last_30_days') }}</span>
+                                    <strong class="panorama-ovfn__network-total">
+                                        {{ number_format($network['total'], 0, ',', '.') }}
+                                    </strong>
+
+                                    <span class="panorama-ovfn__network-percentage">
+                                        {{ number_format($network['percentage'], 1) }}%
+                                    </span>
                                 </div>
-                            </div>
-
-                            <div class="fake-news-metric">
-                                <span class="fake-news-metric__icon">
-                                    <i class="bi bi-file-earmark-bar-graph"></i>
-                                </span>
-
-                                <div>
-                                    <small>{{ __('dashboard.analysis_infographics') }}</small>
-                                    <strong>12</strong>
-                                    <span>{{ __('dashboard.last_30_days') }}</span>
-                                </div>
-                            </div>
-
-                            <div class="fake-news-metric">
-                                <span class="fake-news-metric__icon">
-                                    <i class="bi bi-newspaper"></i>
-                                </span>
-
-                                <div>
-                                    <small>{{ __('dashboard.noti_fake_published') }}</small>
-                                    <strong>8</strong>
-                                    <span>{{ __('dashboard.last_30_days') }}</span>
-                                </div>
-                            </div>
-
+                            @endforeach
                         </div>
 
                     </div>
@@ -341,11 +357,8 @@
 
                 <div class="organization-summary__meta">
                     <span>
-                        <i class="bi bi-clock"></i>
-                        {{ __('dashboard.last_update') }}:
-                        {{ now('America/Caracas')
-                            ->locale(app()->getLocale())
-                            ->translatedFormat('d M  Y') }}
+                        <i class="bi bi-calendar3" aria-hidden="true"></i>
+                        <span>{{ __('dashboard.disinformation_since') }}</span>
                     </span>
 
                     <a href="{{ route('organizations.fake-news') }}">
@@ -423,13 +436,7 @@
                 </div>
 
                 <div class="organization-summary__meta">
-                    <span>
-                        <i class="bi bi-clock"></i>
-                        {{ __('dashboard.last_update') }}:
-                        {{ now('America/Caracas')
-                            ->locale(app()->getLocale())
-                            ->translatedFormat('d M  Y') }}
-                    </span>
+                    <span></span>
 
                     <a href="{{ route('organizations.universidades') }}">
                         {{ __('dashboard.view_full_dashboard') }}

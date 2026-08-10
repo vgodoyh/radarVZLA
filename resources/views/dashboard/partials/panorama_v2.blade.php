@@ -192,11 +192,11 @@
                 {{-- Datos temporales hasta implementar la carga desde el panel administrativo --}}
                 @php
                     $socialNetworks = collect($fakeNewsSocialNetworks ?? [
-                        ['key' => 'tiktok', 'name' => __('dashboard.social_networks.tiktok'), 'total' => 42, 'percentage' => 40.0, 'icon' => 'fa-brands fa-tiktok'],
-                        ['key' => 'facebook', 'name' => __('dashboard.social_networks.facebook'), 'total' => 34, 'percentage' => 32.4, 'icon' => 'fa-brands fa-facebook-f'],
-                        ['key' => 'instagram', 'name' => __('dashboard.social_networks.instagram'), 'total' => 15, 'percentage' => 14.3, 'icon' => 'fa-brands fa-instagram'],
-                        ['key' => 'x', 'name' => __('dashboard.social_networks.x'), 'total' => 7, 'percentage' => 6.7, 'icon' => 'fa-brands fa-x-twitter'],
-                        ['key' => 'whatsaap', 'name' => __('dashboard.social_networks.whatsaap'), 'total' => 7, 'percentage' => 6.7, 'icon' => 'fa-brands fa-whatsapp'],
+                        ['key' => 'tiktok', 'name' => __('dashboard.social_networks.tiktok'), 'total' => 48, 'percentage' => 36.1, 'icon' => 'fa-brands fa-tiktok'],
+                        ['key' => 'whatsaap', 'name' => __('dashboard.social_networks.whatsaap'), 'total' => 41, 'percentage' => 30.8, 'icon' => 'fa-brands fa-whatsapp'],
+                        ['key' => 'x', 'name' => __('dashboard.social_networks.x'), 'total' => 17, 'percentage' => 12.8, 'icon' => 'fa-brands fa-x-twitter'],
+                        ['key' => 'instagram', 'name' => __('dashboard.social_networks.instagram'), 'total' => 16, 'percentage' => 12, 'icon' => 'fa-brands fa-instagram'],
+                        ['key' => 'facebook', 'name' => __('dashboard.social_networks.facebook'), 'total' => 11, 'percentage' => 8.3, 'icon' => 'fa-brands fa-facebook-f'],
                     ]);
                 @endphp
 

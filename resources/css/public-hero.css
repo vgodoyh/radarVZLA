@@ -1851,6 +1851,83 @@
     font-size: 0.64rem;
 }
 
+.organization-summary--fake-news .panorama-ovfn__networks {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    width: 100%;
+}
+
+.organization-summary--fake-news .panorama-ovfn__network {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 0;
+    padding: 3px 10px;
+    text-align: center;
+}
+
+.organization-summary--fake-news .panorama-ovfn__network + .panorama-ovfn__network {
+    border-left: 1px solid #e1e8f0;
+}
+
+.organization-summary--fake-news .panorama-ovfn__network-icon {
+    display: inline-flex;
+    flex: 0 0 34px;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: #755a00;
+    background: var(--organization-soft);
+    border-radius: 8px;
+}
+
+.organization-summary--fake-news .panorama-ovfn__network-icon i {
+    font-size: 0.92rem;
+    line-height: 1;
+}
+
+.organization-summary--fake-news .panorama-ovfn__network-name {
+    overflow-wrap: anywhere;
+    color: #10213f;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.organization-summary--fake-news .panorama-ovfn__network-total {
+    color: #10213f;
+    font-size: 1.6rem;
+    font-weight: 850;
+    line-height: 1;
+}
+
+.organization-summary--fake-news .panorama-ovfn__network-percentage {
+    color: #7b8ba5;
+    font-size: 0.68rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.organization-summary--fake-news .panorama-ovfn__period {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 12px 0 0;
+    color: #76849a;
+    font-size: 0.68rem;
+    font-weight: 400;
+    line-height: 1.35;
+}
+
+.organization-summary--fake-news .panorama-ovfn__period i {
+    color: #8a6900;
+    font-size: 0.72rem;
+}
+
 .fake-news-featured{
 
     display:grid;
@@ -2106,6 +2183,19 @@
     .fake-news-featured img {
         width: 70px;
         height: 68px;
+    }
+
+    .organization-summary--fake-news .panorama-ovfn__networks {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0;
+    }
+
+    .organization-summary--fake-news .panorama-ovfn__network {
+        padding: 10px 6px;
+    }
+
+    .organization-summary--fake-news .panorama-ovfn__network + .panorama-ovfn__network {
+        border-left: 0;
     }
 }
 
