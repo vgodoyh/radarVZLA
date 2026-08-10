@@ -54,6 +54,7 @@ return [
     'monthly_alert' => 'Alerta del mes',
     'view_full_dashboard' => 'Ver panel completo',
     'view_more_publications' => 'Ver más publicaciones',
+    'access_publication_hint' => 'Haz clic en cualquier publicación para ver el post original en X',
     'publication_count' => '{0} Sin publicaciones|{1} :count publicación|[2,*] :count publicaciones',
     'search_legal_alerts' => 'Buscar en publicaciones de #AlertaLegal',
     'search_publications' => 'Buscar publicaciones',

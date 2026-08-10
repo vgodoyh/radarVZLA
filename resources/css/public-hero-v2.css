@@ -3256,6 +3256,7 @@ body {
 .panorama-access__content { margin-bottom: 24px; }
 
 .panorama-access__featured {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(90px, .85fr) minmax(0, 1.15fr);
     gap: 13px;
@@ -3271,12 +3272,36 @@ body {
     border-radius: 10px;
 }
 
-.panorama-access__featured > div { min-width: 0; }
+.panorama-access__featured > div {
+    position: relative;
+    min-width: 0;
+    padding-right: 30px;
+}
 
-.panorama-access__featured span {
+.panorama-access__featured-category {
     color: var(--secondary-accent);
     font-size: .61rem;
     font-weight: 800;
+}
+
+.panorama-access__featured-external {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    color: var(--secondary-accent);
+    background: var(--secondary-soft);
+    border-radius: 50%;
+    transition: transform .18s ease;
+}
+
+.panorama-access__featured-external i {
+    font-size: .72rem;
+    line-height: 1;
 }
 
 .panorama-access__featured h4,
@@ -3292,6 +3317,20 @@ body {
     -webkit-line-clamp: 3;
 }
 
+.panorama-access__featured-title {
+    transition: color .18s ease;
+}
+
+.panorama-access__featured-link:hover .panorama-access__featured-title,
+.panorama-access__featured-link:focus-visible .panorama-access__featured-title {
+    color: var(--secondary-accent);
+}
+
+.panorama-access__featured-link:hover .panorama-access__featured-external,
+.panorama-access__featured-link:focus-visible .panorama-access__featured-external {
+    transform: translate(1px, -1px);
+}
+
 .panorama-access time,
 .panorama-fake-news__featured time {
     color: #8491a4;
@@ -3300,29 +3339,81 @@ body {
 
 .panorama-access__secondary {
     display: grid;
-    grid-template-columns: 64px minmax(0, 1fr);
-    gap: 12px;
-    margin-top: 17px;
-    padding-top: 15px;
+    grid-template-columns: 88px minmax(0, 1fr) 24px;
+    gap: 14px;
+    align-items: center;
+    margin: 0;
+    padding: 12px 0;
     color: inherit;
     font-size: .7rem;
     line-height: 1.45;
     text-decoration: none;
-    border-top: 1px solid #e8edf3;
+    border-top: 1px solid #e7edf4;
+    transition: background-color .18s ease;
 }
 
-.panorama-access__secondary time {
-    color: var(--secondary-accent);
+.panorama-access__secondary-date {
+    color: #718096;
+    font-size: .62rem;
     font-weight: 800;
+    line-height: 1.4;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
-.panorama-access__secondary span {
+.panorama-access__secondary-text {
     display: -webkit-box;
+    min-width: 0;
     overflow: hidden;
     color: #43546b;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    transition: color .18s ease;
+}
+
+.panorama-access__external-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--secondary-accent);
+    font-size: .85rem;
+    line-height: 1;
+    transition: transform .18s ease;
+}
+
+.panorama-access__secondary:hover,
+.panorama-access__secondary:focus-visible {
+    background: rgba(242, 107, 33, .025);
+}
+
+.panorama-access__secondary:hover .panorama-access__secondary-text,
+.panorama-access__secondary:focus-visible .panorama-access__secondary-text {
+    color: #0b2447;
+}
+
+.panorama-access__secondary:hover .panorama-access__external-icon,
+.panorama-access__secondary:focus-visible .panorama-access__external-icon {
+    transform: translate(1px, -1px);
+}
+
+.panorama-access__hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 -24px 0 -28px;
+    padding: 10px 24px 11px 28px;
+    color: #64748b;
+    font-size: .64rem;
+    line-height: 1.4;
+    background: #f7f9fc;
+}
+
+.panorama-access__hint i {
+    flex: 0 0 auto;
+    color: var(--secondary-accent);
+    font-size: .78rem;
 }
 
 /* Observatorio Venezolano de Fake News */
@@ -3593,6 +3684,18 @@ body {
     .panorama-obu__metric:nth-child(2)::after { display: none; }
     .panorama-obu__metric:nth-child(3) { grid-column: 1 / -1; padding-top: 20px; border-top: 1px solid #e5eaf0; }
     .panorama-obu__categories { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
+    .panorama-access__hint { margin-inline: -24px -20px; padding-inline: 24px 20px; }
+}
+
+@media (max-width: 575.98px) {
+    .panorama-access__secondary {
+        grid-template-columns: 72px minmax(0, 1fr) 20px;
+        gap: 10px;
+    }
+
+    .panorama-access__secondary-date {
+        white-space: normal;
+    }
 }
 
 @media (max-width: 479.98px) {

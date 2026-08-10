@@ -115,9 +115,9 @@
         </div>
 
         @php
-            $accessPosts = collect($accesoPosts ?? [])->take(2)->values();
-            $accessFeatured = $accessPosts->get(0);
-            $accessSecondary = $accessPosts->get(1);
+            $accessPosts = collect($accesoPosts ?? [])->take(5)->values();
+            $accessFeatured = $accessPosts->first();
+            $accessSecondaryPosts = $accessPosts->skip(1)->take(4)->values();
 
             $fakeDeepPosts = collect(data_get($postsFakeNewsWeb ?? [], 'en_profundidad', []));
             $fakeNotiPosts = collect(data_get($postsFakeNewsWeb ?? [], 'noti_fake', []));
@@ -154,21 +154,27 @@
 
                 <div class="panorama-access__content">
                     @if ($accessFeatured)
-                        <a href="{{ data_get($accessFeatured, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-access__featured">
+                        <a href="{{ data_get($accessFeatured, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-access__featured panorama-access__featured-link">
                             <img src="{{ data_get($accessFeatured, 'image') ?: asset('assets/img/placeholders/article.svg') }}" alt="{{ data_get($accessFeatured, 'title', '') }}">
                             <div>
-                                <span>{{ __('dashboard.legal_alert_badge') }}</span>
-                                <h4>{{ data_get($accessFeatured, 'title') }}</h4>
+                                <span class="panorama-access__featured-category">{{ __('dashboard.legal_alert_badge') }}</span>
+                                <span class="panorama-access__featured-external" aria-hidden="true">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </span>
+                                <h4 class="panorama-access__featured-title">{{ data_get($accessFeatured, 'title') }}</h4>
                                 <time>{{ data_get($accessFeatured, 'date') }}</time>
                             </div>
                         </a>
 
-                        @if ($accessSecondary)
+                        @foreach ($accessSecondaryPosts as $accessSecondary)
                             <a href="{{ data_get($accessSecondary, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-access__secondary">
-                                <time>{{ data_get($accessSecondary, 'date') }}</time>
-                                <span>{{ data_get($accessSecondary, 'title') }}</span>
+                                <time class="panorama-access__secondary-date">{{ data_get($accessSecondary, 'date') }}</time>
+                                <span class="panorama-access__secondary-text">{{ data_get($accessSecondary, 'title') }}</span>
+                                <span class="panorama-access__external-icon" aria-hidden="true">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </span>
                             </a>
-                        @endif
+                        @endforeach
                     @else
                         <p class="panorama-secondary-card__empty">{{ __('dashboard.no_synced_publications') }}</p>
                     @endif
@@ -178,6 +184,11 @@
                     <span></span>
                     <a href="{{ route('organizations.acceso-justicia') }}">{{ __('dashboard.view_more_publications') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </footer>
+
+                <div class="panorama-access__hint">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <span>{{ __('dashboard.access_publication_hint') }}</span>
+                </div>
             </article>
 
             <article class="panorama-secondary-card panorama-fake-news">

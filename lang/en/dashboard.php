@@ -54,6 +54,7 @@ return [
     'monthly_alert' => 'Monthly alert',
     'view_full_dashboard' => 'View full dashboard',
     'view_more_publications' => 'View more publications',
+    'access_publication_hint' => 'Click any publication to view the original post on X',
     'publication_count' => '{0} No publications|{1} :count publication|[2,*] :count publications',
     'search_legal_alerts' => 'Search #AlertaLegal publications',
     'search_publications' => 'Search publications',

@@ -22,6 +22,7 @@ class DashboardQueryService
                 Str::lower($post['text'] ?? ''),
                 '#alertalegal'
             ))
+            ->take(5)
             ->values();
 
         return [
@@ -64,7 +65,25 @@ class DashboardQueryService
             return collect($this->configOrganizations())->map(fn (array $item) => $this->fallbackOrganization($item));
         }
 
-        $items = Organization::query()->where('active', true)->with(['publications' => fn ($query) => $query->latest('published_at')->limit(30)])->orderBy('position')->get();
+        $items = Organization::query()
+            ->where('active', true)
+            ->with([
+                'publications' => fn ($query) => $query
+                    ->where(function ($query) {
+                        $query
+                            ->whereHas('organization', fn ($organization) => $organization->where('slug', '!=', 'acceso-justicia'))
+                            ->orWhere(function ($query) {
+                                $query
+                                    ->whereHas('organization', fn ($organization) => $organization->where('slug', 'acceso-justicia'))
+                                    ->where('source', 'x')
+                                    ->where('excerpt', 'like', '%#AlertaLegal%');
+                            });
+                    })
+                    ->latest('published_at')
+                    ->limit(30),
+            ])
+            ->orderBy('position')
+            ->get();
 
         if ($items->isEmpty()) {
             return collect($this->configOrganizations())->map(fn (array $item) => $this->fallbackOrganization($item));
