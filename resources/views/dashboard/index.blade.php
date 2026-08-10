@@ -70,6 +70,38 @@
                         <p class="hero-description">
                             {{ __('dashboard.hero_description') }}
                         </p>
+
+                        <div class="hero-organizations">
+
+                            <div class="hero-organization-logo hero-organization-logo--jep">
+                                <img
+                                    src="{{ asset('assets/img/organizations/jep.svg') }}"
+                                    alt="Justicia, Encuentro y Perdón"
+                                >
+                            </div>
+
+                            <div class="hero-organization-logo hero-organization-logo--acceso">
+                                <img
+                                    src="{{ asset('assets/img/organizations/acceso-justicia-.png') }}"
+                                    alt="Acceso a la Justicia"
+                                >
+                            </div>
+
+                            <div class="hero-organization-logo hero-organization-logo--fake">
+                                <img
+                                    src="{{ asset('assets/img/organizations/fake-news-a.webp') }}"
+                                    alt="Observatorio Venezolano de Fake News"
+                                >
+                            </div>
+
+                            <div class="hero-organization-logo hero-organization-logo--obu">
+                                <img
+                                    src="{{ asset('assets/img/organizations/obu.png') }}"
+                                    alt="Observatorio de Universidades"
+                                >
+                            </div>
+
+                        </div>
                     </div>
 
                     {{-- Mapa y actualización --}}

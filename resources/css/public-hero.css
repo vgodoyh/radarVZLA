@@ -2264,3 +2264,83 @@ body {
         padding-bottom: 32px;
     }
 }
+
+.hero-organizations {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-top: 26px;
+    flex-wrap: wrap;
+}
+
+.hero-organization-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Sin card */
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+.hero-organization-logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* JEP */
+.hero-organization-logo--jep {
+    width: 75px;
+    height: 75px;
+}
+
+/* Acceso a la Justicia */
+.hero-organization-logo--acceso {
+    width: 120px;
+    height: 75px;
+}
+
+/* Fake News */
+.hero-organization-logo--fake {
+    width: 155px;
+    height: 75px;
+}
+
+/* OBU */
+.hero-organization-logo--obu {
+    width: 115px;
+    height: 75px;
+}
+
+@media (max-width: 767.98px) {
+    .hero-organizations {
+        gap: 12px;
+    }
+
+    .hero-organization-logo {
+        width: 92px;
+        height: 66px;
+    }
+
+    .hero-organization-logo--jep {
+        width: 78px;
+        height: 72px;
+    }
+
+    .hero-organization-logo--acceso {
+        width: 110px;
+    }
+
+    .hero-organization-logo--fake {
+        width: 145px;
+    }
+
+    .hero-organization-logo--obu {
+        width: 105px;
+    }
+}

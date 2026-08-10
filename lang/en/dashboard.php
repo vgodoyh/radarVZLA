@@ -3,13 +3,31 @@
 return [
     'site_name' => 'Pulso Venezuela',
 
+    'dashboard_v2' => [
+        'brand_tagline' => 'Independent monitoring · Venezuela',
+        'main_navigation' => 'Main navigation',
+        'justice' => 'Justice',
+        'verification' => 'Verification',
+        'universities' => 'Universities',
+        'hero_line_1' => 'Human Rights,',
+        'hero_line_2' => 'Justice and',
+        'hero_line_3' => 'Disinformation',
+        'in_venezuela' => 'In Venezuela',
+        'pulse_title' => 'The pulse of Venezuela',
+        'political_prisoners' => 'Political prisoners',
+        'verifications' => 'Verifications',
+        'legal_alerts' => 'Legal alerts',
+        'university_monitoring' => 'University monitoring',
+        'acceso_short' => 'Access to Justice',
+    ],
+
     'hero_title_1' => 'Monitoring Human Rights,',
     'hero_title_2' => 'Justice and Disinformation',
     'hero_title_3' => 'in Venezuela',
 
     'hero_badge' => 'Monitoring and documentation platform',
 
-    'hero_description' => 'Four organizations document developments in justice, information, human rights, and universities. Here you can explore their latest data, updated regularly and publicly available.',
+    'hero_description' => 'Four organizations document developments in justice, information, human rights, and universities.',
 
     'search_placeholder' => 'Search information, reports, people, organizations...',
     'search_button' => 'Search',
@@ -23,8 +41,13 @@ return [
     'learn_more' => 'Learn more about us',
     'learn_more_about_us' => 'Learn more about us',
 
+    'summary' => 'Summary',
+    'panorama_secondary' => [
+        'verification_center' => 'Verification center',
+        'universities_in_figures' => 'Universities in figures',
+    ],
     'general_overview' => 'General overview',
-    'general_overview_description' => 'A summary of the current situation based on the latest data published.',
+    'general_overview_description' => 'A look at the most recent data from the four organizations.',
 
     'latest_content' => 'Latest content',
     'featured_verification' => 'Featured verification',
@@ -119,6 +142,16 @@ return [
     'verifications_published' => 'Verified Publications',
     'analysis_infographics' => 'Analyses & Infographics',
     'noti_fake_published' => 'Noti Fake',
+    'where_it_spreads' => 'Where Disinformation Spreads',
+    'disinformation_since' => 'Since June 1, 2026',
+    'social_networks' => [
+        'tiktok' => 'Tik Tok',
+        'facebook' => 'Facebook',
+        'instagram' => 'Instagram',
+        'x' => 'X',
+        'whatsaap' => 'Whatsaap',
+        'unavailable' => 'Social-network distribution data is not available yet.',
+    ],
 
     'fake_news_page' => [
         'meta_title' => 'Venezuelan Fake News Observatory | Pulso Venezuela',
@@ -302,6 +335,15 @@ return [
         'three_main_areas' => 'across 3 main areas',
         'five_modalities' => 'across 5 modalities',
         'january_june_2026' => 'Jan - Jun 2026',
+        'accumulated_period' => 'Figures accumulated during the analysis period: :period',
+        'panorama_categories' => [
+            'student_rights' => 'Student rights',
+            'university_autonomy' => 'University autonomy',
+            'working_conditions' => 'Working conditions',
+            'funding' => 'Funding',
+            'repression_security' => 'Repression and security',
+            'other' => 'Other categories',
+        ],
     ],
 
     'latest_posts' => 'Latest posts',

@@ -3,13 +3,31 @@
 return [
     'site_name' => 'Pulso Venezuela',
 
+    'dashboard_v2' => [
+        'brand_tagline' => 'Monitoreo independiente · Venezuela',
+        'main_navigation' => 'Navegación principal',
+        'justice' => 'Justicia',
+        'verification' => 'Verificación',
+        'universities' => 'Universidades',
+        'hero_line_1' => 'Derechos Humanos,',
+        'hero_line_2' => 'Justicia y',
+        'hero_line_3' => 'Desinformación',
+        'in_venezuela' => 'En Venezuela',
+        'pulse_title' => 'El pulso de Venezuela',
+        'political_prisoners' => 'Presos políticos',
+        'verifications' => 'Verificaciones',
+        'legal_alerts' => 'Alertas legales',
+        'university_monitoring' => 'Monitoreos universitarios',
+        'acceso_short' => 'Acceso a la Justicia',
+    ],
+
     'hero_title_1' => 'Monitoreo de Derechos Humanos,',
     'hero_title_2' => 'Justicia y Desinformación',
     'hero_title_3' => 'en Venezuela',
 
     'hero_badge' => 'Plataforma de monitoreo y documentación',
 
-    'hero_description' => 'Cuatro organizaciones documentan lo que ocurre en la justicia, la información, los derechos humanos y las universidades. Aquí están sus números, actualizados y abiertos.',
+    'hero_description' => 'Cuatro organizaciones documentan lo que ocurre en la justicia, la información, los derechos humanos y las universidades.',
 
     'search_placeholder' => 'Buscar información, informes, personas, organizaciones...',
     'search_button' => 'Buscar',
@@ -23,8 +41,13 @@ return [
     'learn_more_about_us' => 'Conoce más sobre nosotros',
     'learn_more' => 'Conoce más sobre nosotros',
 
+    'summary' => 'Resumen',
+    'panorama_secondary' => [
+        'verification_center' => 'Centro de verificación',
+        'universities_in_figures' => 'Universidades en cifras',
+    ],
     'general_overview' => 'Panorama general',
-    'general_overview_description' => 'Resumen de la situación actual a partir de los datos más recientes publicados.',
+    'general_overview_description' => 'Una mirada a los datos más recientes de las cuatro organizaciones.',
 
     'latest_content' => 'Lo más reciente',
     'featured_verification' => 'Verificación destacada',
@@ -121,6 +144,16 @@ return [
     'verifications_published' => 'Publicaciones verificadas',
     'analysis_infographics' => 'Infografías analizadas',
     'noti_fake_published' => 'Noti Fake',
+    'where_it_spreads' => 'Dónde circula la desinformación',
+    'disinformation_since' => 'Desde 1 de junio de 2026',
+    'social_networks' => [
+        'tiktok' => 'Tik Tok',
+        'facebook' => 'Facebook',
+        'instagram' => 'Instagram',
+        'x' => 'X',
+        'whatsaap' => 'Whatsaap',
+        'unavailable' => 'Los datos por red social aún no están disponibles.',
+    ],
 
     'fake_news_page' => [
         'meta_title' => 'Observatorio Venezolano de Fake News | Pulso Venezuela',
@@ -304,6 +337,15 @@ return [
         'three_main_areas' => 'en 3 áreas principales',
         'five_modalities' => 'en 5 modalidades',
         'january_june_2026' => 'Ene - Jun 2026',
+        'accumulated_period' => 'Cifras acumuladas durante el período de análisis: :period',
+        'panorama_categories' => [
+            'student_rights' => 'Derechos estudiantiles',
+            'university_autonomy' => 'Autonomía universitaria',
+            'working_conditions' => 'Condiciones laborales',
+            'funding' => 'Financiamiento',
+            'repression_security' => 'Represión y seguridad',
+            'other' => 'Otras categorías',
+        ],
     ],
 
     'latest_posts' => 'Últimos posts',

@@ -1,18 +1,18 @@
  <section class="home-panorama">
 
-    {{-- Encabezado --}}
-    <div class="home-panorama__heading">
-        <div class="home-panorama__title">
-            <span class="home-panorama__dot"></span>
+    <div class="panorama-heading">
 
-            <div>
-                <h2>{{ __('dashboard.general_overview') }}</h2>
-
-                <p>
-                    {{ __('dashboard.general_overview_description') }}
-                </p>
-            </div>
+        <div class="panorama-heading__title-row">
+            <span class="panorama-heading__line" aria-hidden="true"></span>
+            <h2 class="panorama-heading__title">
+                {{ __('dashboard.general_overview') }}
+            </h2>
+            <span class="panorama-heading__line" aria-hidden="true"></span>
         </div>
+
+        <p class="panorama-heading__subtitle">
+            {{ __('dashboard.general_overview_description') }}
+        </p>
     </div>
 
     <div class="home-panorama__list">
@@ -20,425 +20,309 @@
         {{-- =====================================================
              JUSTICIA, ENCUENTRO Y PERDÓN
         ====================================================== --}}
-        <article class="organization-summary organization-summary--jep">
+        @php
+            $jepFeaturedStat = data_get($stats ?? [], 0);
+            $jepSecondaryStats = collect($stats ?? [])->slice(1, 4);
+        @endphp
 
-            <div class="organization-summary__identity">
-                <img
-                    src="{{ asset('assets/img/organizations/jep.svg') }}"
-                    alt="Justicia, Encuentro y Perdón"
-                    class="organization-summary__logo organization-summary__logo--jep"
-                >
-
-                <h3>
-                    Justicia, Encuentro<br>
-                    y Perdón
-                </h3>
-
-                <span class="organization-summary__badge organization-summary__badge--jep">
-                    {{ __('dashboard.jep_title') }}
-                </span>
-            </div>
-
-            {{-- Cifras --}}
-            <div class="organization-summary__main organization-summary__main--jep">
-                <p class="organization-summary__eyebrow organization-summary__eyebrow--jep">
-                    {{ __('dashboard.key_figures') }}
-                </p>
-
-                <div class="jep-summary-stats">
-
-                    <div class="jep-summary-stat">
-                        <div class="jep-summary-stat__icon">
-                            <i class="bi bi-people"></i>
-                        </div>
-
-                        <span>{{ __('dashboard.stats.political_prisoners') }}</span>
-                        <strong>1.875</strong>
-
-                        <small class="metric-change metric-change--danger">
-                            <i class="bi bi-arrow-up-short"></i>
-                            5,2%
-                        </small>
-
-                        <small class="metric-period">
-                            {{ __('dashboard.previous_month_comparison') }}
-                        </small>
+        <div class="panorama-jep">
+            <article class="panorama-jep__main">
+                <header class="panorama-jep__header">
+                    <div class="panorama-jep__identity">
+                        <img
+                            src="{{ asset('assets/img/organizations/jep.svg') }}"
+                            alt=""
+                            class="panorama-jep__isotype"
+                        >
+                        <span class="panorama-jep__organization">{{ __('dashboard.jep') }}</span>
                     </div>
 
-                    <div class="jep-summary-stat">
-                        <div class="jep-summary-stat__icon">
-                            <i class="bi bi-person-standing-dress"></i>
-                        </div>
+                    <span class="panorama-jep__category">{{ __('dashboard.jep_title') }}</span>
+                </header>
 
-                        <span>{{ __('dashboard.stats.women') }}</span>
-                        <strong>234</strong>
+                <div class="panorama-jep__featured">
+                    <p class="panorama-jep__featured-label">
+                        {{ data_get($jepFeaturedStat, 'label', __('dashboard.stats.political_prisoners')) }}
+                    </p>
 
-                        <small class="metric-change metric-change--danger">
-                            <i class="bi bi-arrow-up-short"></i>
-                            6,4%
-                        </small>
+                    <div class="panorama-jep__featured-data">
+                        <strong class="panorama-jep__featured-value">
+                            {{ data_get($jepFeaturedStat, 'value', '—') }}
+                        </strong>
+
+                        @if (filled(data_get($jepFeaturedStat, 'change')))
+                            <div class="panorama-jep__variation panorama-jep__variation--{{ data_get($jepFeaturedStat, 'sentiment') === 'positive' ? 'positive' : 'negative' }}">
+                                <span>
+                                    <i class="bi bi-arrow-{{ data_get($jepFeaturedStat, 'direction') === 'down' ? 'down' : 'up' }}-short" aria-hidden="true"></i>
+                                    {{ data_get($jepFeaturedStat, 'change') }}
+                                </span>
+                                <small>{{ __('dashboard.previous_month_comparison') }}</small>
+                            </div>
+                        @endif
                     </div>
-
-                    <div class="jep-summary-stat">
-                        <div class="jep-summary-stat__icon">
-                            <i class="bi bi-heart-pulse"></i>
-                        </div>
-
-                        <span>{{ __('dashboard.stats.seriously_ill') }}</span>
-                        <strong>142</strong>
-
-                        <small class="metric-change metric-change--danger">
-                            <i class="bi bi-arrow-up-short"></i>
-                            18,3%
-                        </small>
-                    </div>
-
-                    <div class="jep-summary-stat">
-                        <div class="jep-summary-stat__icon">
-                            <i class="bi bi-globe-americas"></i>
-                        </div>
-
-                        <span>
-                            {{ __('dashboard.stats.foreign_dual_nationals') }}
-                        </span>
-
-                        <strong>23</strong>
-
-                        <small class="metric-change metric-change--danger">
-                            <i class="bi bi-arrow-up-short"></i>
-                            21,1%
-                        </small>
-                    </div>
-
-                    <div class="jep-summary-stat">
-                        <div class="jep-summary-stat__icon">
-                            <i class="bi bi-unlock"></i>
-                        </div>
-
-                        <span>{{ __('dashboard.stats.releases') }}</span>
-                        <strong>87</strong>
-
-                        <small class="metric-change metric-change--success">
-                            <i class="bi bi-arrow-up-short"></i>
-                            12,9%
-                        </small>
-                    </div>
-
                 </div>
-            </div>
 
-            {{-- Alerta --}}
-            <aside class="jep-monthly-alert">
-                <div class="jep-monthly-alert__title">
+                <div class="panorama-jep__secondary-stats">
+                    @foreach ($jepSecondaryStats as $jepStat)
+                        <div class="panorama-jep__stat">
+                            <span class="panorama-jep__stat-icon" aria-hidden="true">
+                                <i class="bi {{ data_get($jepStat, 'icon') }}"></i>
+                            </span>
+                            <strong>{{ data_get($jepStat, 'value', '—') }}</strong>
+                            <span class="panorama-jep__stat-label">{{ data_get($jepStat, 'label') }}</span>
+
+                            @if (filled(data_get($jepStat, 'change')))
+                                <small class="panorama-jep__stat-change panorama-jep__stat-change--{{ data_get($jepStat, 'sentiment') === 'positive' ? 'positive' : 'negative' }}">
+                                    <i class="bi bi-arrow-{{ data_get($jepStat, 'direction') === 'down' ? 'down' : 'up' }}-short" aria-hidden="true"></i>
+                                    {{ data_get($jepStat, 'change') }}
+                                </small>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+
+                <footer class="panorama-jep__footer">
                     <span>
+                        
+                    </span>
+
+                    <a href="{{ route('organizations.jep') }}">
+                        {{ __('dashboard.view_full_dashboard') }}
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </footer>
+            </article>
+
+            <aside class="panorama-jep__alert">
+                <div class="panorama-jep__alert-header">
+                    <span class="panorama-jep__alert-icon" aria-hidden="true">
                         <i class="bi bi-exclamation-triangle"></i>
                     </span>
-
-                    <strong>{{ __('dashboard.monthly_alert') }}</strong>
+                    <h3>{{ __('dashboard.jep_page.indicators.monthly_alert') }}</h3>
                 </div>
-
-                <p>
-                    Aumento de traslados irregulares de detenidos a cárceles
-                    de alta seguridad sin notificación a familiares ni abogados.
-                </p>
-            </aside>
-
-            {{-- Pie completo de JEP --}}
-            <div class="organization-summary__meta organization-summary__meta--jep">
-                <span>
-                    <i class="bi bi-clock"></i>
-
-                    {{ __('dashboard.last_update') }}:
-
-                    {{ now('America/Caracas')
-                        ->locale(app()->getLocale())
-                        ->translatedFormat('d M Y') }}
-                </span>
-
+                <p>{{ __('dashboard.jep_page.indicators.alert_text') }}</p>
                 <a href="{{ route('organizations.jep') }}">
-                    {{ __('dashboard.view_full_dashboard') }}
-                    <i class="bi bi-arrow-right"></i>
+                    {{ __('dashboard.jep_page.indicators.view_alert') }}
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </a>
-            </div>
-
-        </article>
-
-        {{-- =====================================================
-             ACCESO A LA JUSTICIA
-        ====================================================== --}}
-        <article class="organization-summary organization-summary--acceso">
-
-            <div class="organization-summary__identity">
                 <img
-                    src="{{ asset('assets/img/organizations/acceso-justicia.png') }}"
-                    alt="Acceso a la Justicia"
-                    class="organization-summary__logo organization-summary__logo--horizontal"
+                    src="{{ asset('assets/img/barrotes.png') }}"
+                    class="panorama-jep__alert-decoration"
+                    alt=""
+                    aria-hidden="true"
                 >
+            </aside>
+        </div>
 
-                <h3>
-                    Acceso a la<br>
-                    Justicia
-                </h3>
+        @php
+            $accessPosts = collect($accesoPosts ?? [])->take(2)->values();
+            $accessFeatured = $accessPosts->get(0);
+            $accessSecondary = $accessPosts->get(1);
 
-                <span class="organization-summary__badge organization-summary__badge--acceso">
-                    {{ __('dashboard.accesojusticia_title') }}
-                </span>
-            </div>
+            $fakeDeepPosts = collect(data_get($postsFakeNewsWeb ?? [], 'en_profundidad', []));
+            $fakeNotiPosts = collect(data_get($postsFakeNewsWeb ?? [], 'noti_fake', []));
+            $fakeXPosts = collect($postsFakeNewsX ?? []);
+            $fakeFeatured = $fakeNotiPosts->first() ?? $fakeDeepPosts->first() ?? $fakeXPosts->first();
+            $fakeFeaturedTitle = data_get($fakeFeatured, 'titulo') ?? data_get($fakeFeatured, 'text');
+            $fakeFeaturedImage = data_get($fakeFeatured, 'imagen') ?? data_get($fakeFeatured, 'image');
+            $fakeFeaturedDateValue = data_get($fakeFeatured, 'fecha') ?? data_get($fakeFeatured, 'created_at');
+            $fakeFeaturedDate = filled($fakeFeaturedDateValue)
+                ? rescue(fn () => \Carbon\Carbon::parse($fakeFeaturedDateValue)->locale(app()->getLocale())->translatedFormat('d M Y'), '', false)
+                : '';
+            $obuItems = collect($economicSocialItems ?? [])->concat($civilPoliticalItems ?? []);
+            $obuYears = collect($years ?? [])->filter()->values();
+            $obuMetrics = [
+                ['value' => $obuItems->isNotEmpty() ? $obuItems->sum('value') : null, 'label' => __('dashboard.obu.total_reports')],
+                ['value' => $obuItems->isNotEmpty() ? $obuItems->count() : null, 'label' => __('dashboard.obu.documented_categories')],
+                ['value' => collect($protestsData ?? [])->isNotEmpty() ? collect($protestsData)->sum() : null, 'label' => __('dashboard.obu.registered_protests')],
+                ['value' => $obuYears->isNotEmpty() ? $obuYears->first().' – '.$obuYears->last() : null, 'label' => __('dashboard.obu.analysis_period'), 'period' => true],
+            ];
+            $obuPeriod = $obuYears->isNotEmpty() ? $obuYears->first().' – '.$obuYears->last() : null;
+        @endphp
 
-            <div class="organization-summary__main">
-                <p class="organization-summary__eyebrow organization-summary__eyebrow--acceso">
-                    {{ __('dashboard.latest_content') }}
-                </p>
+        <div class="panorama-secondary-grid">
+            <article class="panorama-secondary-card panorama-access">
+                <header class="panorama-secondary-card__header">
+                    <img src="{{ asset('assets/img/organizations/acceso-justicia-.png') }}" alt="Acceso a la Justicia" class="panorama-access__logo">
+                    <div>
+                        <h3>{{ __('dashboard.acceso_justicia') }}</h3>
+                        <p>{{ __('dashboard.accesojusticia_title') }}</p>
+                    </div>
+                </header>
 
-                <div class="organization-posts-grid">
+                <p class="panorama-secondary-card__eyebrow">{{ __('dashboard.latest_content') }}</p>
 
-                    @forelse (($accesoPosts ?? collect())->take(3) as $post)
-                        <a
-                            href="{{ $post['url'] ?? '#' }}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="organization-post-mini"
-                        >
-                            <img
-                                src="{{ $post['image'] ?? asset('assets/img/placeholders/article.svg') }}"
-                                alt="{{ $post['title'] ?? '' }}"
-                            >
-
+                <div class="panorama-access__content">
+                    @if ($accessFeatured)
+                        <a href="{{ data_get($accessFeatured, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-access__featured">
+                            <img src="{{ data_get($accessFeatured, 'image') ?: asset('assets/img/placeholders/article.svg') }}" alt="{{ data_get($accessFeatured, 'title', '') }}">
                             <div>
-                                <h4>{{ $post['title'] ?? '' }}</h4>
-
-                                <time>
-                                    {{ $post['date'] ?? '' }}
-                                </time>
+                                <span>{{ __('dashboard.legal_alert_badge') }}</span>
+                                <h4>{{ data_get($accessFeatured, 'title') }}</h4>
+                                <time>{{ data_get($accessFeatured, 'date') }}</time>
                             </div>
                         </a>
-                    @empty
-                        <p class="text-muted small mb-0">
-                            No se encontraron publicaciones recientes con #AlertaLegal.
-                        </p>
-                    @endforelse
 
+                        @if ($accessSecondary)
+                            <a href="{{ data_get($accessSecondary, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-access__secondary">
+                                <time>{{ data_get($accessSecondary, 'date') }}</time>
+                                <span>{{ data_get($accessSecondary, 'title') }}</span>
+                            </a>
+                        @endif
+                    @else
+                        <p class="panorama-secondary-card__empty">{{ __('dashboard.no_synced_publications') }}</p>
+                    @endif
                 </div>
 
-                <div class="organization-summary__meta">
-                    <span>
-                        <i class="bi bi-clock"></i>
-                        {{ __('dashboard.last_update') }}:
-                        {{ now('America/Caracas')
-                            ->locale(app()->getLocale())
-                            ->translatedFormat('d M Y') }}
-                    </span>
+                <footer class="panorama-secondary-card__footer">
+                    <span></span>
+                    <a href="{{ route('organizations.acceso-justicia') }}">{{ __('dashboard.view_more_publications') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                </footer>
+            </article>
 
-                    <a href="{{ route('organizations.acceso-justicia') }}">
-                        {{ __('dashboard.view_more_publications') }}
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
+            <article class="panorama-secondary-card panorama-fake-news">
+                <header class="panorama-secondary-card__header">
+                    <img src="{{ asset('assets/img/organizations/fake-news-x.png') }}" alt="Observatorio Venezolano de Fake News" class="panorama-fake-news__logo">
+                    <div>
+                        <h3>{{ __('dashboard.fake_news') }}</h3>
+                        <p>{{ __('dashboard.fakenews_title') }}</p>
+                    </div>
+                </header>
 
-        </article>
+                {{-- Datos temporales hasta implementar la carga desde el panel administrativo --}}
+                @php
+                    $socialNetworks = collect($fakeNewsSocialNetworks ?? [
+                        ['key' => 'tiktok', 'name' => __('dashboard.social_networks.tiktok'), 'total' => 42, 'percentage' => 40.0, 'icon' => 'fa-brands fa-tiktok'],
+                        ['key' => 'facebook', 'name' => __('dashboard.social_networks.facebook'), 'total' => 34, 'percentage' => 32.4, 'icon' => 'fa-brands fa-facebook-f'],
+                        ['key' => 'instagram', 'name' => __('dashboard.social_networks.instagram'), 'total' => 15, 'percentage' => 14.3, 'icon' => 'fa-brands fa-instagram'],
+                        ['key' => 'x', 'name' => __('dashboard.social_networks.x'), 'total' => 7, 'percentage' => 6.7, 'icon' => 'fa-brands fa-x-twitter'],
+                        ['key' => 'whatsaap', 'name' => __('dashboard.social_networks.whatsaap'), 'total' => 7, 'percentage' => 6.7, 'icon' => 'fa-brands fa-whatsapp'],
+                    ]);
+                @endphp
 
-        {{-- =====================================================
-             OBSERVATORIO VENEZOLANO DE FAKE NEWS
-        ====================================================== --}}
-        <article class="organization-summary organization-summary--fake-news">
-
-            <div class="organization-summary__identity">
-                <img
-                    src="{{ asset('assets/img/organizations/fake-news-a.webp') }}"
-                    alt="Observatorio Venezolano de Fake News"
-                    class="organization-summary__logo organization-summary__logo--fake-news"
-                >
-
-                <h3>
-                    Observatorio Venezolano<br>
-                    de Fake News
-                </h3>
-
-                <span class="organization-summary__badge-fake organization-summary__badge--fake-news">
-                    {{ __('dashboard.fakenews_title') }}
-                </span>
-            </div>
-
-            <div class="organization-summary__main">
-                <div class="fake-news-overview">
-
-                    <div class="fake-news-left">
-
-                        <h4 class="overview-section-title">
-                            {{ __('dashboard.latest_content') }}
-                        </h4>
-
-                        <div class="fake-news-metrics">
-
-                            <div class="fake-news-metric">
-                                <span class="fake-news-metric__icon">
-                                    <i class="bi bi-patch-check"></i>
-                                </span>
-
-                                <div>
-                                    <small>{{ __('dashboard.verifications_published') }}</small>
-                                    <strong>24</strong>
-                                    <span>{{ __('dashboard.last_30_days') }}</span>
-                                </div>
-                            </div>
-
-                            <div class="fake-news-metric">
-                                <span class="fake-news-metric__icon">
-                                    <i class="bi bi-file-earmark-bar-graph"></i>
-                                </span>
-
-                                <div>
-                                    <small>{{ __('dashboard.analysis_infographics') }}</small>
-                                    <strong>12</strong>
-                                    <span>{{ __('dashboard.last_30_days') }}</span>
-                                </div>
-                            </div>
-
-                            <div class="fake-news-metric">
-                                <span class="fake-news-metric__icon">
-                                    <i class="bi bi-newspaper"></i>
-                                </span>
-
-                                <div>
-                                    <small>{{ __('dashboard.noti_fake_published') }}</small>
-                                    <strong>8</strong>
-                                    <span>{{ __('dashboard.last_30_days') }}</span>
-                                </div>
-                            </div>
-
+                <div class="panorama-ovfn__circulation">
+                    <div class="panorama-ovfn__section-header">
+                        <h4>{{ __('dashboard.where_it_spreads') }}</h4>
+                        <div class="panorama-ovfn__period">
+                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            <span>{{ __('dashboard.disinformation_since') }}</span>
                         </div>
-
                     </div>
 
-                    <div class="fake-news-right">
+                    <div class="panorama-ovfn__networks">
+                        @foreach ($socialNetworks as $network)
+                            @if (filled(data_get($network, 'total')) && filled(data_get($network, 'percentage')))
+                                @php
+                                    $networkPercentage = max(0, min(100, (float) data_get($network, 'percentage')));
+                                @endphp
+                                <div class="panorama-ovfn__network">
+                                    <div class="panorama-ovfn__network-name">
+                                        <span class="panorama-ovfn__network-icon" aria-hidden="true">
+                                            <i class="{{ data_get($network, 'icon') }}"></i>
+                                        </span>
+                                        <span>{{ data_get($network, 'name') }}</span>
+                                    </div>
+                                    <div class="panorama-ovfn__network-bar" role="img" aria-label="{{ data_get($network, 'name') }}: {{ $networkPercentage }}%">
+                                        <span class="panorama-ovfn__network-progress" style="width: {{ $networkPercentage }}%"></span>
+                                    </div>
+                                    <strong class="panorama-ovfn__network-count">{{ number_format((int) data_get($network, 'total'), 0, ',', '.') }}</strong>
+                                    <span class="panorama-ovfn__network-percentage">({{ number_format($networkPercentage, 1) }}%)</span>
+                                </div>
+                            @endif
+                        @endforeach
 
-                        <h4 class="overview-section-title">
-                            {{ __('dashboard.featured_verification') }}
-                        </h4>
+                        @if ($socialNetworks->isEmpty())
+                            <p class="panorama-secondary-card__empty">{{ __('dashboard.social_networks.unavailable') }}</p>
+                        @endif
+                    </div>
+                </div>
 
-                        <a href="#" class="fake-news-featured">
-
-                            <img src="{{ asset('assets/img/organizations/fake-news-x.png') }}" alt="">
-
-                            <div class="fake-news-featured__content">
-
-                                <small>{{ __('dashboard.noti_fake') }}</small>
-
-                                <p style="font-size: 12px;">
-                                    Bukele y los terremotos en Venezuela:
-                                    la imagen falsa que circula en redes
-                                </p>
-
-                                <time>27 jul. 2026</time>
-
+                @if ($fakeFeatured && filled($fakeFeaturedTitle))
+                    <div class="panorama-fake-news__featured-wrap">
+                        <p>{{ __('dashboard.featured_verification') }}</p>
+                        <a href="{{ data_get($fakeFeatured, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-fake-news__featured">
+                            <img src="{{ $fakeFeaturedImage ?: asset('assets/img/placeholders/article.svg') }}" alt="{{ $fakeFeaturedTitle }}">
+                            <div>
+                                <span>{{ data_get($fakeFeatured, 'seccion_nombre', __('dashboard.noti_fake')) }}</span>
+                                <h4>{{ $fakeFeaturedTitle }}</h4>
+                                @if ($fakeFeaturedDate)
+                                    <time>{{ $fakeFeaturedDate }}</time>
+                                @endif
                             </div>
-
                         </a>
-
                     </div>
+                @endif
+
+                <footer class="panorama-secondary-card__footer">
+                    <span></span>
+                    <a href="{{ route('organizations.fake-news') }}">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                </footer>
+            </article>
+
+            <article class="panorama-secondary-card panorama-obu">
+                <header class="panorama-secondary-card__header">
+                    <img src="{{ asset('assets/img/organizations/obu.png') }}" alt="Observatorio de Universidades" class="panorama-obu__logo">
+                    <div>
+                        <h3>{{ __('dashboard.universities') }}</h3>
+                        <p>{{ __('dashboard.university_title') }}</p>
+                    </div>
+                </header>
+
+                <p class="panorama-secondary-card__eyebrow">{{ __('dashboard.panorama_secondary.universities_in_figures') }}</p>
+
+                <div class="panorama-obu__metrics">
+                    @foreach (collect($obuMetrics)->take(3) as $obuMetric)
+                        @if (filled($obuMetric['value']))
+                            <div class="panorama-obu__metric">
+                                <strong class="{{ ! empty($obuMetric['period']) ? 'panorama-obu__metric-value--period' : '' }}">{{ $obuMetric['value'] }}</strong>
+                                <span>{{ $obuMetric['label'] }}</span>
+                            </div>
+                        @endif
+                    @endforeach
                 </div>
 
-                <div class="organization-summary__meta">
-                    <span>
-                        <i class="bi bi-clock"></i>
-                        {{ __('dashboard.last_update') }}:
-                        {{ now('America/Caracas')
-                            ->locale(app()->getLocale())
-                            ->translatedFormat('d M  Y') }}
-                    </span>
+                {{-- Datos temporales hasta implementar la carga desde el panel administrativo --}}
+                @php
+                    $obuCategories = collect($obuDocumentedCategories ?? [
+                        ['name' => __('dashboard.obu.panorama_categories.student_rights'), 'total' => 142, 'icon' => 'bi-people'],
+                        ['name' => __('dashboard.obu.panorama_categories.university_autonomy'), 'total' => 98, 'icon' => 'bi-mortarboard'],
+                        ['name' => __('dashboard.obu.panorama_categories.working_conditions'), 'total' => 87, 'icon' => 'bi-briefcase'],
+                        ['name' => __('dashboard.obu.panorama_categories.funding'), 'total' => 76, 'icon' => 'bi-currency-dollar'],
+                        ['name' => __('dashboard.obu.panorama_categories.repression_security'), 'total' => 68, 'icon' => 'bi-shield'],
+                        ['name' => __('dashboard.obu.panorama_categories.other'), 'total' => 92, 'icon' => 'bi-three-dots'],
+                    ]);
+                @endphp
 
-                    <a href="{{ route('organizations.fake-news') }}">
-                        {{ __('dashboard.view_full_dashboard') }}
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
+                <section class="panorama-obu__categories-section" aria-labelledby="panorama-obu-categories-title">
+                    <h4 id="panorama-obu-categories-title">{{ __('dashboard.obu.documented_categories') }}</h4>
 
-        </article>
-
-        {{-- =====================================================
-             OBSERVATORIO DE UNIVERSIDADES
-        ====================================================== --}}
-        <article class="organization-summary organization-summary--obu">
-
-            <div class="organization-summary__identity">
-                <img
-                    src="{{ asset('assets/img/organizations/obu.png') }}"
-                    alt="Observatorio de Universidades"
-                    class="organization-summary__logo organization-summary__logo--obu"
-                >
-
-                <h3>
-                    Observatorio de<br>
-                    Universidades
-                </h3>
-
-                <span class="organization-summary__badge organization-summary__badge--obu">
-                    {{ __('dashboard.university_title') }}
-                </span>
-            </div>
-
-            <div class="organization-summary__main">
-                <p class="organization-summary__eyebrow organization-summary__eyebrow--obu">
-                    {{ __('dashboard.latest_content') }}
-                </p>
-
-                <div class="obu-panorama-metrics">
-                    <div class="obu-panorama-metric obu-panorama-metric--reports">
-                        <span class="obu-panorama-metric__icon"><i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i></span>
-                        <div class="obu-panorama-metric__content">
-                            <span class="obu-panorama-metric__label">{{ __('dashboard.obu.total_reports') }}</span>
-                            <strong class="obu-panorama-metric__value">222</strong>
-                            <small class="obu-panorama-metric__subtitle">{{ __('dashboard.obu.last_six_months') }}</small>
-                        </div>
+                    <div class="panorama-obu__categories">
+                        @foreach ($obuCategories as $category)
+                            <div class="panorama-obu__category">
+                                <div class="panorama-obu__category-main">
+                                    <span class="panorama-obu__category-icon" aria-hidden="true">
+                                        <i class="bi {{ data_get($category, 'icon') }}"></i>
+                                    </span>
+                                    <span class="panorama-obu__category-name">{{ data_get($category, 'name') }}</span>
+                                </div>
+                                <strong class="panorama-obu__category-total">{{ number_format((int) data_get($category, 'total'), 0, ',', '.') }}</strong>
+                            </div>
+                        @endforeach
                     </div>
+                </section>
 
-                    <div class="obu-panorama-metric obu-panorama-metric--categories">
-                        <span class="obu-panorama-metric__icon"><i class="bi bi-people-fill" aria-hidden="true"></i></span>
-                        <div class="obu-panorama-metric__content">
-                            <span class="obu-panorama-metric__label">{{ __('dashboard.obu.documented_categories') }}</span>
-                            <strong class="obu-panorama-metric__value">8</strong>
-                            <small class="obu-panorama-metric__subtitle">{{ __('dashboard.obu.three_main_areas') }}</small>
-                        </div>
-                    </div>
+                @if (filled($obuPeriod))
+                    <p class="panorama-obu__period-note">
+                        {{ __('dashboard.obu.accumulated_period', ['period' => $obuPeriod]) }}
+                    </p>
+                @endif
 
-                    <div class="obu-panorama-metric obu-panorama-metric--protests">
-                        <span class="obu-panorama-metric__icon"><i class="bi bi-megaphone-fill" aria-hidden="true"></i></span>
-                        <div class="obu-panorama-metric__content">
-                            <span class="obu-panorama-metric__label">{{ __('dashboard.obu.registered_protests') }}</span>
-                            <strong class="obu-panorama-metric__value">75</strong>
-                            <small class="obu-panorama-metric__subtitle">{{ __('dashboard.obu.five_modalities') }}</small>
-                        </div>
-                    </div>
-
-                    <div class="obu-panorama-metric obu-panorama-metric--period">
-                        <span class="obu-panorama-metric__icon"><i class="bi bi-calendar3" aria-hidden="true"></i></span>
-                        <div class="obu-panorama-metric__content">
-                            <span class="obu-panorama-metric__label">{{ __('dashboard.obu.analysis_period') }}</span>
-                            <strong class="obu-panorama-metric__value obu-panorama-metric__value--period">{{ __('dashboard.obu.january_june_2026') }}</strong>
-                            <small class="obu-panorama-metric__subtitle">{{ __('dashboard.obu.last_six_months_short') }}</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="organization-summary__meta">
-                    <span>
-                        <i class="bi bi-clock"></i>
-                        {{ __('dashboard.last_update') }}:
-                        {{ now('America/Caracas')
-                            ->locale(app()->getLocale())
-                            ->translatedFormat('d M  Y') }}
-                    </span>
-
-                    <a href="{{ route('organizations.universidades') }}">
-                        {{ __('dashboard.view_full_dashboard') }}
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-        </article>
+                <footer class="panorama-secondary-card__footer">
+                    <span></span>
+                    <a href="{{ route('organizations.universidades') }}">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                </footer>
+            </article>
+        </div>
 
     </div>
 </section>
