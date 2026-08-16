@@ -18,16 +18,6 @@ class PublicDashboardController extends Controller
         return $this->dashboardView($dashboard, 'dashboard.index');
     }
 
-    public function indexV2(DashboardQueryService $dashboard): View
-    {
-        return $this->dashboardView($dashboard, 'dashboard.index_v2');
-    }
-
-    public function indexV3(DashboardQueryService $dashboard): View
-    {
-        return $this->dashboardView($dashboard, 'dashboard.index_v3');
-    }
-
     public function jep(DashboardQueryService $dashboard): View
     {
         return $this->organizationView($dashboard, 'dashboard.organizations.jep', 'jep');

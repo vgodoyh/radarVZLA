@@ -72,7 +72,9 @@
         </section>
     </div>
 
-    @include('dashboard.partials.footer', [
-        'lastSync' => $lastSync ?? null,
+    @include('dashboard.partials.organization-footer', [
+        'footerOrganization' => $organization,
+        'footerCategory' => __('dashboard.jep_page.badge'),
+        'footerAccent' => '#1769f6',
     ])
 @endsection

@@ -1,194 +1,154 @@
-@extends('layouts.public')
+@extends('layouts.public_v2')
 
 @section('title', __('dashboard.meta_title'))
 
 @section('content')
+    @php
+        $lastSyncAt = filled($lastSync ?? null)
+            ? rescue(
+                fn () => \Carbon\Carbon::parse($lastSync)->setTimezone('America/Caracas')->locale(app()->getLocale()),
+                null,
+                false
+            )
+            : null;
 
-    <div class="home-surface dashboard-v1">
+        $pulseStats = [
+            [
+                'class' => 'jep',
+                'value' => data_get($stats ?? [], '0.value'),
+                'label' => __('dashboard.dashboard_v2.political_prisoners'),
+                'organization' => 'JEP',
+            ],
+            [
+                'class' => 'acceso',
+                'value' => collect($alertasLegales ?? [])->count(),
+                'label' => __('dashboard.dashboard_v2.legal_alerts'),
+                'organization' => __('dashboard.dashboard_v2.acceso_short'),
+            ],
+            [
+                'class' => 'ovfn',
+                'value' => collect($postsFakeNewsX ?? [])->count()
+                    + collect(data_get($postsFakeNewsWeb ?? [], 'en_profundidad', []))->count()
+                    + collect(data_get($postsFakeNewsWeb ?? [], 'noti_fake', []))->count(),
+                'label' => __('dashboard.dashboard_v2.verifications'),
+                'organization' => 'OVFN',
+            ],
+            [
+                'class' => 'obu',
+                'value' => collect($economicSocialItems ?? [])->concat($civilPoliticalItems ?? [])->sum('value'),
+                'label' => __('dashboard.dashboard_v2.university_monitoring'),
+                'organization' => 'OBU',
+            ],
+        ];
+    @endphp
 
-        {{-- =====================================================
-             HERO
-        ====================================================== --}}
-        <header class="hero-section hero-section--light">
-            <div class="container-fluid dashboard-v1-shell py-4">
-
-                {{-- Selector de idioma --}}
-                <div class="d-flex justify-content-end mb-1">
-                    <div
-                        class="language-switcher language-switcher--light"
-                        aria-label="{{ __('dashboard.language') }}"
-                    >
-                        <i class="bi bi-globe2"></i>
-
-                        <a
-                            href="{{ route('language.switch', 'es') }}"
-                            class="{{ app()->isLocale('es') ? 'active' : '' }}"
+    <div class="home-surface dashboard-v2">
+        <header class="dashboard-v2-header">
+            <div class="dashboard-v2-container">
+                <div class="dashboard-v2-navbar">
+                    <a href="{{ route('dashboard.public') }}" class="dashboard-v2-brand" aria-label="{{ __('dashboard.site_name') }}">
+                        <img
+                            src="{{ asset('assets/img/pulso-venezuela-color.png') }}"
+                            alt=""
+                            class="dashboard-v2-brand__isotype"
+                            loading="eager"
                         >
-                            ES
-                        </a>
+                    </a>
 
-                        <span class="language-switcher__separator">|</span>
+                    <nav class="dashboard-v2-navigation" aria-label="{{ __('dashboard.dashboard_v2.main_navigation') }}">
+                        <a href="{{ route('organizations.jep') }}">Inicio</a>
+                        <a href="{{ route('organizations.jep') }}">JEP</a>
+                        <a href="{{ route('organizations.acceso-justicia') }}">Acceso a la Justicia</a>
+                        <a href="{{ route('organizations.fake-news') }}">Fake News</a>
+                        <a href="{{ route('organizations.universidades') }}">OBU</a>
+                    </nav>
 
-                        <a
-                            href="{{ route('language.switch', 'en') }}"
-                            class="{{ app()->isLocale('en') ? 'active' : '' }}"
-                        >
-                            EN
-                        </a>
+                    <div class="dashboard-v2-language" aria-label="{{ __('dashboard.language') }}">
+                        <a href="{{ route('language.switch', 'es') }}" class="{{ app()->isLocale('es') ? 'active' : '' }}" lang="es">ES</a>
+                        <span aria-hidden="true">/</span>
+                        <a href="{{ route('language.switch', 'en') }}" class="{{ app()->isLocale('en') ? 'active' : '' }}" lang="en">EN</a>
                     </div>
                 </div>
 
-                <div class="row align-items-start g-4">
+                <div class="dashboard-v2-partners" aria-label="{{ __('dashboard.participating_organizations') }}">
+                    <div class="dashboard-v2-partner dashboard-v2-partner--jep">
+                        <img src="{{ asset('assets/img/organizations/jep.svg') }}" alt="Justicia, Encuentro y Perdón" loading="eager">
+                    </div>
+                    <div class="dashboard-v2-partner dashboard-v2-partner--acceso">
+                        <img src="{{ asset('assets/img/organizations/acceso-justicia.png') }}" alt="Acceso a la Justicia" loading="eager">
+                    </div>
+                    <div class="dashboard-v2-partner dashboard-v2-partner--fake-news">
+                        <img src="{{ asset('assets/img/organizations/fake-news-a.webp') }}" alt="Observatorio Venezolano de Fake News" loading="eager">
+                    </div>
+                    <div class="dashboard-v2-partner dashboard-v2-partner--obu">
+                        <img src="{{ asset('assets/img/organizations/obu.png') }}" alt="Observatorio de Universidades" loading="eager">
+                    </div>
+                </div>
 
-                    {{-- Contenido principal --}}
-                    <div class="col-12 col-lg-7">
-
-                        <a
-                            href="{{ route('dashboard.public') }}"
-                            class="hero-isotype d-inline-flex text-decoration-none"
-                            aria-label="{{ __('dashboard.site_name') }}"
-                        >
-                            <img
-                                src="{{ asset('assets/img/isotipo-pulso.png') }}"
-                                alt="{{ __('dashboard.site_name') }}"
-                            >
-                        </a>
-
-                        <h1 class="hero-title" style="font-size: 45px;">
-                            {{ __('dashboard.hero_title_1') }}<br>
-                            {{ __('dashboard.hero_title_2') }}<br>
-
-                            <span>
-                                {{ __('dashboard.hero_title_3') }}
-                            </span>
+                <div class="dashboard-v2-hero">
+                    <div class="dashboard-v2-hero-content">
+                        <h1>
+                            {{ __('dashboard.dashboard_v2.hero_line_1') }}<br>
+                            {{ __('dashboard.dashboard_v2.hero_line_2') }}<br>
+                            {{ __('dashboard.dashboard_v2.hero_line_3') }}
                         </h1>
-
-                        <span class="hero-badge">
-                            {{ __('dashboard.hero_badge') }}
-                        </span>
-
-                        <p class="hero-description">
-                            {{ __('dashboard.hero_description') }}
-                        </p>
-
-                        <div class="hero-organizations">
-
-                            <div class="hero-organization-logo hero-organization-logo--jep">
-                                <img
-                                    src="{{ asset('assets/img/organizations/jep.svg') }}"
-                                    alt="Justicia, Encuentro y Perdón"
-                                >
-                            </div>
-
-                            <div class="hero-organization-logo hero-organization-logo--acceso">
-                                <img
-                                    src="{{ asset('assets/img/organizations/acceso-justicia-.png') }}"
-                                    alt="Acceso a la Justicia"
-                                >
-                            </div>
-
-                            <div class="hero-organization-logo hero-organization-logo--fake">
-                                <img
-                                    src="{{ asset('assets/img/organizations/fake-news-a.webp') }}"
-                                    alt="Observatorio Venezolano de Fake News"
-                                >
-                            </div>
-
-                            <div class="hero-organization-logo hero-organization-logo--obu">
-                                <img
-                                    src="{{ asset('assets/img/organizations/obu.png') }}"
-                                    alt="Observatorio de Universidades"
-                                >
-                            </div>
-
+                        <div class="dashboard-v2-hero__country">
+                            {{ __('dashboard.dashboard_v2.in_venezuela') }}
+                        </div>
+                        <span class="dashboard-v2-hero__line" aria-hidden="true"></span>
+                        <div class="dashboard-v2-description">
+                            <p>{{ __('dashboard.hero_description') }}</p>
+                        </div>
+                        <div class="dashboard-v2-update">
+                            <span class="dashboard-v2-update__dot" aria-hidden="true"></span>
+                            <span>{{ __('dashboard.data_updated') }}:</span>
+                            <strong>{{ $lastSyncAt ? $lastSyncAt->translatedFormat('d M Y') : __('dashboard.pending_sync') }}</strong>
                         </div>
                     </div>
 
-                    {{-- Mapa y actualización --}}
-                    <div class="col-12 col-lg-5 position-relative hero-map-column">
-
-                        <div class="hero-map" aria-hidden="true">
-                            <img
-                                src="{{ asset('assets/img/mapa-venezuela-radar.svg') }}"
-                                alt=""
-                            >
-                        </div>
-
-                        <div class="hero-update-card">
-                            <div class="hero-update-card__heading">
-                                <i class="bi bi-calendar2-check"></i>
-
-                                <span>
-                                    {{ __('dashboard.data_updated') }}
-                                </span>
-                            </div>
-
-                            <div class="hero-update-card__date">
-                                {{ now('America/Caracas')
-                                    ->locale(app()->getLocale())
-                                    ->translatedFormat('d M Y') }}
-                            </div>
-
-                            <div class="hero-update-card__divider"></div>
-
-                            <div class="hero-update-card__time">
-                                <i class="bi bi-clock"></i>
-                                <span id="rv-time"></span>
-                            </div>
-                        </div>
+                    <div class="dashboard-v2-map" aria-hidden="true">
+                        <img
+                            src="{{ asset('assets/img/mapa-venezuela-pulso-final.svg') }}"
+                            alt="Mapa de Venezuela"
+                            class="hero-map-image"
+                        >
                     </div>
-
                 </div>
             </div>
         </header>
 
-        {{-- =====================================================
-             PANORAMA
-        ====================================================== --}}
+        <section class="dashboard-v2-pulse" aria-labelledby="dashboard-v2-pulse-title">
+            <div class="dashboard-v2-container">
+                <div class="dashboard-v2-pulse__heading">
+                    <span aria-hidden="true"></span>
+                    <h2 id="dashboard-v2-pulse-title">{{ __('dashboard.dashboard_v2.pulse_title') }}</h2>
+                    <span aria-hidden="true"></span>
+                </div>
+
+                <div class="dashboard-v2-pulse__grid">
+                    @foreach ($pulseStats as $pulseStat)
+                        <article class="dashboard-v2-stat dashboard-v2-stat--{{ $pulseStat['class'] }}">
+                            <strong>{{ filled($pulseStat['value']) ? $pulseStat['value'] : '—' }}</strong>
+                            <p>{{ $pulseStat['label'] }}</p>
+                            <span>{{ $pulseStat['organization'] }}</span>
+                        </article>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
         <main class="dashboard-main">
-            <div class="dashboard-main__container dashboard-v1-shell">
-
-                <section
-                    id="panorama"
-                    class="dashboard-panorama"
-                >
-                    @include('dashboard.partials.panorama')
+            <div class="dashboard-main__container dashboard-v2-container">
+                <section id="panorama" class="dashboard-panorama">
+                    @include('dashboard.partials.panorama_v2')
                 </section>
-
             </div>
         </main>
-
     </div>
 
     @include('dashboard.partials.footer', [
         'lastSync' => $lastSync ?? null,
-        'containerClass' => 'dashboard-v1-shell',
+        'containerClass' => 'dashboard-v2-container dashboard-v2-footer-container',
+        'footerClass' => 'site-footer--home',
     ])
-
-    <script>
-        function rvUpdateClock() {
-            const now = new Date();
-
-            const locale =
-                document.documentElement.lang === 'en'
-                    ? 'en-US'
-                    : 'es-VE';
-
-            const timeElement = document.getElementById('rv-time');
-
-            if (!timeElement) {
-                return;
-            }
-
-            timeElement.textContent = now.toLocaleTimeString(locale, {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        rvUpdateClock();
-
-        setInterval(rvUpdateClock, 30000);
-    </script>
-
 @endsection

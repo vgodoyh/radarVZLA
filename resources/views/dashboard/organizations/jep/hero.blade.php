@@ -49,6 +49,11 @@
                         </div>
                     </div>
                 </div>
+
+                @include('dashboard.organizations.partials.mobile-update', [
+                    'lastSyncAt' => $lastSyncAt,
+                    'accent' => '#1769f6',
+                ])
             </div>
 
             <div class="jep-page__visual">

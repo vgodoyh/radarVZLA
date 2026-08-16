@@ -94,6 +94,11 @@
                                 </div>
                             </div>
                         </div>
+
+                        @include('dashboard.organizations.partials.mobile-update', [
+                            'lastSyncAt' => $lastSyncAt,
+                            'accent' => '#f2c600',
+                        ])
                     </div>
 
                     <div class="jep-page__visual">
@@ -176,7 +181,9 @@
         </main>
     </div>
 
-    @include('dashboard.partials.footer', [
-        'lastSync' => $lastSync ?? null,
+    @include('dashboard.partials.organization-footer', [
+        'footerOrganization' => $fakeNewsOrganization,
+        'footerCategory' => __('dashboard.fake_news_page.badge'),
+        'footerAccent' => '#f2c600',
     ])
 @endsection

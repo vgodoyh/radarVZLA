@@ -62,7 +62,7 @@ return [
     'no_synced_publications' => 'No hay publicaciones sincronizadas para esta organización.',
     'acceso_page_title' => 'Acceso a la Justicia | Pulso Venezuela',
     'back_to_organizations' => 'Volver a organizaciones',
-    'acceso_institutional_description' => 'Organización dedicada a promover el Estado de Derecho, la justicia y los derechos humanos mediante investigación, documentación y difusión de información jurídica accesible.',
+    'acceso_institutional_description' => 'Análisis jurídico y difusión en lenguaje claro sobre democracia, derechos humanos, Estado de derecho y sistema de justicia en Venezuela.',
     'methodology_note_title' => 'Nota metodológica',
     'acceso_methodology_note' => 'El contenido de #AlertaLegal se obtiene de publicaciones en X realizadas por Acceso a la Justicia. Las interacciones corresponden a las métricas reportadas por la plataforma y pueden variar con el tiempo.',
     'about_acceso_justicia' => 'Sobre Acceso a la Justicia',
@@ -355,6 +355,12 @@ return [
     'view_on_x' => 'Ver en X',
 
     'social_media' => 'Redes sociales',
+    'organization_footer' => [
+        'main_links' => 'Accesos principales',
+        'website' => 'Sitio web',
+        'contact' => 'Contacto',
+        'information' => 'Información',
+    ],
     'latest_org_posts' => 'Lo que están publicando las organizaciones',
     'feed_unavailable' => 'No fue posible cargar las publicaciones de esta organización.',
 

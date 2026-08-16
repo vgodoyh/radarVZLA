@@ -1,9 +1,9 @@
-@extends('layouts.public')
+@extends('layouts.public_v2')
 
 @section('title', __('dashboard.acceso_page_title'))
 
 @section('content')
-    <div class="access-justice-detail">
+    <div class="access-justice-detail access-justice-v2 dashboard-v2">
         @include('dashboard.organizations.partials.hero', [
             'sectionLabel' => '#AlertaLegal',
             'theme' => 'acceso',
@@ -74,40 +74,42 @@
                             <div>
                                 <p>#AlertaLegal</p>
                                 <h2>{{ __('dashboard.latest_content') }}</h2>
+                                <small>
+                                    {{ app()->isLocale('en')
+                                        ? 'Recently Documented Alerts.'
+                                        : 'Alertas documentadas recientemente.' }}
+                                </small>
                             </div>
                         </div>
 
-                        @php($publicationCount = method_exists($posts, 'total') ? $posts->total() : $posts->count())
-                        <span class="access-justice-detail__count">
-                            {{ trans_choice('dashboard.publication_count', $publicationCount, ['count' => $publicationCount]) }}
-                        </span>
-                    </header>
-
-                    <form
-                        action="{{ route('organizations.acceso-justicia') }}"
-                        method="GET"
-                        class="access-justice-detail__search"
-                        role="search"
-                    >
-                        <div class="access-justice-detail__search-field">
-                            <i class="bi bi-search" aria-hidden="true"></i>
-                            <input
-                                type="search"
-                                name="q"
-                                value="{{ $search }}"
-                                placeholder="{{ __('dashboard.search_legal_alerts') }}"
-                                aria-label="{{ __('dashboard.search_publications') }}"
+                        <div class="access-justice-detail__section-actions">
+                            <form
+                                action="{{ route('organizations.acceso-justicia') }}"
+                                method="GET"
+                                class="access-justice-detail__search"
+                                role="search"
                             >
+                                <div class="access-justice-detail__search-field">
+                                    <i class="bi bi-search" aria-hidden="true"></i>
+                                    <input
+                                        type="search"
+                                        name="q"
+                                        value="{{ $search }}"
+                                        placeholder="{{ __('dashboard.search_legal_alerts') }}"
+                                        aria-label="{{ __('dashboard.search_publications') }}"
+                                    >
+                                </div>
+
+                                <button type="submit">{{ __('dashboard.search_button') }}</button>
+
+                                @if (filled($search))
+                                    <a href="{{ route('organizations.acceso-justicia') }}">
+                                        {{ __('dashboard.clear_search') }}
+                                    </a>
+                                @endif
+                            </form>
                         </div>
-
-                        <button type="submit">{{ __('dashboard.search_button') }}</button>
-
-                        @if (filled($search))
-                            <a href="{{ route('organizations.acceso-justicia') }}">
-                                {{ __('dashboard.clear_search') }}
-                            </a>
-                        @endif
-                    </form>
+                    </header>
 
                     <div class="access-justice-detail__grid">
                         @forelse ($posts as $post)
@@ -132,7 +134,20 @@
         </main>
     </div>
 
-    @include('dashboard.partials.footer', [
-        'lastSync' => $lastSync ?? null,
+    @include('dashboard.partials.organization-footer', [
+        'footerOrganization' => $organization,
+        'footerCategory' => app()->isLocale('en') ? 'Rule of law and justice' : 'Estado de Derecho y Justicia',
+        'footerAccent' => '#ff6500',
+        'footerLinks' => [
+            'website' => 'https://accesoalajusticia.org/',
+            'contact' => 'https://accesoalajusticia.org/contacto/',
+            'info' => 'https://accesoalajusticia.org/quienes-somos/',
+            'facebook' => 'https://www.facebook.com/accesoajusticia',
+            'x' => 'https://x.com/AccesoaJusticia',
+            'instagram' => 'https://www.instagram.com/accesoalajusticia',
+            'youtube' => 'https://www.youtube.com/channel/UCaN8pSSlY6Tq2SnxzBKLqiA/featured',
+            'tiktok' => 'https://www.tiktok.com/@accesoalajusticia',
+            'telegram' => 'https://t.me/AccesoaLaJusticiaONG',
+        ],
     ])
 @endsection

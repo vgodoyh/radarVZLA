@@ -20,18 +20,18 @@
                 'organization' => 'JEP',
             ],
             [
+                'class' => 'acceso',
+                'value' => collect($alertasLegales ?? [])->count(),
+                'label' => __('dashboard.dashboard_v2.legal_alerts'),
+                'organization' => __('dashboard.dashboard_v2.acceso_short'),
+            ],
+            [
                 'class' => 'ovfn',
                 'value' => collect($postsFakeNewsX ?? [])->count()
                     + collect(data_get($postsFakeNewsWeb ?? [], 'en_profundidad', []))->count()
                     + collect(data_get($postsFakeNewsWeb ?? [], 'noti_fake', []))->count(),
                 'label' => __('dashboard.dashboard_v2.verifications'),
                 'organization' => 'OVFN',
-            ],
-            [
-                'class' => 'acceso',
-                'value' => collect($alertasLegales ?? [])->count(),
-                'label' => __('dashboard.dashboard_v2.legal_alerts'),
-                'organization' => __('dashboard.dashboard_v2.acceso_short'),
             ],
             [
                 'class' => 'obu',
@@ -48,20 +48,11 @@
                 <div class="dashboard-v2-navbar">
                     <a href="{{ route('dashboard.public') }}" class="dashboard-v2-brand" aria-label="{{ __('dashboard.site_name') }}">
                         <img
-                            src="{{ asset('assets/img/isotipo-pulso.png') }}"
+                            src="{{ asset('assets/img/pulso-venezuela-color.png') }}"
                             alt=""
                             class="dashboard-v2-brand__isotype"
                             loading="eager"
                         >
-                        <span class="dashboard-v2-brand__content">
-                            <span class="dashboard-v2-brand__name">
-                                <span>PULSO</span>
-                                <strong>VZLA</strong>
-                            </span>
-                            <span class="dashboard-v2-brand__subtitle">
-                                {{ __('dashboard.dashboard_v2.brand_tagline') }}
-                            </span>
-                        </span>
                     </a>
 
                     <nav class="dashboard-v2-navigation" aria-label="{{ __('dashboard.dashboard_v2.main_navigation') }}">
@@ -80,14 +71,14 @@
                 </div>
 
                 <div class="dashboard-v2-partners" aria-label="{{ __('dashboard.participating_organizations') }}">
+                    <div class="dashboard-v2-partner dashboard-v2-partner--jep">
+                        <img src="{{ asset('assets/img/organizations/jep.svg') }}" alt="Justicia, Encuentro y Perdón" loading="eager">
+                    </div>
                     <div class="dashboard-v2-partner dashboard-v2-partner--acceso">
                         <img src="{{ asset('assets/img/organizations/acceso-justicia.png') }}" alt="Acceso a la Justicia" loading="eager">
                     </div>
                     <div class="dashboard-v2-partner dashboard-v2-partner--fake-news">
                         <img src="{{ asset('assets/img/organizations/fake-news-a.webp') }}" alt="Observatorio Venezolano de Fake News" loading="eager">
-                    </div>
-                    <div class="dashboard-v2-partner dashboard-v2-partner--jep">
-                        <img src="{{ asset('assets/img/organizations/jep.svg') }}" alt="Justicia, Encuentro y Perdón" loading="eager">
                     </div>
                     <div class="dashboard-v2-partner dashboard-v2-partner--obu">
                         <img src="{{ asset('assets/img/organizations/obu.png') }}" alt="Observatorio de Universidades" loading="eager">

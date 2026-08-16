@@ -62,7 +62,7 @@ return [
     'no_synced_publications' => 'There are no synchronized publications for this organization.',
     'acceso_page_title' => 'Acceso a la Justicia | Pulso Venezuela',
     'back_to_organizations' => 'Back to organizations',
-    'acceso_institutional_description' => 'An organization dedicated to advancing the rule of law, justice, and human rights through research, documentation, and accessible legal information.',
+    'acceso_institutional_description' => 'Legal analysis and accessible information on democracy, human rights, the rule of law, and Venezuela’s justice system.',
     'methodology_note_title' => 'Methodological note',
     'acceso_methodology_note' => '#AlertaLegal content is obtained from posts on X published by Acceso a la Justicia. Interactions reflect metrics reported by the platform and may change over time.',
     'about_acceso_justicia' => 'About Acceso a la Justicia',
@@ -353,6 +353,12 @@ return [
     'view_on_x' => 'View on X',
 
     'social_media' => 'Social Media',
+    'organization_footer' => [
+        'main_links' => 'Main links',
+        'website' => 'Website',
+        'contact' => 'Contact',
+        'information' => 'Information',
+    ],
     'latest_org_posts' => 'Latest Posts from the Organizations',
     'feed_unavailable' => 'This organization’s posts are temporarily unavailable.',
 

@@ -33,6 +33,11 @@
             <p>{{ \Illuminate\Support\Str::limit($post['text'] ?? '', 210) }}</p>
 
             <footer>
+                @if ($post['created_at'] ?? null)
+                    <time datetime="{{ $post['created_at'] }}">
+                        {{ \Carbon\Carbon::parse($post['created_at'])->locale(app()->getLocale())->translatedFormat('d M Y') }}
+                    </time>
+                @endif
                 <span aria-label="{{ __('dashboard.likes') }}">
                     <i class="bi bi-heart" aria-hidden="true"></i>
                     {{ $post['likes'] ?? 0 }}
@@ -43,7 +48,7 @@
                 </span>
                 <strong>
                     {{ __('dashboard.view_on_x') }}
-                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                 </strong>
             </footer>
         </div>
