@@ -43,33 +43,10 @@
     @endphp
 
     <div class="home-surface dashboard-v2">
+        @include('dashboard.partials.global-header', ['headerAccent' => '#42b9e8'])
+
         <header class="dashboard-v2-header">
             <div class="dashboard-v2-container">
-                <div class="dashboard-v2-navbar">
-                    <a href="{{ route('dashboard.public') }}" class="dashboard-v2-brand" aria-label="{{ __('dashboard.site_name') }}">
-                        <img
-                            src="{{ asset('assets/img/pulso-venezuela-color.png') }}"
-                            alt=""
-                            class="dashboard-v2-brand__isotype"
-                            loading="eager"
-                        >
-                    </a>
-
-                    <nav class="dashboard-v2-navigation" aria-label="{{ __('dashboard.dashboard_v2.main_navigation') }}">
-                        <a href="{{ route('organizations.jep') }}">Inicio</a>
-                        <a href="{{ route('organizations.jep') }}">JEP</a>
-                        <a href="{{ route('organizations.acceso-justicia') }}">Acceso a la Justicia</a>
-                        <a href="{{ route('organizations.fake-news') }}">Fake News</a>
-                        <a href="{{ route('organizations.universidades') }}">OBU</a>
-                    </nav>
-
-                    <div class="dashboard-v2-language" aria-label="{{ __('dashboard.language') }}">
-                        <a href="{{ route('language.switch', 'es') }}" class="{{ app()->isLocale('es') ? 'active' : '' }}" lang="es">ES</a>
-                        <span aria-hidden="true">/</span>
-                        <a href="{{ route('language.switch', 'en') }}" class="{{ app()->isLocale('en') ? 'active' : '' }}" lang="en">EN</a>
-                    </div>
-                </div>
-
                 <div class="dashboard-v2-partners" aria-label="{{ __('dashboard.participating_organizations') }}">
                     <div class="dashboard-v2-partner dashboard-v2-partner--jep">
                         <img src="{{ asset('assets/img/organizations/jep.svg') }}" alt="Justicia, Encuentro y Perdón" loading="eager">

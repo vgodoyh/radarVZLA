@@ -44,6 +44,9 @@
                             <time datetime="{{ data_get($post, 'created_at') }}">{{ $xPostDate }}</time>
                         @endif
                         <span><i class="bi bi-heart" aria-hidden="true"></i>{{ data_get($post, 'likes', 0) }}</span>
+                        @if (filled(data_get($post, 'replies')))
+                            <span><i class="bi bi-chat" aria-hidden="true"></i>{{ data_get($post, 'replies') }}</span>
+                        @endif
                         <span><i class="bi bi-repeat" aria-hidden="true"></i>{{ data_get($post, 'retweets', 0) }}</span>
                     </div>
                     <a href="{{ data_get($post, 'url', '#') }}" target="_blank" rel="noopener noreferrer" aria-label="{{ __('dashboard.view_on_x') }}">

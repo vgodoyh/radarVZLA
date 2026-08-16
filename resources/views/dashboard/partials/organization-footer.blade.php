@@ -63,7 +63,7 @@
                             href="{{ $social['url'] }}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label="{{ $social['label'] }}"
+                            aria-label="{{ $social['label'].' - '.data_get($footerOrganization, 'name') }}"
                             title="{{ $social['label'] }}"
                         >
                             <i class="{{ $social['icon'] }}" aria-hidden="true"></i>

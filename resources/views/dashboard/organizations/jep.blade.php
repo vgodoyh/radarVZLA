@@ -1,4 +1,4 @@
-@extends('layouts.public')
+@extends('layouts.public_v2')
 
 @section('title', __('dashboard.jep_page.meta_title'))
 
@@ -37,6 +37,8 @@
     @endphp
 
     <div class="jep-page">
+        @include('dashboard.partials.global-header', ['headerAccent' => '#1769f6'])
+
         @include('dashboard.organizations.jep.hero')
 
         <main class="jep-page__main">

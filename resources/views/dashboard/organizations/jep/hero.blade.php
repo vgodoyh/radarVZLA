@@ -6,19 +6,6 @@
 
 <header class="jep-page__hero hero-section--light">
     <div class="jep-page__container">
-        <nav class="jep-page__topbar">
-            <a href="{{ route('dashboard.public') }}" class="hero-isotype" aria-label="{{ __('dashboard.site_name') }}">
-                <img src="{{ asset('assets/img/isotipo-pulso.png') }}" alt="{{ __('dashboard.site_name') }}">
-            </a>
-
-            <div class="language-switcher language-switcher--light" aria-label="{{ __('dashboard.language') }}">
-                <i class="bi bi-globe2" aria-hidden="true"></i>
-                <a href="{{ route('language.switch', 'es') }}" class="{{ app()->isLocale('es') ? 'active' : '' }}">ES</a>
-                <span class="language-switcher__separator">|</span>
-                <a href="{{ route('language.switch', 'en') }}" class="{{ app()->isLocale('en') ? 'active' : '' }}">EN</a>
-            </div>
-        </nav>
-
         <div class="jep-page__hero-grid">
             <div class="jep-page__hero-content">
 

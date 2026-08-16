@@ -382,7 +382,6 @@
 @media (max-width: 767.98px) {
     .dashboard-v2-container { width: min(100% - 32px, 680px); }
     .dashboard-v2-navbar { gap: 14px; }
-    .home-surface.dashboard-v2 > .dashboard-v2-header .dashboard-v2-navbar { column-gap: 14px; row-gap: 8px; }
     .dashboard-v2-brand { gap: 9px; }
     .dashboard-v2-brand__isotype { width: 180px; height: 70px; }
     .dashboard-v2-brand__name { font-size: 1.08rem; }
@@ -4133,6 +4132,12 @@ body {
     background: var(--access-navy);
 }
 
+.pulso-global-header {
+    --access-navy: #061f3b;
+    --v2-navy: #061f3b;
+    background: #061f3b;
+}
+
 .access-v2-shell {
     width: min(calc(100% - 64px), 1376px);
 }
@@ -4172,8 +4177,8 @@ body {
     grid-template-columns: 164px minmax(320px, 1.25fr) minmax(230px, .8fr) minmax(230px, .68fr);
     align-items: center;
     gap: clamp(24px, 3vw, 48px);
-    min-height: 470px;
-    padding: 52px 0 82px;
+    min-height: 430px;
+    padding: 2px 0 2px;
 }
 
 .access-v2-organization-logo {
@@ -4211,7 +4216,7 @@ body {
 .access-v2-hero-copy h1 {
     margin: 0;
     color: #fff;
-    font-size: clamp(2.75rem, 3.45vw, 3.35rem);
+    font-size: clamp(2.75rem, 0.45vw, 3.35rem);
     font-weight: 600;
     letter-spacing: -.035em;
     line-height: 1.04;
@@ -4360,6 +4365,38 @@ body {
     color: #91a5bd;
     font-size: .62rem;
     line-height: 1.35;
+}
+
+/* Shared identity surface for public organization heroes */
+.organization-v2-hero {
+    --access-navy: #061f3b;
+    background: #061f3b;
+}
+
+.organization-v2-art {
+    overflow: visible;
+    opacity: 1;
+}
+
+.fake-news-v2-art .fake-news-hero-illustration {
+    position: static;
+    display: block;
+    width: 230%;
+    max-width: 450px;
+    height: auto;
+    margin-inline: auto;
+    object-fit: contain;
+    opacity: 0.4;
+    filter: none;
+}
+
+.organization-v2-update {
+    background: linear-gradient(145deg, rgba(16, 58, 102, .96), rgba(18, 74, 122, .9));
+    border-color: rgba(108, 181, 222, .25);
+}
+
+.organization-v2-update > strong {
+    color: var(--organization-accent);
 }
 
 .access-justice-v2 .access-justice-detail__container {
@@ -4653,5 +4690,133 @@ body {
 
     .access-justice-v2 .access-justice-publication__link {
         grid-template-columns: 104px minmax(0, 1fr);
+    }
+}
+
+/* Shared organization hero: desktop-only composition */
+.organization-v2-visual {
+    display: contents;
+}
+
+@media (min-width: 992px) {
+    .organization-v2-hero .access-v2-hero {
+        grid-template-columns: 140px minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        align-content: center;
+        column-gap: clamp(24px, 3vw, 48px);
+        row-gap: 20px;
+    }
+
+    .organization-v2-hero .access-v2-organization-logo {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        align-self: start;
+    }
+
+    .organization-v2-hero .access-v2-hero-copy {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .organization-v2-hero .organization-v2-art {
+        display: none;
+    }
+
+    .organization-v2-hero .organization-v2-update {
+        display: grid;
+        grid-column: 2;
+        grid-row: 2;
+        grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        width: min(100%, 560px);
+        min-height: 76px;
+        align-items: center;
+        gap: 3px 18px;
+        padding: 12px 18px;
+        border-radius: 16px;
+    }
+
+    .organization-v2-update .access-v2-update__heading {
+        grid-column: 1;
+        grid-row: 1;
+        gap: 9px;
+    }
+
+    .organization-v2-update .access-v2-update__heading + .access-v2-update__divider {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        width: 1px;
+        height: 48px;
+        margin: 0;
+    }
+
+    .organization-v2-update > strong {
+        grid-column: 1;
+        grid-row: 2;
+        padding-left: 27px;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
+    .organization-v2-update > strong + .access-v2-update__divider {
+        display: none;
+    }
+
+    .organization-v2-update .access-v2-update__time {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+        gap: 10px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .organization-v2-hero .access-v2-hero {
+        grid-template-columns: 164px minmax(430px, 1.35fr) minmax(400px, .85fr);
+    }
+
+    .organization-v2-hero .organization-v2-visual {
+        position: relative;
+        display: block;
+        grid-column: 3;
+        grid-row: 1 / span 2;
+        width: 100%;
+        max-width: 460px;
+        height: 330px;
+        min-width: 0;
+        align-self: center;
+        justify-self: end;
+    }
+
+    .organization-v2-hero .organization-v2-art {
+        position: absolute;
+        top: -45px;
+        right: 0;
+        bottom: 45px;
+        left: 0;
+        display: grid;
+        overflow: visible;
+        place-items: center end;
+    }
+
+    .organization-v2-art .organization-v2-illustration {
+        width: clamp(450px, 5vw, 620px);
+        max-width: none;
+        height: auto;
+        margin: 0;
+        object-fit: contain;
+        opacity: .4;
+    }
+
+    .organization-v2-hero .organization-v2-update {
+        position: absolute;
+        right: 0;
+        bottom: 18px;
+        z-index: 2;
+        width: min(100%, 460px);
+        min-height: 80px;
+        background: rgba(15, 55, 95, .94);
+        border-color: rgba(70, 170, 230, .38);
+        box-shadow: 0 10px 24px rgba(2, 20, 40, .16);
+        backdrop-filter: blur(8px);
     }
 }
