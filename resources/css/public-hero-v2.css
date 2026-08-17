@@ -4269,7 +4269,7 @@ body {
     width: 115%;
     max-width: none;
     opacity: .34;
-    filter: sepia(1) saturate(3) hue-rotate(335deg);
+    /*filter: sepia(1) saturate(3) hue-rotate(335deg);*/
 }
 
 .access-v2-justice-art > i {
@@ -4767,6 +4767,19 @@ body {
         grid-row: 1 / span 2;
         gap: 10px;
     }
+
+    .organization-v2-hero--obu .access-v2-hero {
+        min-height: 400px;
+    }
+
+    .organization-v2-hero--obu .access-v2-hero-copy h1 {
+        max-width: 390px;
+    }
+
+    .organization-v2-hero--obu .access-v2-organization-logo,
+    .organization-v2-hero--obu .access-v2-hero-copy {
+        transform: translateY(15px);
+    }
 }
 
 @media (min-width: 1200px) {
@@ -4818,5 +4831,15 @@ body {
         border-color: rgba(70, 170, 230, .38);
         box-shadow: 0 10px 24px rgba(2, 20, 40, .16);
         backdrop-filter: blur(8px);
+    }
+
+    .organization-v2-hero--obu .organization-v2-illustration {
+        width: clamp(560px, 40vw, 600px);
+        max-width: none;
+        height: auto;
+        object-fit: contain;
+        opacity: .4;
+        filter: none;
+        mix-blend-mode: normal;
     }
 }

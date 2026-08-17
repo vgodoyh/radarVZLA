@@ -5,6 +5,7 @@
     $footerInfo = data_get($footerLinks, 'info') ?? data_get($footerOrganization, 'info_url');
     $footerUsername = data_get($footerOrganization, 'username') ?? data_get($footerOrganization, 'x_username');
     $footerLogo = data_get($footerOrganization, 'logo_x') ?? data_get($footerOrganization, 'logo');
+    $footerContactIsExternal = filled($footerContact) && str_starts_with($footerContact, 'http');
 
     $footerSocials = collect([
         ['key' => 'facebook', 'label' => 'Facebook', 'icon' => 'fa-brands fa-facebook-f', 'url' => data_get($footerLinks, 'facebook') ?? data_get($footerOrganization, 'social_urls.facebook') ?? data_get($footerOrganization, 'facebook_url')],
@@ -41,7 +42,11 @@
                     @endif
 
                     @if (filled($footerContact))
-                        <a href="{{ $footerContact }}" target="_blank" rel="noopener noreferrer" aria-label="{{ __('dashboard.organization_footer.contact') }}">
+                        <a
+                            href="{{ $footerContact }}"
+                            @if ($footerContactIsExternal) target="_blank" rel="noopener noreferrer" @endif
+                            aria-label="{{ __('dashboard.organization_footer.contact') }}"
+                        >
                             <i class="bi bi-envelope" aria-hidden="true"></i>
                             <span>{{ __('dashboard.organization_footer.contact') }}</span>
                         </a>
