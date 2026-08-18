@@ -13,6 +13,7 @@
         $magazineNotiFakePosts = $notiFakePosts->take(4);
         $magazineXPosts = $xPosts->take(7);
         $verifiedCount = $deepPosts->count() + $notiFakePosts->count();
+        $totalVerifications = 28;
         $publicationTotal = $verifiedCount + $xPosts->count();
         $organizationName = data_get($fakeNewsOrganization, 'name', __('dashboard.fake_news_page.organization'));
         $organizationUsername = data_get($fakeNewsOrganization, 'username');
@@ -60,20 +61,23 @@
 
         <section class="fake-news-page-metrics" aria-label="{{ __('dashboard.fake_news_page.metrics_label') }}">
             <div class="jep-page__container fake-news-page-metrics__grid">
-                @foreach ([
-                    ['icon' => 'bi-patch-check', 'value' => $verifiedCount, 'label' => __('dashboard.fake_news_page.verified_publications')],
-                    ['icon' => 'bi-file-earmark-bar-graph', 'value' => $deepPosts->count(), 'label' => __('dashboard.analysis_infographics')],
-                    ['icon' => 'bi-newspaper', 'value' => $notiFakePosts->count(), 'label' => __('dashboard.noti_fake_published')],
-                    ['icon' => 'bi-twitter-x', 'value' => $xPosts->count(), 'label' => __('dashboard.fake_news_page.x_publications')],
-                ] as $metric)
-                    <article class="fake-news-page-metric">
-                        <span><i class="bi {{ $metric['icon'] }}" aria-hidden="true"></i></span>
-                        <div>
-                            <strong>{{ $metric['value'] }}</strong>
-                            <p>{{ $metric['label'] }}</p>
-                        </div>
-                    </article>
-                @endforeach
+                <article class="fake-news-page-metric fake-news-page-metric--total">
+                    <span class="fake-news-page-metric--total__icon" aria-hidden="true">
+                        <i class="bi bi-patch-check"></i>
+                    </span>
+
+                    <div class="fake-news-page-metric--total__copy">
+                        <p>{{ __('dashboard.fake_news_page.total_verifications') }}</p>
+                    </div>
+
+                    <strong class="fake-news-page-metric--total__value">{{ $totalVerifications }}</strong>
+
+                    <div class="fake-news-page-metric--total__decoration" aria-hidden="true">
+                        <span><i class="bi bi-check-lg"></i></span>
+                        <span><i class="bi bi-check-lg"></i></span>
+                        <span><i class="bi bi-check-lg"></i></span>
+                    </div>
+                </article>
             </div>
         </section>
 

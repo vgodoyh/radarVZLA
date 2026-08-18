@@ -4269,7 +4269,6 @@ body {
     width: 115%;
     max-width: none;
     opacity: .34;
-    /*filter: sepia(1) saturate(3) hue-rotate(335deg);*/
 }
 
 .access-v2-justice-art > i {
@@ -4776,6 +4775,10 @@ body {
         max-width: 390px;
     }
 
+    .organization-v2-hero--jep .access-v2-hero-copy h1 {
+        max-width: 480px;
+    }
+
     .organization-v2-hero--obu .access-v2-organization-logo,
     .organization-v2-hero--obu .access-v2-hero-copy {
         transform: translateY(15px);
@@ -4841,5 +4844,100 @@ body {
         opacity: .4;
         filter: none;
         mix-blend-mode: normal;
+    }
+}
+
+/* JEP hero decorative illustration */
+.organization-v2-hero--jep {
+    position: relative;
+    overflow: hidden;
+}
+
+.organization-v2-hero--jep .organization-v2-hero__content {
+    position: relative;
+}
+
+.organization-v2-hero--jep .access-v2-organization-logo,
+.organization-v2-hero--jep .organization-v2-hero__text,
+.organization-v2-hero--jep .organization-mobile-update {
+    position: relative;
+    z-index: 2;
+}
+
+.organization-v2-hero--jep .organization-v2-art--jep {
+    z-index: 1;
+    pointer-events: none;
+}
+
+.organization-v2-hero--jep .organization-v2-update {
+    z-index: 3;
+}
+
+@media (min-width: 1200px) {
+    .organization-v2-hero--jep .organization-v2-art--jep {
+        top: -55px;
+        right: -20px;
+        bottom: 35px;
+    }
+
+    .organization-v2-hero--jep .organization-v2-art--jep .organization-v2-illustration {
+        top: 40%;
+        right: -20px;
+        width: clamp(220px, 35vw, 620px);
+        max-width: none;
+        height: auto;
+        object-fit: contain;
+        opacity: 0.4;
+        transform: translateY(-50%);
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .organization-v2-hero--jep .organization-v2-art--jep {
+        position: absolute;
+        top: 48px;
+        right: -110px;
+        display: block;
+        width: 380px;
+        aspect-ratio: 3 / 2;
+        overflow: visible;
+    }
+
+    .organization-v2-hero--jep .organization-v2-art--jep .organization-v2-illustration {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        max-width: none;
+        height: auto;
+        object-fit: contain;
+        opacity: .65;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .organization-v2-hero--jep .organization-v2-art--jep {
+        position: absolute;
+        top: 30px;
+        right: -30px;
+        display: block;
+        width: 220px;
+        aspect-ratio: 3 / 2;
+        overflow: visible;
+    }
+
+    .organization-v2-hero--jep .organization-v2-art--jep .organization-v2-illustration {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        max-width: none;
+        height: auto;
+        object-fit: contain;
+        opacity: .35;
+    }
+}
+
+@media (max-width: 479.98px) {
+    .organization-v2-hero--jep .organization-v2-art--jep {
+        display: none;
     }
 }

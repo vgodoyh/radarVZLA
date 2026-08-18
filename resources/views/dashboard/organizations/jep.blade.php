@@ -41,11 +41,12 @@
 
         @include('dashboard.organizations.jep.hero')
 
+        @include('dashboard.organizations.jep.key-figures')
+
         <main class="jep-page__main">
             <div class="jep-page__container">
                 <div class="jep-page__primary-grid">
                     <div class="jep-page__primary-column">
-                        @include('dashboard.organizations.jep.key-figures')
                         @include('dashboard.organizations.jep.methodology-releases')
                     </div>
 
@@ -54,15 +55,16 @@
 
                 @include('dashboard.organizations.jep.indicators')
 
-                <div class="jep-page__analysis-grid">
-                    @include('dashboard.organizations.jep.trends')
-                    @include('dashboard.organizations.jep.detention-centers')
-                </div>
+                <article class="jep-indicator-card jep-indicator-card--alert jep-page__monthly-alert">
+                    <span></span>
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                    <div class="jep-indicator-card--alert__content">
+                        <p>{{ __('dashboard.jep_page.indicators.monthly_alert') }}</p>
+                        <blockquote>{{ __('dashboard.jep_page.indicators.alert_text') }}</blockquote>
+                    </div>
+                </article>
 
-                <div class="jep-page__support-grid">
-                    @include('dashboard.organizations.jep.methodology-detentions')
-                    @include('dashboard.organizations.jep.resources')
-                </div>
+                @include('dashboard.organizations.jep.trends')
             </div>
         </main>
 
@@ -78,5 +80,16 @@
         'footerOrganization' => $organization,
         'footerCategory' => __('dashboard.jep_page.badge'),
         'footerAccent' => '#1769f6',
+        'footerLinks' => [
+            'website' => 'https://www.jepvenezuela.com',
+            'contact' => 'https://www.jepvenezuela.com',
+            'info' => 'https://www.jepvenezuela.com/quienes-somos/',
+            'facebook' => 'https://www.facebook.com/JEPVenezuela',
+            'x' => 'https://x.com/jepvzla',
+            'instagram' => 'https://www.instagram.com/jepvzla',
+            'youtube' => '',
+            'tiktok' => '',
+            'telegram' => '',
+        ],
     ])
 @endsection
