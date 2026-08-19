@@ -60,24 +60,31 @@
         ])
 
         <section class="fake-news-page-metrics" aria-label="{{ __('dashboard.fake_news_page.metrics_label') }}">
-            <div class="jep-page__container fake-news-page-metrics__grid">
-                <article class="fake-news-page-metric fake-news-page-metric--total">
-                    <span class="fake-news-page-metric--total__icon" aria-hidden="true">
-                        <i class="bi bi-patch-check"></i>
-                    </span>
+            <div class="jep-page__container fake-news-page-metrics__container">
+                <div class="fake-news-page-metrics__grid">
+                    <article class="fake-news-page-metric fake-news-page-metric--total">
+                        <span class="fake-news-page-metric--total__icon" aria-hidden="true">
+                            <i class="bi bi-patch-check"></i>
+                        </span>
 
-                    <div class="fake-news-page-metric--total__copy">
-                        <p>{{ __('dashboard.fake_news_page.total_verifications') }}</p>
-                    </div>
+                        <div class="fake-news-page-metric--total__copy">
+                            <p>{{ __('dashboard.fake_news_page.total_verifications') }}</p>
+                        </div>
 
-                    <strong class="fake-news-page-metric--total__value">{{ $totalVerifications }}</strong>
-
-                    <div class="fake-news-page-metric--total__decoration" aria-hidden="true">
-                        <span><i class="bi bi-check-lg"></i></span>
-                        <span><i class="bi bi-check-lg"></i></span>
-                        <span><i class="bi bi-check-lg"></i></span>
-                    </div>
-                </article>
+                        <div
+                            class="fake-news-verification-counter"
+                            data-target="{{ $totalVerifications }}"
+                            role="img"
+                            aria-label="{{ $totalVerifications }}"
+                        >
+                            <span class="fake-news-verification-counter__digits" aria-hidden="true">
+                                @foreach (str_split((string) $totalVerifications) as $digit)
+                                    <span class="fake-news-verification-counter__digit">{{ $digit }}</span>
+                                @endforeach
+                            </span>
+                        </div>
+                    </article>
+                </div>
             </div>
         </section>
 

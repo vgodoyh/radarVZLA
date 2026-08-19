@@ -28,6 +28,63 @@ const commonLine = { responsive: true, maintainAspectRatio: false, plugins: { le
 
 const build = (id, config) => { const el = document.getElementById(id); if (el) new Chart(el, config); };
 
+document.querySelectorAll('.fake-news-verification-counter[data-target]').forEach((counter) => {
+    const digitsContainer = counter.querySelector('.fake-news-verification-counter__digits');
+    const target = Math.max(0, Number.parseInt(counter.dataset.target || '0', 10) || 0);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const renderValue = (value) => {
+        if (!digitsContainer) return;
+
+        digitsContainer.replaceChildren(...String(value).split('').map((digit) => {
+            const block = document.createElement('span');
+            block.className = 'fake-news-verification-counter__digit';
+            block.textContent = digit;
+
+            return block;
+        }));
+    };
+
+    if (reducedMotion) {
+        renderValue(target);
+        return;
+    }
+
+    renderValue(0);
+
+    const animateCounter = () => {
+        if (counter.dataset.animated === 'true') return;
+
+        counter.dataset.animated = 'true';
+        const duration = 1500;
+        const start = performance.now();
+
+        const tick = (now) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const easedProgress = 1 - Math.pow(1 - progress, 3);
+            renderValue(Math.round(target * easedProgress));
+
+            if (progress < 1) requestAnimationFrame(tick);
+        };
+
+        requestAnimationFrame(tick);
+    };
+
+    if (!('IntersectionObserver' in window)) {
+        animateCounter();
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+
+        observer.disconnect();
+        animateCounter();
+    }, { threshold: .35 });
+
+    observer.observe(counter);
+});
+
 const years = ['2020', '2021', '2022', '2023', '2024'];
 
 build('featuredChart', { type: 'bar', data: { labels: ['Ene 26', 'Feb 26', 'Mar 26', 'Abr 26', 'May 26', 'Jun 26', 'Jul 26'], datasets: [{ data: [32, 48, 57, 56, 61, 45, 59], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } } });
