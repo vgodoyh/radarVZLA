@@ -231,7 +231,7 @@
 
             <div class="organization-summary__identity">
                 <img
-                    src="{{ asset('assets/img/organizations/fake-news-a.webp') }}"
+                    src="{{ asset('assets/img/organizations/fake-news.png') }}"
                     alt="Observatorio Venezolano de Fake News"
                     class="organization-summary__logo organization-summary__logo--fake-news"
                 >
@@ -335,7 +335,7 @@
 
                         <a href="#" class="fake-news-featured">
 
-                            <img src="{{ asset('assets/img/organizations/fake-news-x.png') }}" alt="">
+                            <img src="{{ asset('assets/img/organizations/fake-news.png') }}" alt="">
 
                             <div class="fake-news-featured__content">
 

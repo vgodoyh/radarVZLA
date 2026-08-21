@@ -132,9 +132,9 @@
             $obuItems = collect($economicSocialItems ?? [])->concat($civilPoliticalItems ?? []);
             $obuYears = collect($years ?? [])->filter()->values();
             $obuMetrics = [
-                ['value' => $obuItems->isNotEmpty() ? $obuItems->sum('value') : null, 'label' => __('dashboard.obu.total_reports')],
-                ['value' => $obuItems->isNotEmpty() ? $obuItems->count() : null, 'label' => __('dashboard.obu.documented_categories')],
-                ['value' => collect($protestsData ?? [])->isNotEmpty() ? collect($protestsData)->sum() : null, 'label' => __('dashboard.obu.registered_protests')],
+                ['value' => $obuItems->isNotEmpty() ? $obuItems->sum('value') : null, 'label' => __('dashboard.dashboard_v2.university_monitoring')],
+                ['value' => $obuItems->isNotEmpty() ? $obuItems->count() : null, 'label' => __('dashboard.protests')],
+                ['value' => collect($protestsData ?? [])->isNotEmpty() ? collect($protestsData)->sum() : null, 'label' => __('dashboard.complaints')],
                 ['value' => $obuYears->isNotEmpty() ? $obuYears->first().' – '.$obuYears->last() : null, 'label' => __('dashboard.obu.analysis_period'), 'period' => true],
             ];
             $obuPeriod = $obuYears->isNotEmpty() ? $obuYears->first().' – '.$obuYears->last() : null;
@@ -300,7 +300,7 @@
                 @endphp
 
                 <section class="panorama-obu__categories-section" aria-labelledby="panorama-obu-categories-title">
-                    <h4 id="panorama-obu-categories-title">{{ __('dashboard.obu.documented_categories') }}</h4>
+                    <h4 id="panorama-obu-categories-title">{{ __('dashboard.obu.types_of_rights') }}</h4>
 
                     <div class="panorama-obu__categories">
                         @foreach ($obuCategories as $category)

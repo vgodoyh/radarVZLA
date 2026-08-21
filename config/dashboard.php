@@ -6,7 +6,7 @@ return [
     'organizations' => [
         ['slug' => 'jep', 'name' => 'Justicia, Encuentro y Perdón', 'x_username' => 'jepvzla', 'website_url' => 'https://jepvenezuela.com', 'logo_path' => 'assets/img/organizations/jep.svg', 'x_logo_path' => 'assets/img/organizations/jep.svg', 'color' => '#dc3545', 'position' => 1],
         ['slug' => 'acceso-justicia', 'name' => 'Acceso a la Justicia', 'x_username' => 'AccesoAJusticia', 'website_url' => 'https://accesoalajusticia.org', 'logo_path' => 'assets/img/organizations/acceso-justicia.png', 'x_logo_path' => 'assets/img/organizations/acceso-justicia-x.png', 'color' => '#0d6efd', 'position' => 2],
-        ['slug' => 'fake-news', 'name' => 'Observatorio Venezolano de Fake News', 'x_username' => 'observatoriofn', 'website_url' => 'https://fakenewsvenezuela.org', 'logo_path' => 'assets/img/organizations/fake-news-a.webp', 'x_logo_path' => 'assets/img/organizations/fake-news-x.png', 'color' => '#f59e0b', 'position' => 3],
+        ['slug' => 'fake-news', 'name' => 'Observatorio Venezolano de Fake News', 'x_username' => 'observatoriofn', 'website_url' => 'https://fakenewsvenezuela.org', 'logo_path' => 'assets/img/organizations/fake-news-a.webp', 'x_logo_path' => 'assets/img/organizations/fake-news.png', 'color' => '#f59e0b', 'position' => 3],
         ['slug' => 'universidades', 'name' => 'Observatorio de Universidades', 'x_username' => 'obuvenezuela', 'website_url' => 'https://observatoriodeuniversidades.com', 'logo_path' => 'assets/img/organizations/obu.png', 'x_logo_path' => 'assets/img/organizations/obu-x.png', 'color' => '#7c3aed', 'position' => 4],
     ],
 

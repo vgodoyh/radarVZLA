@@ -150,7 +150,7 @@
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     min-height: 116px;
-    padding: 14px 22px;
+    padding: 1px 22px;
     overflow: hidden;
     background: #fbfcfe;
     border: 1px solid rgba(255,255,255,.5);
@@ -185,8 +185,8 @@
     object-fit: contain;
 }
 
-.dashboard-v2-partner--acceso img { max-width: 190px; height: 64px; }
-.dashboard-v2-partner--fake-news img { max-width: 190px; height: 72px; }
+.dashboard-v2-partner--acceso img { max-width: 200px; height: 94px; }
+.dashboard-v2-partner--fake-news img { max-width: 190px; height: 92px; }
 .dashboard-v2-partner--jep img { max-width: 90px; height: 76px; }
 .dashboard-v2-partner--obu img { max-width: 176px; height: 72px; }
 
@@ -4186,7 +4186,7 @@ body {
     width: 164px;
     height: 164px;
     place-items: center;
-    padding: 26px;
+    padding: 0px;
     background: #fff;
     border: 1px solid rgba(255, 255, 255, .65);
     border-radius: 42px 42px 42px 12px;

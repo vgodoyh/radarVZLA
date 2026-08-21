@@ -78,7 +78,7 @@
                         <img src="{{ asset('assets/img/organizations/acceso-justicia.png') }}" alt="Acceso a la Justicia" loading="eager">
                     </div>
                     <div class="dashboard-v2-partner dashboard-v2-partner--fake-news">
-                        <img src="{{ asset('assets/img/organizations/fake-news-a.webp') }}" alt="Observatorio Venezolano de Fake News" loading="eager">
+                        <img src="{{ asset('assets/img/organizations/fake-news.png') }}" alt="Observatorio Venezolano de Fake News" loading="eager">
                     </div>
                     <div class="dashboard-v2-partner dashboard-v2-partner--obu">
                         <img src="{{ asset('assets/img/organizations/obu.png') }}" alt="Observatorio de Universidades" loading="eager">

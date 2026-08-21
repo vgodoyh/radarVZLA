@@ -6222,6 +6222,24 @@ gap:.65rem
     align-items: center;
 }
 
+.fake-news-page .fake-news-verification-counter-container {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.fake-news-page .fake-news-verification-counter__updated {
+    margin: 7px 0 0;
+    color: var(--fake-news-muted);
+    font-size: .75rem;
+    font-weight: 400;
+    line-height: 1.3;
+    text-align: center;
+    white-space: nowrap;
+}
+
 .fake-news-page .fake-news-verification-counter__digits {
     display: flex;
     align-items: center;
@@ -6336,8 +6354,12 @@ gap:.65rem
 
     .fake-news-page .fake-news-verification-counter {
         display: flex;
-        order: 1;
         justify-content: center;
+        width: 100%;
+    }
+
+    .fake-news-page .fake-news-verification-counter-container {
+        order: 1;
         width: 100%;
     }
 

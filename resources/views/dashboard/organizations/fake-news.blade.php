@@ -13,12 +13,12 @@
         $magazineNotiFakePosts = $notiFakePosts->take(4);
         $magazineXPosts = $xPosts->take(7);
         $verifiedCount = $deepPosts->count() + $notiFakePosts->count();
-        $totalVerifications = 28;
+        $totalVerifications = 137;
         $publicationTotal = $verifiedCount + $xPosts->count();
         $organizationName = data_get($fakeNewsOrganization, 'name', __('dashboard.fake_news_page.organization'));
         $organizationUsername = data_get($fakeNewsOrganization, 'username');
         $organizationWebsite = data_get($fakeNewsOrganization, 'website_url') ?? data_get($fakeNewsOrganization, 'url');
-        $organizationLogo = data_get($fakeNewsOrganization, 'logo_x') ?? data_get($fakeNewsOrganization, 'logo');
+        $organizationLogo =  data_get($fakeNewsOrganization, 'logo') ?? data_get($fakeNewsOrganization, 'logo_x');
         $xProfileUrl = filled($organizationUsername) ? 'https://x.com/'.$organizationUsername : null;
         $lastSyncAt = filled($lastSync ?? null)
             ? rescue(
@@ -71,17 +71,21 @@
                             <p>{{ __('dashboard.fake_news_page.total_verifications') }}</p>
                         </div>
 
-                        <div
-                            class="fake-news-verification-counter"
-                            data-target="{{ $totalVerifications }}"
-                            role="img"
-                            aria-label="{{ $totalVerifications }}"
-                        >
-                            <span class="fake-news-verification-counter__digits" aria-hidden="true">
-                                @foreach (str_split((string) $totalVerifications) as $digit)
-                                    <span class="fake-news-verification-counter__digit">{{ $digit }}</span>
-                                @endforeach
-                            </span>
+                        <div class="fake-news-verification-counter-container">
+                            <div
+                                class="fake-news-verification-counter"
+                                data-target="{{ $totalVerifications }}"
+                                role="img"
+                                aria-label="{{ $totalVerifications }}"
+                            >
+                                <span class="fake-news-verification-counter__digits" aria-hidden="true">
+                                    @foreach (str_split((string) $totalVerifications) as $digit)
+                                        <span class="fake-news-verification-counter__digit">{{ $digit }}</span>
+                                    @endforeach
+                                </span>
+                            </div>
+
+                            <p class="fake-news-verification-counter__updated">Actualizado hasta el 31/07/2026</p>
                         </div>
                     </article>
                 </div>

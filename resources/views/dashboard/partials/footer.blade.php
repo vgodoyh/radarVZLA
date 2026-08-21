@@ -26,15 +26,15 @@
                         <span class="site-footer__organization-name">JEP Venezuela</span>
                     </a>
                     <a href="https://accesoalajusticia.org" target="_blank" rel="noopener noreferrer" class="site-footer__organization-item">
-                        <img src="{{ asset('assets/img/organizations/acceso-justicia-.png') }}" alt="" class="site-footer__organization-logo">
+                        <img src="{{ asset('assets/img/organizations/acceso-justicia-x.png') }}" alt="" class="site-footer__organization-logo">
                         <span class="site-footer__organization-name">Acceso a la Justicia</span>
                     </a>
                     <a href="https://fakenewsvenezuela.org" target="_blank" rel="noopener noreferrer" class="site-footer__organization-item">
-                        <img src="{{ asset('assets/img/organizations/fake-news-x.png') }}" alt="" class="site-footer__organization-logo">
+                        <img src="{{ asset('assets/img/organizations/fake-news-x-b.png') }}" alt="" class="site-footer__organization-logo">
                         <span class="site-footer__organization-name">Observatorio Fake News</span>
                     </a>
                     <a href="https://observatoriodeuniversidades.com" target="_blank" rel="noopener noreferrer" class="site-footer__organization-item">
-                        <img src="{{ asset('assets/img/organizations/obu.png') }}" alt="" class="site-footer__organization-logo">
+                        <img src="{{ asset('assets/img/organizations/obu-b.png') }}" alt="" class="site-footer__organization-logo">
                         <span class="site-footer__organization-name">Observatorio de Universidades</span>
                     </a>
                 </div>
