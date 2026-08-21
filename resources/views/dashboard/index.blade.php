@@ -21,7 +21,7 @@
             ],
             [
                 'class' => 'acceso',
-                'value' => collect($alertasLegales ?? [])->count(),
+                'value' => $accesoLegalPublicationsTotal ?? 0,
                 'label' => __('dashboard.dashboard_v2.legal_alerts'),
                 'organization' => __('dashboard.dashboard_v2.acceso_short'),
             ],

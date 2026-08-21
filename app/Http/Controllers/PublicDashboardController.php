@@ -38,9 +38,7 @@ class PublicDashboardController extends Controller
                 ->firstOrFail();
             $organizationLastSync = $organizationModel->last_synced_at?->toIso8601String();
 
-            $posts = $organizationModel->publications()
-                ->where('source', 'x')
-                ->where('excerpt', 'like', '%#AlertaLegal%')
+            $posts = $dashboard->accesoLegalPublicationsQuery()
                 ->when($search !== '', function ($query) use ($search) {
                     $query->where(function ($query) use ($search) {
                         $query->where('excerpt', 'like', "%{$search}%")

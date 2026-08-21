@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\DashboardSyncRun;
 use App\Models\Organization;
 use App\Models\Publication;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
@@ -36,6 +37,9 @@ class DashboardQueryService
             ])->all(),
             'organizations' => $organizations,
             'alertasLegales' => $accesoLegalPosts,
+            'accesoLegalPublicationsTotal' => $this->hasPublicationTables()
+                ? $this->accesoLegalPublicationsQuery()->count()
+                : 0,
             'accesoPosts' => $this->panoramaPosts($accesoLegalPosts),
             'postsFakeNewsX' => $this->posts($bySlug->get('fake-news')),
             'postsFakeNewsWeb' => ['en_profundidad' => collect(), 'noti_fake' => collect()],
@@ -56,6 +60,19 @@ class DashboardQueryService
             'civilPoliticalData' => [35, 90, 190, 90, 180],
             'lastSync' => $this->lastSync(),
         ];
+    }
+
+    public function accesoLegalPublicationsQuery(): Builder
+    {
+        return Publication::query()
+            ->whereHas('organization', fn ($query) => $query->where('slug', 'acceso-justicia'))
+            ->where('source', 'x')
+            ->where('excerpt', 'like', '%#AlertaLegal%');
+    }
+
+    private function hasPublicationTables(): bool
+    {
+        return Schema::hasTable('organizations') && Schema::hasTable('publications');
     }
 
     /** @return Collection<int, array<string, mixed>> */
