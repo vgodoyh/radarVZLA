@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <title>
-    {{ filled($title ?? null) ? $title.' - '.config('app.name', 'Radar Vzla') : config('app.name', 'Radar Vzla') }}
+    {{ filled($title ?? null) ? $title.' - '.config('app.name', 'Pulso Vzla') : config('app.name', 'Pulso Vzla') }}
 </title>
 
 <link rel="icon" href="{{ asset('assets/img/favicon.png') }}" sizes="any">

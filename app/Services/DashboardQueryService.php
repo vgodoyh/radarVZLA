@@ -145,6 +145,7 @@ class DashboardQueryService
                 : '';
 
             return [
+                'publication_id' => $post['publication_id'] ?? null,
                 'title' => Str::limit(trim($post['text'] ?? ''), 115),
                 'date' => $publishedAt,
                 'image' => $post['image'] ?? null,
@@ -156,7 +157,7 @@ class DashboardQueryService
     /** @return array<string, mixed> */
     private function normalizeStoredPost(Publication $post): array
     {
-        return ['id' => $post->external_id, 'text' => $post->excerpt ?: $post->title, 'created_at' => $post->published_at?->toIso8601String(), 'likes' => $post->likes, 'retweets' => $post->shares, 'image' => $post->image_url, 'url' => $post->url, 'category' => $post->category];
+        return ['id' => $post->external_id, 'publication_id' => $post->id, 'text' => $post->excerpt ?: $post->title, 'created_at' => $post->published_at?->toIso8601String(), 'likes' => $post->likes, 'retweets' => $post->shares, 'image' => $post->image_url, 'url' => $post->url, 'category' => $post->category];
     }
 
     private function lastSync(): ?string

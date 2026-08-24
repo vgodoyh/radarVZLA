@@ -154,7 +154,7 @@
 
                 <div class="panorama-access__content">
                     @if ($accessFeatured)
-                        <a href="{{ data_get($accessFeatured, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-access__featured panorama-access__featured-link">
+                        <a href="{{ filled(data_get($accessFeatured, 'publication_id')) ? route('analytics.content.redirect', ['publication' => data_get($accessFeatured, 'publication_id'), 'source' => 'home']) : data_get($accessFeatured, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-access__featured panorama-access__featured-link">
                             <img src="{{ data_get($accessFeatured, 'image') ?: asset('assets/img/placeholders/article.svg') }}" alt="{{ data_get($accessFeatured, 'title', '') }}">
                             <div>
                                 <span class="panorama-access__featured-category">{{ __('dashboard.legal_alert_badge') }}</span>
@@ -167,7 +167,7 @@
                         </a>
 
                         @foreach ($accessSecondaryPosts as $accessSecondary)
-                            <a href="{{ data_get($accessSecondary, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-access__secondary">
+                            <a href="{{ filled(data_get($accessSecondary, 'publication_id')) ? route('analytics.content.redirect', ['publication' => data_get($accessSecondary, 'publication_id'), 'source' => 'home']) : data_get($accessSecondary, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="panorama-access__secondary">
                                 <time class="panorama-access__secondary-date">{{ data_get($accessSecondary, 'date') }}</time>
                                 <span class="panorama-access__secondary-text">{{ data_get($accessSecondary, 'title') }}</span>
                                 <span class="panorama-access__external-icon" aria-hidden="true">
@@ -182,7 +182,7 @@
 
                 <footer class="panorama-secondary-card__footer">
                     <span></span>
-                    <a href="{{ route('organizations.acceso-justicia') }}">{{ __('dashboard.view_more_publications') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ route('analytics.navigation.redirect', ['organization' => 'acceso-justicia', 'source' => 'home']) }}">{{ __('dashboard.view_more_publications') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </footer>
             </article>
 

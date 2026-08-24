@@ -1,7 +1,7 @@
 <x-layouts::auth :title="__('Login')">
-    <div class="d-flex flex-column gap-3 mb-0 mt-0">
-        <div class="text-center mb-1">
-            <h2 class="h3 mb-0">{{ __('Inicia sesión') }}</h2>
+    <div class="d-flex flex-column mt-n5">
+        <div class="text-center mb-4">
+            <h3 class="mb-0">{{ __('Inicia sesión') }}</h3>
         </div>
 
         <!-- Session Status -->
@@ -53,7 +53,7 @@
                         class="form-control @error('password') is-invalid @enderror"
                         required
                         autocomplete="current-password"
-                        placeholder="{{ __('Password') }}"
+                        placeholder="{{ __('Contraseña') }}"
                     >
                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                         <i class="bi bi-eye"></i>

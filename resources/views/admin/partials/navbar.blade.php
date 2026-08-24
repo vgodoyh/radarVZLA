@@ -14,12 +14,6 @@
 
                 <ul class="dropdown-menu dropdown-menu-end px-2 py-3">
                     <li>
-                        <a class="dropdown-item border-radius-md" href="{{ route('profile.edit') }}">
-                            Perfil
-                        </a>
-                    </li>
-
-                    <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="dropdown-item border-radius-md">

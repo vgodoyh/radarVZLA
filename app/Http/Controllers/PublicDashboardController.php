@@ -50,6 +50,8 @@ class PublicDashboardController extends Controller
                 ->paginate(6)
                 ->withQueryString()
                 ->through(fn ($post) => [
+                    'id' => $post->external_id,
+                    'publication_id' => $post->id,
                     'text' => $post->excerpt ?: $post->title,
                     'created_at' => $post->published_at?->toIso8601String(),
                     'likes' => $post->likes,

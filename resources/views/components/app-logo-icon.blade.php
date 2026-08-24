@@ -1,5 +1,3 @@
 <img
-    src="{{ asset('assets/img/logos/pulso-venezuela.png') }}"
-    alt="Pulso Vzla"
-    {{ $attributes->merge(['class' => 'w-auto']) }}
->
+    src="{{ asset('assets/img/pulso-venezuela-color.png') }}"
+    alt="Pulso Vzla" class="mt-n4">

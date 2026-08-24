@@ -3,7 +3,7 @@
 
     <div class="card">
         <div class="card-body">
-            Panel administrativo de Radar Vzla
+            Panel administrativo de Pulso Vzla
         </div>
     </div>
 </div>

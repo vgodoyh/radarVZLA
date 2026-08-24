@@ -1,6 +1,13 @@
+@php
+    $isLegalAlert = \Illuminate\Support\Str::contains(\Illuminate\Support\Str::lower($post['text'] ?? ''), '#alertalegal');
+    $publicationUrl = $isLegalAlert && filled($post['publication_id'] ?? null)
+        ? route('analytics.content.redirect', ['publication' => $post['publication_id'], 'source' => 'organization'])
+        : ($post['url'] ?? '#');
+@endphp
+
 <article class="access-justice-publication">
     <a
-        href="{{ $post['url'] ?? '#' }}"
+        href="{{ $publicationUrl }}"
         target="_blank"
         rel="noopener noreferrer"
         class="access-justice-publication__link"
@@ -16,8 +23,6 @@
         </div>
 
         <div class="access-justice-publication__body">
-            @php($isLegalAlert = \Illuminate\Support\Str::contains(\Illuminate\Support\Str::lower($post['text'] ?? ''), '#alertalegal'))
-
             <div class="access-justice-publication__meta">
                 @if ($post['created_at'] ?? null)
                     <time datetime="{{ $post['created_at'] }}">

@@ -5,6 +5,8 @@ namespace Tests\Feature\Auth;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Fortify\Features;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -32,6 +34,41 @@ class AuthenticationTest extends TestCase
             ->assertRedirect(route('dashboard', absolute: false));
 
         $this->assertAuthenticated();
+    }
+
+    public function test_access_justice_users_are_sent_to_their_module_after_login(): void
+    {
+        $permission = Permission::firstOrCreate([
+            'name' => 'view acceso justicia dashboard',
+            'guard_name' => 'web',
+        ]);
+        $role = Role::firstOrCreate(['name' => 'acceso-justicia', 'guard_name' => 'web']);
+        $role->syncPermissions([$permission]);
+        $user = User::factory()->create();
+        $user->assignRole($role);
+
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertRedirect(route('admin.acceso-justicia.index', absolute: false));
+    }
+
+    public function test_admin_and_super_admin_keep_the_general_admin_destination(): void
+    {
+        foreach (['admin', 'super-admin'] as $roleName) {
+            $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
+            $user = User::factory()->create();
+            $user->assignRole($role);
+
+            $this->post(route('login.store'), [
+                'email' => $user->email,
+                'password' => 'password',
+            ])->assertRedirect(route('dashboard', absolute: false));
+
+            $this->get(route('dashboard'))->assertOk();
+
+            $this->post(route('logout'));
+        }
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

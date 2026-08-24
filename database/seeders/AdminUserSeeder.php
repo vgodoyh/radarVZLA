@@ -15,7 +15,7 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::updateOrCreate(
+        $user = User::firstOrCreate(
             ['email' => 'vanessa.godoy.h@gmail.com'],
             [
                 'name' => 'Vanessa Godoy',
@@ -24,7 +24,19 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
-        $permissions = collect(['manage users', 'manage roles', 'manage permissions', 'manage social networks'])
+        $permissions = collect([
+            'manage users',
+            'manage roles',
+            'manage permissions',
+            'manage social networks',
+            'publish content',
+            'view reports',
+            'sync acceso justicia dashboard',
+            'view jep dashboard',
+            'view acceso justicia dashboard',
+            'view ovfn dashboard',
+            'view obu dashboard',
+        ])
             ->map(fn (string $name) => Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']));
         $role = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $role->syncPermissions($permissions);
