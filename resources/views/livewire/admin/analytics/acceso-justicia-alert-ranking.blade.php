@@ -6,8 +6,13 @@
         </div>
     </header>
 
+    <p class="alert-ranking-scroll-hint">
+        <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+        Desliza horizontalmente para ver todas las columnas
+    </p>
+
     <div
-        class="access-justice-table-wrap"
+        class="access-justice-table-wrap alert-ranking-table-scroll"
         wire:loading.class="is-loading"
         wire:target="gotoPage,previousPage,nextPage"
     >
@@ -15,10 +20,10 @@
             <thead>
                 <tr>
                     <th class="access-justice-rank-column">#</th>
-                    <th>Alerta</th>
+                    <th class="access-justice-alert-column">Alerta</th>
                     <th class="access-justice-number-column">Clics desde Pulso</th>
                     <th class="access-justice-number-column">Clics desde Panel</th>
-                    <th class="access-justice-number-column">Total clics</th>
+                    <th class="access-justice-number-column access-justice-total-column">Total clics</th>
                     <th class="access-justice-trend-column">Tendencia</th>
                 </tr>
             </thead>
@@ -26,14 +31,14 @@
                 @forelse ($ranking as $item)
                     <tr wire:key="alert-ranking-row-{{ $item['publication_id'] }}">
                         <td class="access-justice-rank-column"><span>{{ $ranking->firstItem() + $loop->index }}</span></td>
-                        <td>
+                        <td class="access-justice-alert-column">
                             <a href="{{ $item['url'] }}" target="_blank" rel="noopener noreferrer" class="access-justice-alert-link" title="{{ $item['alert'] }}">
                                 {{ $item['alert'] }}
                             </a>
                         </td>
                         <td class="access-justice-number-column">{{ $item['home_clicks'] }}</td>
                         <td class="access-justice-number-column">{{ $item['organization_clicks'] }}</td>
-                        <td class="access-justice-number-column access-justice-total-clicks">{{ $item['total_clicks'] }}</td>
+                        <td class="access-justice-number-column access-justice-total-column access-justice-total-clicks">{{ $item['total_clicks'] }}</td>
                         <td class="access-justice-trend-column">
                             <canvas class="access-justice-sparkline" data-series='@json($item['tendency'])' aria-label="Tendencia de clics de {{ $item['alert'] }}" role="img"></canvas>
                         </td>

@@ -602,15 +602,11 @@ if (iconSidenav) {
 function toggleSidenav() {
   if (body.classList.contains(className)) {
     body.classList.remove(className);
-    setTimeout(function() {
-      sidenav.classList.remove('bg-white');
-    }, 100);
-    sidenav.classList.remove('bg-transparent');
+    sidenav.classList.remove('bg-white', 'bg-transparent');
 
   } else {
     body.classList.add(className);
-    sidenav.classList.add('bg-white');
-    sidenav.classList.remove('bg-transparent');
+    sidenav.classList.remove('bg-white', 'bg-transparent');
     iconSidenav.classList.remove('d-none');
   }
 }
@@ -623,16 +619,7 @@ if (sidenav) {
   window.addEventListener("resize", navbarColorOnResize);
 
   function navbarColorOnResize() {
-    if (window.innerWidth > 1200) {
-      if (referenceButtons?.classList.contains('active') && referenceButtons?.getAttribute('data-class') === 'bg-transparent') {
-        sidenav.classList.remove('bg-white');
-      } else {
-        sidenav.classList.add('bg-white');
-      }
-    } else {
-      sidenav.classList.add('bg-white');
-      sidenav.classList.remove('bg-transparent');
-    }
+    sidenav.classList.remove('bg-white', 'bg-transparent');
   }
 }
 

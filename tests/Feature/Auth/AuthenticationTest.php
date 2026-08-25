@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -17,7 +18,16 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->get(route('login'));
 
-        $response->assertOk();
+        $response
+            ->assertOk()
+            ->assertDontSee('password.request')
+            ->assertDontSee('Olvido su contrase');
+
+        $this->assertFalse(Route::has('password.request'));
+        $this->assertFalse(Route::has('password.email'));
+        $this->assertFalse(Route::has('password.reset'));
+        $this->assertFalse(Route::has('password.update'));
+        $this->get('/forgot-password')->assertNotFound();
     }
 
     public function test_users_can_authenticate_using_the_login_screen(): void

@@ -1,7 +1,10 @@
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="false">
     <div class="container-fluid py-1 px-3">
 
-        <nav aria-label="breadcrumb">
+        <nav class="admin-topbar__navigation" aria-label="Navegación principal">
+            <button type="button" class="admin-sidenav__toggle" id="iconNavbarSidenav" aria-label="Abrir menú" aria-controls="sidenav-main">
+                <i class="bi bi-list" aria-hidden="true"></i>
+            </button>
             
         </nav>
 
@@ -13,6 +16,11 @@
                 </a>
 
                 <ul class="dropdown-menu dropdown-menu-end px-2 py-3">
+                    <li>
+                        <a href="{{ route('admin.profile.edit') }}" class="dropdown-item border-radius-md">
+                            Perfil
+                        </a>
+                    </li>
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

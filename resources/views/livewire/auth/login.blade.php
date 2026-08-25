@@ -39,11 +39,6 @@
             <div class="position-relative">
                 <div class="d-flex justify-content-between align-items-center">
                     <label for="password" class="form-label">{{ __('Contraseña') }}</label>
-                    @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" wire:navigate class="text-xs text-decoration-underline">
-                            {{ __('¿Olvido su contraseña?') }}
-                        </a>
-                    @endif
                 </div>
                 <div class="input-group">
                     <input

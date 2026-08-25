@@ -1,4 +1,9 @@
-<aside class="sidenav bg-dark navbar navbar-vertical navbar-expand-xs border-0 fixed-start" id="sidenav-main">
+<div class="admin-sidenav-overlay" id="admin-sidenav-overlay" aria-hidden="true"></div>
+
+<aside class="sidenav admin-sidenav bg-dark navbar navbar-vertical navbar-expand-xs border-0 fixed-start" id="sidenav-main">
+    <button type="button" class="admin-sidenav__close" id="iconSidenav" aria-label="Cerrar menú">
+        <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
     @php($isGeneralAdmin = auth()->user()?->hasAnyRole(['admin', 'super-admin']))
 
     @if ($isGeneralAdmin)

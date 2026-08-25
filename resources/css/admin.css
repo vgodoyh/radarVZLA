@@ -789,6 +789,15 @@ body.auth-login-page input:-webkit-autofill:active {
 .access-justice-ranking { min-width: 0; overflow: hidden; }
 .access-justice-ranking__header { margin: 0; padding: 20px 22px 17px; }
 .access-justice-table-wrap { overflow-x: auto; position: relative; width: 100%; }
+.alert-ranking-table-scroll {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-color: #b8c8da transparent;
+    scrollbar-width: thin;
+}
+.alert-ranking-table-scroll::-webkit-scrollbar { height: 7px; }
+.alert-ranking-table-scroll::-webkit-scrollbar-track { background: transparent; }
+.alert-ranking-table-scroll::-webkit-scrollbar-thumb { background: #b8c8da; border-radius: 999px; }
+.alert-ranking-scroll-hint { display: none; }
 .access-justice-table-wrap.is-loading { opacity: .62; transition: opacity .15s ease; }
 .access-justice-ranking-loading {
     background: rgba(255, 255, 255, .9);
@@ -908,6 +917,142 @@ body.auth-login-page input:-webkit-autofill:active {
 
 .sidenav .nav-link.active[href*="admin/acceso-justicia"] i { color: #fff !important; }
 
+.admin-sidenav__toggle,
+.admin-sidenav__close {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #dce5ef;
+    border-radius: 8px;
+    color: #23395d;
+    justify-content: center;
+}
+
+.admin-sidenav__toggle {
+    display: none;
+    height: 38px;
+    padding: 0;
+    width: 38px;
+}
+
+.admin-sidenav__close {
+    display: none;
+    height: 34px;
+    padding: 0;
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    width: 34px;
+    z-index: 2;
+}
+
+.admin-sidenav-overlay {
+    display: none;
+}
+
+@media (max-width: 1199.98px) {
+    .admin-topbar__navigation {
+        align-items: center;
+        display: flex;
+    }
+
+    .admin-sidenav__toggle,
+    .admin-sidenav__close {
+        display: inline-flex;
+    }
+
+    .admin-sidenav {
+        height: 100vh;
+        max-width: min(280px, 85vw);
+        width: min(280px, 85vw);
+        z-index: 1046;
+    }
+
+    .admin-sidenav-overlay {
+        background: rgba(15, 23, 42, .45);
+        inset: 0;
+        position: fixed;
+        z-index: 1045;
+    }
+
+    .admin-sidenav-overlay.is-visible {
+        display: block;
+    }
+}
+
+.admin-profile {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.admin-profile__header {
+    margin-bottom: 24px;
+}
+
+.admin-profile__header h1 {
+    color: #23395d;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 4px;
+}
+
+.admin-profile__header p {
+    color: #7b89a1;
+    font-size: 14px;
+    margin: 0;
+}
+
+.admin-profile__alert {
+    margin-bottom: 20px;
+}
+
+.admin-profile__cards {
+    display: grid;
+    gap: 20px;
+}
+
+.admin-profile__card {
+    border: 1px solid #e8edf4;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .035);
+}
+
+.admin-profile__card .card-body {
+    padding: 24px;
+}
+
+.admin-profile__card h2 {
+    color: #23395d;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.admin-profile__card .form-label {
+    color: #40516d;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.admin-profile__card .form-control {
+    min-height: 42px;
+    border-color: #dce5ef;
+    border-radius: 8px;
+}
+
+.admin-profile__card .btn-primary {
+    background-color: #23395d;
+    border-color: #23395d;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 16px;
+}
+
+@media (max-width: 575.98px) {
+    .admin-profile__header h1 { font-size: 24px; }
+    .admin-profile__card .card-body { padding: 20px; }
+}
+
 @media (max-width: 1199.98px) {
     .access-justice-header { gap: 18px; }
     .access-justice-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -973,6 +1118,38 @@ body.auth-login-page input:-webkit-autofill:active {
     .access-justice-origin-card { padding: 18px; }
     .access-justice-charts-side { gap: 16px; }
     .access-justice-ranking__header { padding: 18px; }
-    .access-justice-trend-column { display: none; }
+    .alert-ranking-scroll-hint {
+        align-items: center;
+        color: #7b89a1;
+        display: flex;
+        font-size: 11px;
+        gap: 6px;
+        margin: 0;
+        padding: 0 18px 10px;
+    }
+    .alert-ranking-scroll-hint i { font-size: 13px; }
+    .alert-ranking-table-scroll table { min-width: 920px; }
+    .alert-ranking-table-scroll .access-justice-alert-column { min-width: 380px; width: 380px; }
+    .alert-ranking-table-scroll .access-justice-number-column { min-width: 130px; width: 130px; }
+    .alert-ranking-table-scroll .access-justice-total-column { min-width: 110px; width: 110px; }
+    .alert-ranking-table-scroll .access-justice-trend-column { min-width: 120px; width: 120px; }
     .access-justice-pagination { flex-wrap: wrap; padding: 16px 18px 18px; }
+}
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .alert-ranking-scroll-hint {
+        align-items: center;
+        color: #7b89a1;
+        display: flex;
+        font-size: 11px;
+        gap: 6px;
+        margin: 0;
+        padding: 0 18px 10px;
+    }
+    .alert-ranking-scroll-hint i { font-size: 13px; }
+    .alert-ranking-table-scroll table { min-width: 920px; }
+    .alert-ranking-table-scroll .access-justice-alert-column { min-width: 380px; width: 380px; }
+    .alert-ranking-table-scroll .access-justice-number-column { min-width: 130px; width: 130px; }
+    .alert-ranking-table-scroll .access-justice-total-column { min-width: 110px; width: 110px; }
+    .alert-ranking-table-scroll .access-justice-trend-column { min-width: 120px; width: 120px; }
 }

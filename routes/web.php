@@ -11,6 +11,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TipoRedSocialController;
 use App\Http\Controllers\UserController;
 use App\Livewire\Admin\Dashboard;
+use App\Livewire\Admin\Profile;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicDashboardController::class, 'index'])
@@ -53,6 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin', Dashboard::class)
         ->middleware(RedirectAccessJusticeUserFromAdmin::class)
         ->name('dashboard');
+    Route::livewire('/admin/profile', Profile::class)
+        ->name('admin.profile.edit');
 
     Route::get('/admin/acceso-justicia', AccesoJusticiaDashboardController::class)
         ->middleware('permission:view acceso justicia dashboard')
