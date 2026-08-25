@@ -18,7 +18,7 @@
         $organizationName = data_get($fakeNewsOrganization, 'name', __('dashboard.fake_news_page.organization'));
         $organizationUsername = data_get($fakeNewsOrganization, 'username');
         $organizationWebsite = data_get($fakeNewsOrganization, 'website_url') ?? data_get($fakeNewsOrganization, 'url');
-        $organizationLogo =  data_get($fakeNewsOrganization, 'logo') ?? data_get($fakeNewsOrganization, 'logo_x');
+        $organizationLogo = asset('assets/img/organizations/fake-news.png');
         $xProfileUrl = filled($organizationUsername) ? 'https://x.com/'.$organizationUsername : null;
         $lastSyncAt = filled($lastSync ?? null)
             ? rescue(
