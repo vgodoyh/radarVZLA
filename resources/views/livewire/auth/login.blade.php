@@ -18,7 +18,7 @@
 
             <!-- Email Address -->
             <div>
-                <label for="email" class="form-label">{{ __('E-mail') }}</label>
+                <label for="email" class="form-label">{{ __('Usuario') }}</label>
                 <input
                     id="email"
                     type="email"
