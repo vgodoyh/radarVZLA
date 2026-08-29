@@ -143,7 +143,7 @@
                 </div>
             </div>
 
-            <div class="access-justice-sync__status-action">
+            <div class="access-justice-sync__status-action" id="accessJusticeSyncForm" data-status-url="{{ route('admin.acceso-justicia.sync.status') }}" data-sync-status="{{ $sync['status'] ?? '' }}">
             <div class="access-justice-sync__item">
                 <span class="access-justice-sync__icon" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span>
                 <div>
@@ -160,15 +160,6 @@
                 </div>
             </div>
 
-            @can('sync acceso justicia dashboard')
-                <form method="POST" action="{{ route('admin.acceso-justicia.sync') }}" id="accessJusticeSyncForm" class="access-justice-sync__action" data-status-url="{{ route('admin.acceso-justicia.sync.status') }}" data-sync-status="{{ $sync['status'] ?? '' }}">
-                    @csrf
-                    <button type="submit" data-loading-text="Sincronizando..." @disabled($sync['status'] === 'running')>
-                        <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
-                        <span>{{ $sync['status'] === 'running' ? 'Sincronizando...' : 'Sincronizar ahora' }}</span>
-                    </button>
-                </form>
-            @endcan
             </div>
         </section>
 
