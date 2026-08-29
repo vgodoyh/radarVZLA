@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
-use App\Models\OvfnVerificationTotal;
 use App\Services\DashboardQueryService;
 use App\Services\FakeNewsVenezuelaService;
 use Illuminate\Http\Request;
@@ -86,23 +85,7 @@ class PublicDashboardController extends Controller
 
         abort_unless($organization, 404);
 
-        $organizationModel = Schema::hasTable('organizations')
-            ? Organization::query()->where('slug', 'fake-news')->first()
-            : null;
-        $currentVerificationTotal = Schema::hasTable('ovfn_verification_totals') && $organizationModel
-            ? OvfnVerificationTotal::query()
-                ->current()
-                ->where('organization_id', $organizationModel->id)
-                ->first()
-            : null;
-
-        // Transitional fallback for deployments before the migration and seeder run.
-        if (! $currentVerificationTotal) {
-            $currentVerificationTotal = new OvfnVerificationTotal([
-                'total' => 137,
-                'data_date' => '2026-07-31',
-            ]);
-        }
+        $currentVerificationTotal = $data['ovfnVerificationTotal'];
 
         $postsFakeNewsWeb = collect($fakeNews->getLatestPosts())
             ->map(fn ($posts, string $type) => collect($posts)->map(function (array $post) use ($type): array {

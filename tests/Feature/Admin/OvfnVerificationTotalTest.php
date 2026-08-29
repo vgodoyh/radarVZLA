@@ -40,7 +40,8 @@ class OvfnVerificationTotalTest extends TestCase
 
         $this->actingAs($user)->patch(route('admin.ovfn.total-verifications.update'), [
             'total' => 150, 'data_date' => '2026-08-31',
-        ])->assertRedirect(route('admin.ovfn.index'));
+        ])->assertRedirect(route('admin.ovfn.index'))
+            ->assertSessionHas('ovfn_verification_success', 'Total de verificaciones actualizado correctamente.');
 
         $old->refresh();
         $current = OvfnVerificationTotal::query()->current()->firstOrFail();
@@ -63,7 +64,8 @@ class OvfnVerificationTotalTest extends TestCase
 
         $this->actingAs($user)->patch(route('admin.ovfn.total-verifications.update'), [
             'total' => 137, 'data_date' => '2026-07-31',
-        ])->assertRedirect();
+        ])->assertRedirect()
+            ->assertSessionHas('ovfn_verification_info', 'No se detectaron cambios para guardar.');
 
         $this->assertSame(1, OvfnVerificationTotal::count());
     }

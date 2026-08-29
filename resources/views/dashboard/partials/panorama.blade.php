@@ -252,51 +252,10 @@
                     <div class="fake-news-left">
 
                         @php
-                            /*
-                             * Datos temporales hasta implementar
-                             * la carga desde el panel administrativo.
-                             */
-                            $ovfnSocialNetworks = [
-                                [
-                                    'key' => 'tiktok',
-                                    'name' => 'Tik Tok',
-                                    'total' => 48,
-                                ],
-                                [
-                                    'key' => 'whatsapp',
-                                    'name' => 'WhatsApp',
-                                    'total' => 41,
-                                ],
-                                [
-                                    'key' => 'x',
-                                    'name' => 'X',
-                                    'total' => 17,
-                                ],
-                                [
-                                    'key' => 'instagram',
-                                    'name' => 'Instagram',
-                                    'total' => 16,
-                                ],
-                                [
-                                    'key' => 'facebook',
-                                    'name' => 'Facebook',
-                                    'total' => 11,
-                                ],
-                                
-                                
-                                
-                            ];
-
-                            $ovfnSocialTotal = collect($ovfnSocialNetworks)->sum('total');
-
-                            $ovfnSocialNetworks = collect($ovfnSocialNetworks)
-                                ->map(function ($network) use ($ovfnSocialTotal) {
-                                    $network['percentage'] = $ovfnSocialTotal > 0
-                                        ? round(($network['total'] / $ovfnSocialTotal) * 100, 1)
-                                        : 0;
-
-                                    return $network;
-                                });
+                            $ovfnSocialNetworks = collect($fakeNewsSocialNetworks ?? [])->map(fn (array $network) => [
+                                ...$network,
+                                'name' => __('dashboard.social_networks.'.($network['key'] === 'whatsapp' ? 'whatsaap' : $network['key'])),
+                            ]);
                         @endphp
 
                         <h4 class="overview-section-title">

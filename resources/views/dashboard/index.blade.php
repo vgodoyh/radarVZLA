@@ -27,7 +27,7 @@
             ],
             [
                 'class' => 'ovfn',
-                'value' => '137',
+                'value' => $ovfnVerificationTotal?->total ?? 0,
                 'label' => __('dashboard.dashboard_v2.verifications'),
                 'organization' => 'OVFN',
             ],

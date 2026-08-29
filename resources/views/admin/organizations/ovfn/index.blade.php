@@ -1,4 +1,10 @@
 <x-layouts::admin :title="'Analítica | OVFN'">
+    <style>
+        .ovfn-platform-editor { padding: 24px; }
+        @media (max-width: 767.98px) {
+            .ovfn-platform-editor { padding: 16px; }
+        }
+    </style>
     @php
         $summary = $summary ?? [];
         $origin = $panelOrigin ?? ['pulso' => 0, 'direct' => 0, 'total' => 0];
@@ -23,8 +29,63 @@
         @can('edit ovfn metrics')
             <section id="ovfn-verification-edit" class="ovfn-verification-editor access-justice-card"><h2>Editar Total de Verificaciones</h2><form method="POST" action="{{ route('admin.ovfn.total-verifications.update') }}">@csrf @method('PATCH')<div class="row g-3"><div class="col-md-6"><label for="ovfn-total">Total de Verificaciones</label><input id="ovfn-total" class="form-control" type="number" min="0" name="total" required value="{{ old('total', $currentVerificationTotal?->total) }}"></div><div class="col-md-6"><label for="ovfn-data-date">Actualizado hasta</label><input id="ovfn-data-date" class="form-control" type="date" name="data_date" required value="{{ old('data_date', $currentVerificationTotal?->data_date?->format('Y-m-d')) }}"></div></div><button class="btn btn-primary mt-3" type="submit">Guardar cambios</button></form></section>
         @endcan
+        @php
+            $platformItems = collect($currentDistribution?->items ?? [])->keyBy('platform');
+            $platformLabels = ['tiktok' => 'TikTok', 'whatsapp' => 'WhatsApp', 'x' => 'X', 'instagram' => 'Instagram', 'facebook' => 'Facebook'];
+            $platformTotal = max(0, (int) $platformItems->sum('value'));
+        @endphp
+        <section class="ovfn-platform-editor access-justice-card">
+            <header class="access-justice-card__header"><div><h2>Editar Dónde circula la desinformación</h2><p>Actualiza la distribución por plataforma mostrada en el panel público.</p></div></header>
+            @can('edit ovfn metrics')
+                <form method="POST" action="{{ route('admin.ovfn.platform-distribution.update') }}">
+                    @csrf @method('PATCH')
+                    <div class="row g-3">
+                        <div class="col-12"><label for="ovfn-platform-date">Fecha desde</label><input id="ovfn-platform-date" class="form-control" type="date" name="data_from_date" required value="{{ old('data_from_date', $currentDistribution?->data_from_date?->format('Y-m-d')) }}"></div>
+                        @foreach ($platformLabels as $key => $label)
+                            <div class="col-md-6"><label for="ovfn-platform-{{ $key }}">{{ $label }}</label><div class="d-flex align-items-center gap-2"><input id="ovfn-platform-{{ $key }}" class="form-control" type="number" min="0" name="platforms[{{ $key }}]" required value="{{ old('platforms.'.$key, $platformItems->get($key)?->value ?? 0) }}"><span class="text-muted text-sm" data-platform-percent="{{ $key }}">{{ $platformTotal > 0 ? number_format((($platformItems->get($key)?->value ?? 0) / $platformTotal) * 100, 1) : '0.0' }}%</span></div></div>
+                        @endforeach
+                    </div>
+                    <button class="btn btn-primary mt-3" type="submit">Guardar actualización</button>
+                </form>
+            @else
+                <div class="row g-3">@foreach ($platformLabels as $key => $label)<div class="col-md-6"><span class="text-muted text-sm">{{ $label }}</span><strong class="d-block">{{ $platformItems->get($key)?->value ?? 0 }} <small class="text-muted">{{ $platformTotal > 0 ? number_format((($platformItems->get($key)?->value ?? 0) / $platformTotal) * 100, 1) : '0.0' }}%</small></strong></div>@endforeach</div>
+            @endcan
+        </section>
         <section class="ovfn-history access-justice-card access-justice-ranking"><header class="access-justice-card__header access-justice-ranking__header"><div><h2>Historial de Total de Verificaciones</h2><p>Versiones editoriales, solo lectura</p></div></header><div class="access-justice-table-wrap alert-ranking-table-scroll"><table class="table mb-0"><thead><tr><th>Valor</th><th>Actualizado hasta</th><th>Vigente desde</th><th>Vigente hasta</th><th>Modificado por</th></tr></thead><tbody>@forelse ($verificationHistory as $version)<tr><td><span class="ovfn-history-value-badge">{{ $version->total }}</span></td><td>{{ $version->data_date->format('d/m/Y') }}</td><td>{{ $version->valid_from->format('d/m/Y H:i') }}</td><td>@if ($version->valid_until)<span>{{ $version->valid_until->format('d/m/Y H:i') }}</span>@else<span class="ovfn-history-current-badge">Vigente</span>@endif</td><td>{{ $version->user?->name ?? 'Sistema' }}</td></tr>@empty<tr><td colspan="5">No hay historial registrado.</td></tr>@endforelse</tbody></table></div></section>
+        <section class="ovfn-history access-justice-card access-justice-ranking"><header class="access-justice-card__header access-justice-ranking__header"><div><h2>Historial de distribución por plataforma</h2><p>Versiones editoriales, solo lectura</p></div></header><div class="access-justice-table-wrap alert-ranking-table-scroll"><table class="table mb-0"><thead><tr><th>Fecha de datos</th><th>TikTok</th><th>WhatsApp</th><th>X</th><th>Instagram</th><th>Facebook</th><th>Vigente desde</th><th>Vigente hasta</th><th>Modificado por</th></tr></thead><tbody>@forelse ($distributionHistory as $version)<tr><td>{{ $version->data_from_date->format('d/m/Y') }}</td>@php($historyItems = $version->items->keyBy('platform'))@foreach (array_keys($platformLabels) as $platform)<td>{{ $historyItems->get($platform)?->value ?? 0 }}</td>@endforeach<td>{{ $version->valid_from->format('d/m/Y H:i') }}</td><td>@if ($version->valid_until){{ $version->valid_until->format('d/m/Y H:i') }}@else<span class="ovfn-history-current-badge">Vigente</span>@endif</td><td>{{ $version->user?->name ?? 'Sistema' }}</td></tr>@empty<tr><td colspan="9">No hay historial registrado.</td></tr>@endforelse</tbody></table></div></section>
     </main>
+    @include('components.flash-toast', ['toasts' => [
+        session('ovfn_verification_success') ? ['type' => 'success', 'message' => session('ovfn_verification_success')] : (session('ovfn_verification_info') ? ['type' => 'info', 'message' => session('ovfn_verification_info')] : null),
+        session('ovfn_distribution_success') ? ['type' => 'success', 'message' => session('ovfn_distribution_success')] : (session('ovfn_distribution_info') ? ['type' => 'info', 'message' => session('ovfn_distribution_info')] : null),
+    ]])
+    <script>
+        (() => {
+            const dashboard = document.querySelector('.ovfn-dashboard');
+            const form = dashboard?.querySelector('.ovfn-platform-editor form');
+            const inputs = form ? [...form.querySelectorAll('input[name^="platforms["]')] : [];
+
+            const updatePlatformPercentages = () => {
+                const values = inputs.map((input) => Math.max(0, Number(input.value) || 0));
+                const total = values.reduce((sum, value) => sum + value, 0);
+
+                inputs.forEach((input, index) => {
+                    const percentage = total > 0 ? (values[index] / total) * 100 : 0;
+                    const output = form.querySelector(`[data-platform-percent="${input.name.match(/\[(.*?)\]/)?.[1]}"]`);
+                    if (output) output.textContent = `${percentage.toFixed(1)}%`;
+                });
+            };
+
+            inputs.forEach((input) => input.addEventListener('input', updatePlatformPercentages));
+            updatePlatformPercentages();
+
+            if (dashboard) {
+                const histories = [...dashboard.querySelectorAll('.ovfn-history')];
+                const totalHistory = histories.find((card) => card.textContent.includes('Historial de Total de Verificaciones'));
+                const platformEditor = dashboard.querySelector('.ovfn-platform-editor');
+                if (totalHistory && platformEditor) dashboard.insertBefore(totalHistory, platformEditor);
+            }
+        })();
+    </script>
     <script type="application/json" id="ovfnAnalyticsData">@json(['visits' => $visitsChart ?? [], 'content' => $contentClicksChart ?? [], 'origin' => $origin])</script>
     @vite('resources/js/admin-analytics.js')
 </x-layouts::admin>

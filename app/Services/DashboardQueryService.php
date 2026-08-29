@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 
 class DashboardQueryService
 {
+    public function __construct(private readonly OvfnEditorialMetricsService $ovfnEditorialMetrics) {}
+
     /** @return array<string, mixed> */
     public function get(): array
     {
@@ -25,6 +27,7 @@ class DashboardQueryService
             ))
             ->take(5)
             ->values();
+        $ovfnDistribution = $this->ovfnEditorialMetrics->currentPlatformDistribution();
 
         return [
             'stats' => collect($this->configStats())->map(fn (array $stat) => [
@@ -43,6 +46,9 @@ class DashboardQueryService
             'accesoPosts' => $this->panoramaPosts($accesoLegalPosts),
             'postsFakeNewsX' => $this->posts($bySlug->get('fake-news')),
             'postsFakeNewsWeb' => ['en_profundidad' => collect(), 'noti_fake' => collect()],
+            'ovfnVerificationTotal' => $this->ovfnEditorialMetrics->currentVerificationTotal(),
+            'fakeNewsSocialNetworks' => $this->ovfnEditorialMetrics->currentPlatformItems($ovfnDistribution)->all(),
+            'fakeNewsSocialNetworksDataFrom' => $ovfnDistribution?->data_from_date,
             'economicSocialItems' => [
                 ['label' => __('dashboard.indicators.living_wage'), 'icon' => 'bi-cash-coin', 'value' => 150],
                 ['label' => __('dashboard.indicators.infrastructure_damage'), 'icon' => 'bi-building', 'value' => 98],

@@ -195,14 +195,18 @@
                     </div>
                 </header>
 
-                {{-- Datos temporales hasta implementar la carga desde el panel administrativo --}}
                 @php
-                    $socialNetworks = collect($fakeNewsSocialNetworks ?? [
-                        ['key' => 'tiktok', 'name' => __('dashboard.social_networks.tiktok'), 'total' => 48, 'percentage' => 36.1, 'icon' => 'fa-brands fa-tiktok'],
-                        ['key' => 'whatsaap', 'name' => __('dashboard.social_networks.whatsaap'), 'total' => 41, 'percentage' => 30.8, 'icon' => 'fa-brands fa-whatsapp'],
-                        ['key' => 'x', 'name' => __('dashboard.social_networks.x'), 'total' => 17, 'percentage' => 12.8, 'icon' => 'fa-brands fa-x-twitter'],
-                        ['key' => 'instagram', 'name' => __('dashboard.social_networks.instagram'), 'total' => 16, 'percentage' => 12, 'icon' => 'fa-brands fa-instagram'],
-                        ['key' => 'facebook', 'name' => __('dashboard.social_networks.facebook'), 'total' => 11, 'percentage' => 8.3, 'icon' => 'fa-brands fa-facebook-f'],
+                    $socialNetworks = collect($fakeNewsSocialNetworks ?? [])->map(fn (array $network) => [
+                        ...$network,
+                        'name' => __('dashboard.social_networks.'.($network['key'] === 'whatsapp' ? 'whatsaap' : $network['key'])),
+                        'icon' => match ($network['key']) {
+                            'tiktok' => 'fa-brands fa-tiktok',
+                            'whatsapp' => 'fa-brands fa-whatsapp',
+                            'x' => 'fa-brands fa-x-twitter',
+                            'instagram' => 'fa-brands fa-instagram',
+                            'facebook' => 'fa-brands fa-facebook-f',
+                            default => 'fa-solid fa-circle',
+                        },
                     ]);
                 @endphp
 
@@ -211,7 +215,7 @@
                         <h4>{{ __('dashboard.where_it_spreads') }}</h4>
                         <div class="panorama-ovfn__period">
                             <i class="bi bi-calendar3" aria-hidden="true"></i>
-                            <span>{{ __('dashboard.disinformation_since') }}</span>
+                            <span>{{ $fakeNewsSocialNetworksDataFrom ? 'Desde '.$fakeNewsSocialNetworksDataFrom->locale(app()->getLocale())->translatedFormat('j \d\e F \d\e Y') : __('dashboard.disinformation_since') }}</span>
                         </div>
                     </div>
 

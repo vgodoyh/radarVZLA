@@ -77,6 +77,9 @@ Route::middleware(['auth', 'verified', UpdateUserLastActivity::class])->group(fu
     Route::patch('/admin/ovfn/total-verifications', [OvfnDashboardController::class, 'updateTotalVerifications'])
         ->middleware('permission:edit ovfn metrics')
         ->name('admin.ovfn.total-verifications.update');
+    Route::patch('/admin/ovfn/platform-distribution', [OvfnDashboardController::class, 'updatePlatformDistribution'])
+        ->middleware('permission:edit ovfn metrics')
+        ->name('admin.ovfn.platform-distribution.update');
     Route::post('/admin/acceso-justicia/sync', AccesoJusticiaSyncController::class)
         ->middleware(['role:admin|super-admin', 'permission:sync acceso justicia dashboard'])
         ->name('admin.acceso-justicia.sync');
