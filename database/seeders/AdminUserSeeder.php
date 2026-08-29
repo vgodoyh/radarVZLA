@@ -35,6 +35,7 @@ class AdminUserSeeder extends Seeder
             'view jep dashboard',
             'view acceso justicia dashboard',
             'view ovfn dashboard',
+            'edit ovfn metrics',
             'view obu dashboard',
         ])
             ->map(fn (string $name) => Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']));

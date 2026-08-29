@@ -13,7 +13,8 @@
         $magazineNotiFakePosts = $notiFakePosts->take(4);
         $magazineXPosts = $xPosts->take(7);
         $verifiedCount = $deepPosts->count() + $notiFakePosts->count();
-        $totalVerifications = 137;
+        $totalVerifications = (int) $currentVerificationTotal->total;
+        $verificationDataDate = $currentVerificationTotal->data_date?->format('d/m/Y');
         $publicationTotal = $verifiedCount + $xPosts->count();
         $organizationName = data_get($fakeNewsOrganization, 'name', __('dashboard.fake_news_page.organization'));
         $organizationUsername = data_get($fakeNewsOrganization, 'username');
@@ -85,7 +86,7 @@
                                 </span>
                             </div>
 
-                            <p class="fake-news-verification-counter__updated">Actualizado hasta el 31/07/2026</p>
+                            <p class="fake-news-verification-counter__updated">Actualizado hasta el {{ $verificationDataDate }}</p>
                         </div>
                     </article>
                 </div>

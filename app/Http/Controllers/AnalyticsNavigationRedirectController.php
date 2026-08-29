@@ -12,8 +12,13 @@ class AnalyticsNavigationRedirectController extends Controller
     private const DESTINATIONS = [
         'acceso-justicia' => [
             'organization' => 'acceso_justicia',
-            'target' => 'organizaciones/acceso-justicia',
+            'target' => 'acceso-justicia',
             'route' => 'organizations.acceso-justicia',
+        ],
+        'ovfn' => [
+            'organization' => 'ovfn',
+            'target' => 'fake-news',
+            'route' => 'organizations.fake-news',
         ],
     ];
 

@@ -24,6 +24,10 @@ class OrganizationAnalyticsService
     /** @return array<string, mixed> */
     public function dashboard(string $organization, int $days = 30): array
     {
+        if ($organization === 'ovfn') {
+            return $this->ovfnDashboard($days);
+        }
+
         $startDate = today()->subDays($days - 1)->startOfDay();
 
         $portalViews = AnalyticsPageView::query()
@@ -32,12 +36,12 @@ class OrganizationAnalyticsService
             ->count();
         $organizationViews = AnalyticsPageView::query()
             ->where('organization', $organization)
-            ->where('page', 'organizaciones/acceso-justicia')
+            ->where('page', 'acceso-justicia')
             ->where('created_at', '>=', $startDate)
             ->count();
         $homeNavigationClicks = AnalyticsNavigationClick::query()
             ->where('organization', $organization)
-            ->where('target', 'organizaciones/acceso-justicia')
+            ->where('target', 'acceso-justicia')
             ->where('source', 'home')
             ->count();
         $clicks = AnalyticsContentClick::query()
@@ -61,6 +65,43 @@ class OrganizationAnalyticsService
             'chart' => $this->dailyViews($organization, $startDate),
             'panelOrigin' => $panelOrigin,
             'sync' => $this->syncStatus(),
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function ovfnDashboard(int $days): array
+    {
+        $startDate = today()->subDays($days - 1)->startOfDay();
+        $portalViews = AnalyticsPageView::query()
+            ->where('organization', 'pulso_vzla')->where('page', 'home')
+            ->where('created_at', '>=', $startDate)->count();
+        $organizationViews = AnalyticsPageView::query()
+            ->where('organization', 'ovfn')->where('page', 'fake-news')
+            ->where('created_at', '>=', $startDate)->count();
+        $homeNavigationClicks = AnalyticsNavigationClick::query()
+            ->where('organization', 'ovfn')->where('target', 'fake-news')
+            ->where('source', 'home')->where('created_at', '>=', $startDate)->count();
+        $contentClicks = AnalyticsContentClick::query()
+            ->where('organization', 'ovfn')->where('created_at', '>=', $startDate);
+        $contentByType = collect(['x_post', 'noti_fake', 'analysis'])
+            ->mapWithKeys(fn (string $type) => [$type => (clone $contentClicks)->where('content_type', $type)->count()]);
+        $contentTotal = (int) $contentByType->sum();
+
+        return [
+            'summary' => [
+                'home_navigation_clicks' => $homeNavigationClicks,
+                'portal_views' => $portalViews,
+                'organization_views' => $organizationViews,
+                'content_clicks' => $contentTotal,
+            ],
+            'contentClicks' => [...$contentByType->all(), 'total' => $contentTotal],
+            'visitsChart' => $this->dailyViewsFor('ovfn', 'fake-news', $startDate),
+            'contentClicksChart' => $this->dailyContentClicks($startDate),
+            'panelOrigin' => [
+                'pulso' => $homeNavigationClicks,
+                'direct' => max($organizationViews - $homeNavigationClicks, 0),
+                'total' => $organizationViews,
+            ],
         ];
     }
 
@@ -157,7 +198,7 @@ class OrganizationAnalyticsService
     private function dailyViews(string $organization, CarbonInterface $startDate): array
     {
         $portal = $this->viewsByDate('pulso_vzla', 'home', $startDate);
-        $organizationViews = $this->viewsByDate($organization, 'organizaciones/acceso-justicia', $startDate);
+        $organizationViews = $this->viewsByDate($organization, 'acceso-justicia', $startDate);
         $dates = collect(range(0, (int) $startDate->diffInDays(today())))
             ->map(fn (int $offset) => $startDate->copy()->addDays($offset));
 
@@ -166,6 +207,45 @@ class OrganizationAnalyticsService
             'portal' => $dates->map(fn (CarbonInterface $date) => (int) ($portal[$date->toDateString()] ?? 0))->all(),
             'organization' => $dates->map(fn (CarbonInterface $date) => (int) ($organizationViews[$date->toDateString()] ?? 0))->all(),
         ];
+    }
+
+    /** @return array{labels: array<int, string>, portal: array<int, int>, organization: array<int, int>} */
+    private function dailyViewsFor(string $organization, string $page, CarbonInterface $startDate): array
+    {
+        $portal = $this->viewsByDate('pulso_vzla', 'home', $startDate);
+        $organizationViews = $this->viewsByDate($organization, $page, $startDate);
+        $dates = $this->datesInRange($startDate);
+
+        return [
+            'labels' => $dates->map(fn (CarbonInterface $date) => $date->format('d/m'))->all(),
+            'portal' => $dates->map(fn (CarbonInterface $date) => (int) ($portal[$date->toDateString()] ?? 0))->all(),
+            'organization' => $dates->map(fn (CarbonInterface $date) => (int) ($organizationViews[$date->toDateString()] ?? 0))->all(),
+        ];
+    }
+
+    /** @return array{labels: array<int, string>, x_post: array<int, int>, noti_fake: array<int, int>, analysis: array<int, int>} */
+    private function dailyContentClicks(CarbonInterface $startDate): array
+    {
+        $rows = AnalyticsContentClick::query()
+            ->selectRaw('DATE(created_at) as click_date, content_type, COUNT(*) as total')
+            ->where('organization', 'ovfn')->where('created_at', '>=', $startDate)
+            ->whereIn('content_type', ['x_post', 'noti_fake', 'analysis'])
+            ->groupBy('click_date', 'content_type')->get();
+        $byDate = $rows->groupBy('click_date');
+        $dates = $this->datesInRange($startDate);
+
+        return [
+            'labels' => $dates->map(fn (CarbonInterface $date) => $date->format('d/m'))->all(),
+            ...collect(['x_post', 'noti_fake', 'analysis'])->mapWithKeys(fn (string $type) => [
+                $type => $dates->map(fn (CarbonInterface $date) => (int) ($byDate->get($date->toDateString(), collect())->firstWhere('content_type', $type)?->total ?? 0))->all(),
+            ])->all(),
+        ];
+    }
+
+    private function datesInRange(CarbonInterface $startDate): Collection
+    {
+        return collect(range(0, (int) $startDate->diffInDays(today()))
+            )->map(fn (int $offset) => $startDate->copy()->addDays($offset));
     }
 
     /** @return Collection<string, int> */

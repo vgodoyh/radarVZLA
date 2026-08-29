@@ -70,7 +70,7 @@ class AccessJusticeAnalyticsTest extends TestCase
         ]);
         $this->assertDatabaseHas('analytics_page_views', [
             'organization' => 'acceso_justicia',
-            'page' => 'organizaciones/acceso-justicia',
+            'page' => 'acceso-justicia',
             'source' => 'direct',
         ]);
     }
@@ -79,14 +79,14 @@ class AccessJusticeAnalyticsTest extends TestCase
     {
         $this->organization('acceso-justicia');
 
-        $this->get('/organizaciones/acceso-justicia')->assertOk();
+        $this->get('/acceso-justicia')->assertOk();
 
         $this->assertDatabaseHas('analytics_page_views', [
             'organization' => 'acceso_justicia',
-            'page' => 'organizaciones/acceso-justicia',
+            'page' => 'acceso-justicia',
         ]);
         $this->assertDatabaseMissing('analytics_page_views', [
-            'page' => 'http://radar-vzla.test/organizaciones/acceso-justicia',
+            'page' => 'http://radar-vzla.test/acceso-justicia',
         ]);
         $this->assertFalse(AnalyticsPageView::query()->get()->contains(
             fn (AnalyticsPageView $view) => str_contains($view->page, '://')
@@ -112,7 +112,7 @@ class AccessJusticeAnalyticsTest extends TestCase
 
         $this->assertDatabaseHas('analytics_navigation_clicks', [
             'organization' => 'acceso_justicia',
-            'target' => 'organizaciones/acceso-justicia',
+            'target' => 'acceso-justicia',
             'source' => 'home',
         ]);
 
@@ -120,7 +120,7 @@ class AccessJusticeAnalyticsTest extends TestCase
 
         $this->assertDatabaseHas('analytics_page_views', [
             'organization' => 'acceso_justicia',
-            'page' => 'organizaciones/acceso-justicia',
+            'page' => 'acceso-justicia',
             'source' => 'home',
         ]);
     }
@@ -129,12 +129,12 @@ class AccessJusticeAnalyticsTest extends TestCase
     {
         $this->organization('acceso-justicia');
 
-        $this->withHeader('Referer', 'https://www.google.com/search?q=acceso')->get('/organizaciones/acceso-justicia')
+        $this->withHeader('Referer', 'https://www.google.com/search?q=acceso')->get('/acceso-justicia')
             ->assertOk();
 
         $this->assertDatabaseHas('analytics_page_views', [
             'organization' => 'acceso_justicia',
-            'page' => 'organizaciones/acceso-justicia',
+            'page' => 'acceso-justicia',
             'source' => 'external',
         ]);
     }
@@ -143,7 +143,7 @@ class AccessJusticeAnalyticsTest extends TestCase
     {
         $this->organization('acceso-justicia');
 
-        $this->get('/organizaciones/acceso-justicia')->assertOk();
+        $this->get('/acceso-justicia')->assertOk();
         $trackingUrl = route('analytics.navigation.redirect', [
             'organization' => 'acceso-justicia',
             'source' => 'home',
@@ -154,12 +154,12 @@ class AccessJusticeAnalyticsTest extends TestCase
         $this->assertDatabaseCount('analytics_page_views', 2);
         $this->assertDatabaseHas('analytics_page_views', [
             'organization' => 'acceso_justicia',
-            'page' => 'organizaciones/acceso-justicia',
+            'page' => 'acceso-justicia',
             'source' => 'direct',
         ]);
         $this->assertDatabaseHas('analytics_page_views', [
             'organization' => 'acceso_justicia',
-            'page' => 'organizaciones/acceso-justicia',
+            'page' => 'acceso-justicia',
             'source' => 'home',
         ]);
     }
@@ -168,13 +168,13 @@ class AccessJusticeAnalyticsTest extends TestCase
     {
         $this->organization('acceso-justicia');
 
-        $this->get('/organizaciones/acceso-justicia')->assertOk();
-        $this->get('/organizaciones/acceso-justicia')->assertOk();
+        $this->get('/acceso-justicia')->assertOk();
+        $this->get('/acceso-justicia')->assertOk();
 
         $this->assertDatabaseCount('analytics_page_views', 1);
         $this->assertDatabaseHas('analytics_page_views', [
             'organization' => 'acceso_justicia',
-            'page' => 'organizaciones/acceso-justicia',
+            'page' => 'acceso-justicia',
             'source' => 'direct',
         ]);
     }
@@ -184,9 +184,9 @@ class AccessJusticeAnalyticsTest extends TestCase
         $this->organization('acceso-justicia');
 
         foreach (['home', 'direct', 'external'] as $source) {
-            AnalyticsPageView::create($this->pageView('acceso_justicia', 'organizaciones/acceso-justicia') + ['source' => $source]);
+            AnalyticsPageView::create($this->pageView('acceso_justicia', 'acceso-justicia') + ['source' => $source]);
         }
-        AnalyticsPageView::create($this->pageView('acceso_justicia', 'organizaciones/acceso-justicia'));
+        AnalyticsPageView::create($this->pageView('acceso_justicia', 'acceso-justicia'));
 
         $origin = app(OrganizationAnalyticsService::class)->dashboard('acceso_justicia')['panelOrigin'];
 
@@ -200,13 +200,13 @@ class AccessJusticeAnalyticsTest extends TestCase
         $this->organization('acceso-justicia');
 
         foreach (range(1, 5) as $index) {
-            AnalyticsPageView::create($this->pageView('acceso_justicia', 'organizaciones/acceso-justicia'));
+            AnalyticsPageView::create($this->pageView('acceso_justicia', 'acceso-justicia'));
         }
 
         foreach (range(1, 2) as $index) {
             AnalyticsNavigationClick::create([
                 'organization' => 'acceso_justicia',
-                'target' => 'organizaciones/acceso-justicia',
+                'target' => 'acceso-justicia',
                 'source' => 'home',
                 'session_id' => hash('sha256', "panel-home-{$index}"),
             ]);
@@ -274,10 +274,10 @@ class AccessJusticeAnalyticsTest extends TestCase
 
         AnalyticsPageView::create($this->pageView('pulso_vzla', 'home'));
         AnalyticsPageView::create($this->pageView('pulso_vzla', 'home'));
-        AnalyticsPageView::create($this->pageView('acceso_justicia', 'organizaciones/acceso-justicia'));
+        AnalyticsPageView::create($this->pageView('acceso_justicia', 'acceso-justicia'));
         AnalyticsNavigationClick::create([
             'organization' => 'acceso_justicia',
-            'target' => 'organizaciones/acceso-justicia',
+            'target' => 'acceso-justicia',
             'source' => 'home',
             'session_id' => hash('sha256', 'navigation'),
         ]);

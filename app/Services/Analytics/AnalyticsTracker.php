@@ -102,7 +102,10 @@ class AnalyticsTracker
 
     private function pageViewSource(Request $request, string $organization, string $page): ?string
     {
-        if ($organization !== 'acceso_justicia' || $page !== 'organizaciones/acceso-justicia') {
+        if (! in_array([$organization, $page], [
+            ['acceso_justicia', 'acceso-justicia'],
+            ['ovfn', 'fake-news'],
+        ], true)) {
             return null;
         }
 

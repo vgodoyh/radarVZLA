@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(AdminUserSeeder::class);
         $this->call(AccessJusticeRoleSeeder::class);
+        $this->call(OvfnRoleSeeder::class);
+        $this->call(OvfnVerificationTotalSeeder::class);
     }
 }

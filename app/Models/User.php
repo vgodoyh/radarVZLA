@@ -26,6 +26,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $two_factor_recovery_codes
  * @property Carbon|null $two_factor_confirmed_at
  * @property string|null $remember_token
+ * @property Carbon|null $last_activity_at
+ * @property string|null $last_device_type
+ * @property string|null $last_platform
+ * @property string|null $last_browser
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -47,8 +51,14 @@ class User extends Authenticatable implements PasskeyUser
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_activity_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isOnline(): bool
+    {
+        return $this->last_activity_at?->gte(now()->subMinutes(5)) ?? false;
     }
 
     /**

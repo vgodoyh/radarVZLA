@@ -261,7 +261,7 @@
 
                 <footer class="panorama-secondary-card__footer">
                     <span></span>
-                    <a href="{{ route('organizations.fake-news') }}">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ route('analytics.navigation.redirect', ['organization' => 'ovfn', 'source' => 'home']) }}">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </footer>
             </article>
 

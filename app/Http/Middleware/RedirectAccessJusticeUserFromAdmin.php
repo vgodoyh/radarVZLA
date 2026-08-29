@@ -19,6 +19,13 @@ class RedirectAccessJusticeUserFromAdmin
             return redirect()->route('admin.acceso-justicia.index');
         }
 
+        if (
+            $user?->can('view ovfn dashboard')
+            && ! $user->hasAnyRole(['admin', 'super-admin'])
+        ) {
+            return redirect()->route('admin.ovfn.index');
+        }
+
         return $next($request);
     }
 }

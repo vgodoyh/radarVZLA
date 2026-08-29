@@ -23,6 +23,13 @@ class LoginResponse implements LoginResponseContract
             return redirect()->route('admin.acceso-justicia.index');
         }
 
+        if (
+            $user?->can('view ovfn dashboard')
+            && ! $user->hasAnyRole(['admin', 'super-admin'])
+        ) {
+            return redirect()->route('admin.ovfn.index');
+        }
+
         return redirect()->intended(Fortify::redirects('login'));
     }
 }

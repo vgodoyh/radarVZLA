@@ -39,6 +39,30 @@ class PublicDashboardTest extends TestCase
         }
     }
 
+    public function test_public_organization_urls_use_their_final_paths(): void
+    {
+        foreach ([
+            '/fake-news',
+            '/justicia-encuentro-perdon',
+            '/acceso-justicia',
+            '/observatorio-universidades',
+        ] as $path) {
+            $this->get($path)->assertOk();
+        }
+    }
+
+    public function test_legacy_organization_urls_are_not_registered(): void
+    {
+        foreach ([
+            '/organizaciones/fake-news',
+            '/organizaciones/jep',
+            '/organizaciones/acceso-justicia',
+            '/organizaciones/obu',
+        ] as $path) {
+            $this->get($path)->assertNotFound();
+        }
+    }
+
     public function test_acceso_justicia_page_has_a_database_search(): void
     {
         $this->get(route('organizations.acceso-justicia', ['q' => 'justicia']))

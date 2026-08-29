@@ -245,6 +245,41 @@ const registerLivewireSparklineHook = () => {
 if (window.Livewire) registerLivewireSparklineHook();
 else document.addEventListener('livewire:init', registerLivewireSparklineHook, { once: true });
 
+const ovfnDataElement = document.getElementById('ovfnAnalyticsData');
+const ovfnAnalytics = ovfnDataElement ? JSON.parse(ovfnDataElement.textContent || '{}') : null;
+
+const createAnalyticsLine = (canvas, chart, datasets) => {
+    if (!canvas || !chart) return;
+    const values = datasets.flatMap(dataset => (dataset.data || []).map(Number)).filter(Number.isFinite);
+    Chart.getChart(canvas)?.destroy();
+    new Chart(canvas, {
+        type: 'line', data: { labels: chart.labels || [], datasets },
+        options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 10, right: 10, bottom: 5, left: 5 } }, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { align: 'start', position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 7, boxHeight: 7, padding: 12, color: '#607086', font: { ...commonFont, size: 11 } } }, tooltip: { backgroundColor: '#14233a', cornerRadius: 8, padding: 10 } }, scales: { x: { grid: { display: false }, ticks: { autoSkip: true, maxTicksLimit: 10, maxRotation: 0, color: '#8a98aa' } }, y: { beginAtZero: true, suggestedMax: Math.max(1, ...values) + 1, grid: { color: 'rgba(15, 35, 62, .055)' }, ticks: { precision: 0, color: '#8a98aa' } } } },
+    });
+};
+
+if (ovfnAnalytics) {
+    const colors = ['#0b2547', '#f97316', '#f2c600'];
+    createAnalyticsLine(document.getElementById('ovfnVisitsChart'), ovfnAnalytics.visits, [
+        { label: 'Pulso Venezuela', data: ovfnAnalytics.visits?.portal || [], borderColor: colors[0], backgroundColor: 'rgba(11,37,71,.035)', borderWidth: 2, pointRadius: 2, tension: .35, fill: true },
+        { label: 'Fake News', data: ovfnAnalytics.visits?.organization || [], borderColor: colors[1], backgroundColor: 'rgba(249,115,22,.035)', borderWidth: 2, pointRadius: 2, tension: .35, fill: true },
+    ]);
+    createAnalyticsLine(document.getElementById('ovfnContentClicksChart'), ovfnAnalytics.content, [
+        { label: 'Tweets', data: ovfnAnalytics.content?.x_post || [], borderColor: '#0b2547', backgroundColor: 'rgba(11,37,71,.025)', borderWidth: 2, pointRadius: 2, tension: .35, fill: true },
+        { label: 'Noti Fake', data: ovfnAnalytics.content?.noti_fake || [], borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.025)', borderWidth: 2, pointRadius: 2, tension: .35, fill: true },
+        { label: 'En profundidad', data: ovfnAnalytics.content?.analysis || [], borderColor: '#f2c600', backgroundColor: 'rgba(242,198,0,.025)', borderWidth: 2, pointRadius: 2, tension: .35, fill: true },
+    ]);
+    const ovfnOriginCanvas = document.getElementById('ovfnOriginChart');
+    if (ovfnOriginCanvas) {
+        const pulso = Number(ovfnAnalytics.origin?.pulso) || 0;
+        const direct = Number(ovfnAnalytics.origin?.direct) || 0;
+        const total = Number(ovfnAnalytics.origin?.total) || 0;
+        const center = { id: 'ovfnCenterLabel', afterDraw(chart) { const { ctx, chartArea } = chart; if (!chartArea) return; const x = (chartArea.left + chartArea.right) / 2; const y = (chartArea.top + chartArea.bottom) / 2; ctx.save(); ctx.textAlign = 'center'; ctx.fillStyle = '#14233a'; ctx.font = `700 27px ${commonFont.family}`; ctx.fillText(`${total ? Math.round(pulso / total * 100) : 0}%`, x, y - 8); ctx.fillStyle = '#718096'; ctx.font = `500 11px ${commonFont.family}`; ctx.fillText('Desde Pulso', x, y + 17); ctx.restore(); } };
+        Chart.getChart(ovfnOriginCanvas)?.destroy();
+        new Chart(ovfnOriginCanvas, { type: 'doughnut', data: { labels: ['Desde Pulso', 'Acceso directo'], datasets: [{ data: [pulso, direct], backgroundColor: ['#f97316', '#2563eb'], borderColor: '#fff', borderWidth: 1 }] }, plugins: [center], options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false }, tooltip: { backgroundColor: '#14233a', cornerRadius: 8, padding: 10 } } } });
+    }
+}
+
 const syncForm = document.getElementById('accessJusticeSyncForm');
 
 syncForm?.addEventListener('submit', () => {

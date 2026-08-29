@@ -909,13 +909,30 @@ body.auth-login-page input:-webkit-autofill:active {
 .access-justice-pagination__control.is-disabled { color: #b9c4d1; cursor: default; }
 .access-justice-pagination__ellipsis { color: #8b9aae; font-size: 12px; padding: 0 2px; }
 
-.sidenav .nav-link.active[href*="admin/acceso-justicia"] {
+.sidenav .organization-link.active {
+    --organization-accent: #ff7a1a;
     background: rgba(255, 255, 255, .14);
-    box-shadow: inset 3px 0 0 #fb923c;
+    border-radius: .375rem;
     color: #fff !important;
+    position: relative;
 }
 
-.sidenav .nav-link.active[href*="admin/acceso-justicia"] i { color: #fff !important; }
+.sidenav .organization-link.active::before {
+    background: var(--organization-accent);
+    border-radius: 0 4px 4px 0;
+    bottom: 4px;
+    content: "";
+    left: 0;
+    position: absolute;
+    top: 4px;
+    width: 4px;
+}
+
+.sidenav .organization-link--jep.active { --organization-accent: #1769f6; }
+.sidenav .organization-link--access.active { --organization-accent: #ff7a1a; }
+.sidenav .organization-link--ovfn.active { --organization-accent: #f2c600; }
+.sidenav .organization-link--obu.active { --organization-accent: #2373c8; }
+.sidenav .organization-link.active i { color: #fff !important; }
 
 .admin-sidenav__toggle,
 .admin-sidenav__close {
@@ -1048,6 +1065,102 @@ body.auth-login-page input:-webkit-autofill:active {
     padding: 10px 16px;
 }
 
+.ovfn-admin-dashboard {
+    margin: 0 auto;
+    max-width: 1120px;
+}
+
+.ovfn-admin-dashboard__header {
+    align-items: flex-start;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.ovfn-admin-dashboard__accent {
+    background: #f2c600;
+    border-radius: 999px;
+    flex: 0 0 4px;
+    height: 52px;
+}
+
+.ovfn-admin-dashboard__header h1,
+.ovfn-admin-dashboard__card h2 {
+    color: #23395d;
+    font-weight: 700;
+}
+
+.ovfn-admin-dashboard__header h1 { font-size: 28px; margin: 0 0 4px; }
+.ovfn-admin-dashboard__header p,
+.ovfn-admin-dashboard__date { color: #7b89a1; font-size: 14px; margin: 0; }
+
+.ovfn-admin-dashboard__card {
+    border: 1px solid #e8edf4;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .035);
+    margin-bottom: 20px;
+}
+
+.ovfn-admin-dashboard__card .card-body { padding: 24px; }
+.ovfn-admin-dashboard__card h2 { font-size: 18px; margin: 0; }
+.ovfn-admin-dashboard__card-heading { align-items: flex-start; display: flex; justify-content: space-between; }
+.ovfn-admin-dashboard__card-heading > i { color: #f2c600; font-size: 24px; }
+.ovfn-admin-dashboard__eyebrow { color: #7b89a1; display: block; font-size: 11px; margin-bottom: 4px; text-transform: uppercase; }
+.ovfn-admin-dashboard__total { color: #23395d; display: block; font-size: 40px; line-height: 1; margin-top: 18px; }
+.ovfn-admin-dashboard__date { margin-top: 6px; }
+.ovfn-admin-dashboard__form { border-top: 1px solid #edf1f5; margin-top: 20px; padding-top: 20px; }
+.ovfn-admin-dashboard__form .form-label { color: #40516d; font-size: 13px; font-weight: 600; }
+.ovfn-admin-dashboard__form .form-control { border-color: #dce5ef; border-radius: 8px; min-height: 42px; }
+.ovfn-admin-dashboard__form .btn-primary { background: #23395d; border-color: #23395d; border-radius: 8px; font-size: 13px; font-weight: 600; }
+.ovfn-admin-dashboard__card .table th { color: #7a899d; font-size: 10px; text-transform: uppercase; }
+.ovfn-admin-dashboard__card .table td { color: #56667b; font-size: 13px; }
+
+.ovfn-dashboard .ovfn-verification-card,
+.ovfn-dashboard .ovfn-verification-editor,
+.ovfn-dashboard .ovfn-history,
+.ovfn-dashboard .ovfn-content-chart-card {
+    background: #fff;
+    border: 1px solid #e8edf4;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .035);
+    padding: 20px;
+}
+.ovfn-dashboard .ovfn-verification-card { align-items: center; display: flex; justify-content: space-between; }
+.ovfn-verification-card span { color: #7b89a1; font-size: 11px; text-transform: uppercase; }
+.ovfn-verification-card h2 { color: #23395d; font-size: 18px; margin: 4px 0 10px; }
+.ovfn-verification-card strong { color: #23395d; display: block; font-size: 36px; line-height: 1; }
+.ovfn-verification-card p { color: #7b89a1; font-size: 12px; margin: 6px 0 0; }
+.ovfn-verification-card a { color: #23395d; font-size: 12px; font-weight: 600; }
+.ovfn-content-chart-card { margin-top: 20px; }
+.ovfn-verification-editor { margin-top: 20px; }
+.ovfn-verification-editor h2 { font-size: 18px; margin-bottom: 18px; }
+.ovfn-history { margin-top: 20px; }
+.ovfn-history .access-justice-card__header { margin-bottom: 12px; }
+.ovfn-dashboard .ovfn-history { overflow: hidden; padding: 0; }
+.ovfn-dashboard .ovfn-history .access-justice-ranking__header { margin: 0; padding: 20px 20px 14px; }
+.ovfn-dashboard .ovfn-history .access-justice-table-wrap { width: 100%; }
+.ovfn-history-value-badge,
+.ovfn-history-current-badge {
+    align-items: center;
+    background: #eef5ff;
+    border-radius: 6px;
+    color: #315d93;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 700;
+    justify-content: center;
+    line-height: 1;
+    min-height: 25px;
+    padding: 5px 9px;
+    white-space: nowrap;
+}
+.ovfn-history-current-badge { font-size: 11px; font-weight: 600; }
+
+@media (max-width: 575.98px) {
+    .ovfn-admin-dashboard__header h1 { font-size: 24px; }
+    .ovfn-admin-dashboard__card .card-body { padding: 20px; }
+}
+
 @media (max-width: 575.98px) {
     .admin-profile__header h1 { font-size: 24px; }
     .admin-profile__card .card-body { padding: 20px; }
@@ -1152,4 +1265,213 @@ body.auth-login-page input:-webkit-autofill:active {
     .alert-ranking-table-scroll .access-justice-number-column { min-width: 130px; width: 130px; }
     .alert-ranking-table-scroll .access-justice-total-column { min-width: 110px; width: 110px; }
     .alert-ranking-table-scroll .access-justice-trend-column { min-width: 120px; width: 120px; }
+}
+
+/* OVFN mobile-only density adjustments. Desktop rules remain unchanged. */
+@media (max-width: 767.98px) {
+    body:has(.ovfn-dashboard) .main-content > .container-fluid {
+        padding-top: 16px !important;
+    }
+
+    .ovfn-dashboard {
+        box-sizing: border-box;
+        gap: 14px;
+        max-width: 100%;
+        overflow: hidden;
+        padding-bottom: 16px;
+    }
+
+    .ovfn-dashboard .access-justice-header {
+        align-items: flex-start;
+        display: flex;
+        gap: 12px;
+        margin-bottom: 0;
+        padding: 0;
+    }
+
+    .ovfn-dashboard .access-justice-header__copy {
+        align-items: flex-start;
+        gap: 10px;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .ovfn-dashboard .access-justice-header__copy > div {
+        max-width: 100%;
+        min-width: 0;
+        overflow: visible;
+        width: 100%;
+    }
+
+    .ovfn-dashboard .access-justice-header__accent {
+        flex-basis: 3px;
+        height: 44px;
+        margin-top: 2px;
+    }
+
+    .ovfn-dashboard .access-justice-header h1 {
+        font-size: 24px;
+        line-height: 1.12;
+        overflow-wrap: anywhere;
+        max-width: 100%;
+        min-width: 0;
+        overflow: visible;
+        white-space: normal;
+    }
+
+    .ovfn-dashboard .access-justice-header p {
+        font-size: 14px;
+        line-height: 1.3;
+        margin-top: 5px;
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    .ovfn-dashboard .access-justice-header__actions {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .ovfn-dashboard .access-justice-period {
+        flex: 1 1 auto;
+        font-size: 12px;
+        height: 40px;
+        min-width: 0;
+        padding: 0 12px;
+        white-space: nowrap;
+    }
+
+    .ovfn-dashboard .access-justice-period span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ovfn-dashboard .access-justice-period i { font-size: 16px; }
+    .ovfn-dashboard .access-justice-export { display: none; }
+
+    .ovfn-dashboard .access-justice-kpis {
+        gap: 12px;
+        grid-template-columns: 1fr;
+    }
+
+    .ovfn-dashboard .analytics-kpi-card,
+    .ovfn-dashboard .access-justice-card,
+    .ovfn-dashboard .ovfn-verification-editor,
+    .ovfn-dashboard .ovfn-history {
+        box-sizing: border-box;
+        max-width: 100%;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .ovfn-dashboard .analytics-kpi-card {
+        min-height: 170px;
+        padding: 15px 16px;
+    }
+
+    .ovfn-dashboard .analytics-kpi-main { gap: 12px; }
+    .ovfn-dashboard .analytics-kpi-icon { flex-basis: 48px; height: 48px; width: 48px; }
+    .ovfn-dashboard .analytics-kpi-icon i { font-size: 20px; }
+    .ovfn-dashboard .analytics-kpi-title { font-size: 15px; line-height: 1.2; min-height: 0; }
+    .ovfn-dashboard .analytics-kpi-value { font-size: 40px; margin-top: 4px; }
+    .ovfn-dashboard .analytics-kpi-description { font-size: 13px; line-height: 1.3; margin-top: 5px; }
+    .ovfn-dashboard .analytics-kpi-sparkline { bottom: 10px; height: 32px; left: 16px; right: 16px; width: calc(100% - 32px); }
+
+    .ovfn-dashboard .ovfn-verification-card,
+    .ovfn-dashboard .ovfn-verification-editor,
+    .ovfn-dashboard .ovfn-history,
+    .ovfn-dashboard .ovfn-content-chart-card { padding: 16px; }
+
+    .ovfn-dashboard .ovfn-verification-card { align-items: flex-start; gap: 12px; }
+    .ovfn-dashboard .ovfn-verification-card strong { font-size: 32px; }
+    .ovfn-dashboard .ovfn-verification-card h2 { font-size: 16px; }
+    .ovfn-dashboard .access-justice-chart-card,
+    .ovfn-dashboard .access-justice-origin-card,
+    .ovfn-dashboard .access-justice-interaction-card { padding: 16px; }
+    .ovfn-dashboard .access-justice-line-chart { flex: none; height: 210px; min-height: 210px; }
+    .ovfn-dashboard .access-justice-line-chart,
+    .ovfn-dashboard .access-justice-line-chart canvas { max-width: 100%; overflow: hidden; width: 100% !important; }
+    .ovfn-dashboard .access-justice-origin-card { align-self: flex-start; height: auto; min-height: 0; }
+    .ovfn-dashboard .access-justice-origin-card__content { display: block; min-height: 0; }
+    .ovfn-dashboard .access-justice-donut { height: 150px; max-width: 150px; margin: 12px auto 14px; width: 150px; }
+    .ovfn-dashboard .access-justice-donut canvas { display: block; height: 150px !important; max-height: 150px; max-width: 150px; width: 150px !important; }
+    .ovfn-dashboard .access-justice-origin-legend { min-height: 0; }
+    .ovfn-dashboard .access-justice-origin-legend > div { padding: 6px 2px; }
+    .ovfn-dashboard .access-justice-interaction-breakdown { gap: 14px; }
+    .ovfn-dashboard .ovfn-content-chart-card .access-justice-line-chart { height: 210px; min-height: 210px; }
+    .ovfn-dashboard .ovfn-history table { min-width: 850px; }
+    .ovfn-dashboard .ovfn-history .access-justice-ranking__header { padding: 16px 16px 12px; }
+    .ovfn-dashboard .ovfn-history th,
+    .ovfn-dashboard .ovfn-history td { white-space: nowrap; }
+    .ovfn-dashboard .ovfn-verification-editor .form-control { min-width: 0; }
+    .ovfn-dashboard .ovfn-verification-editor form { width: 100%; }
+    .ovfn-dashboard .ovfn-verification-editor input { width: 100%; }
+    .ovfn-dashboard .ovfn-verification-editor button { width: auto; }
+}
+
+.admin-user-activity-card__summary {
+    align-items: baseline;
+    color: #23395d;
+    display: flex;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.admin-user-activity-card__summary strong {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.admin-user-activity-card__summary span {
+    color: #7b89a1;
+    font-size: 12px;
+}
+
+.admin-user-activity-card__table th {
+    color: #7b89a1;
+    font-size: 10px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.admin-user-activity-card__table td {
+    color: #56667b;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.admin-user-activity-status {
+    align-items: center;
+    display: inline-flex;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.admin-user-activity-status > span {
+    background: #9aa7b8;
+    border-radius: 50%;
+    display: inline-block;
+    height: 7px;
+    width: 7px;
+}
+
+.admin-user-activity-status.is-online > span { background: #24a148; }
+.admin-user-activity-status.is-online { color: #247a43; }
+
+.admin-user-activity-device {
+    align-items: center;
+    display: inline-flex;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.admin-user-activity-device > i { color: #7b89a1; width: 14px; }
+.admin-user-activity-device small { color: #7b89a1; font-size: 11px; }
+
+@media (max-width: 767.98px) {
+    .admin-user-activity-card__summary { align-items: flex-end; flex-direction: column; gap: 2px; }
+    .admin-user-activity-card__table { min-width: 620px; }
 }

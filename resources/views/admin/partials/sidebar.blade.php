@@ -94,7 +94,7 @@
 
             @can('view jep dashboard')
                 <li class="nav-item">
-                    <div class="nav-link text-white">
+                    <div class="nav-link text-white organization-link organization-link--jep {{ request()->routeIs('admin.jep.*') ? 'active' : '' }}">
                         <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-scale-balanced text-sm text-gray-600"></i>
                         </div>
@@ -105,7 +105,7 @@
 
             @can('view acceso justicia dashboard')
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('admin.acceso-justicia.*') ? 'active' : '' }}" href="{{ route('admin.acceso-justicia.index') }}" @if(request()->routeIs('admin.acceso-justicia.*')) aria-current="page" @endif>
+                    <a class="nav-link text-white organization-link organization-link--access {{ request()->routeIs('admin.acceso-justicia.*') ? 'active' : '' }}" href="{{ route('admin.acceso-justicia.index') }}" @if(request()->routeIs('admin.acceso-justicia.*')) aria-current="page" @endif>
                         <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-gavel text-sm text-gray-600"></i>
                         </div>
@@ -116,18 +116,18 @@
 
             @can('view ovfn dashboard')
                 <li class="nav-item">
-                    <div class="nav-link text-white">
+                    <a class="nav-link text-white organization-link organization-link--ovfn {{ request()->routeIs('admin.ovfn.*') ? 'active' : '' }}" href="{{ route('admin.ovfn.index') }}" @if(request()->routeIs('admin.ovfn.*')) aria-current="page" @endif>
                         <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-circle-check text-sm text-gray-600"></i>
                         </div>
                         <span class="nav-link-text ms-1">OVFN</span>
-                    </div>
+                    </a>
                 </li>
             @endcan
 
             @can('view obu dashboard')
                 <li class="nav-item">
-                    <div class="nav-link text-white">
+                    <div class="nav-link text-white organization-link organization-link--obu {{ request()->routeIs('admin.obu.*') ? 'active' : '' }}">
                         <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-graduation-cap text-sm text-gray-600"></i>
                         </div>

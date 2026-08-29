@@ -2,9 +2,12 @@
 
 use App\Http\Controllers\Admin\AccesoJusticiaDashboardController;
 use App\Http\Controllers\Admin\AccesoJusticiaSyncController;
+use App\Http\Controllers\Admin\OvfnDashboardController;
 use App\Http\Controllers\AnalyticsContentRedirectController;
 use App\Http\Controllers\AnalyticsNavigationRedirectController;
+use App\Http\Controllers\AnalyticsOvfnContentRedirectController;
 use App\Http\Middleware\RedirectAccessJusticeUserFromAdmin;
+use App\Http\Middleware\UpdateUserLastActivity;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PublicDashboardController;
 use App\Http\Controllers\RoleController;
@@ -21,22 +24,30 @@ Route::get('/', [PublicDashboardController::class, 'index'])
 Route::get('/home', [PublicDashboardController::class, 'index'])
     ->name('home');
 
-Route::prefix('organizaciones')->name('organizations.')->group(function () {
-    Route::get('/jep', [PublicDashboardController::class, 'jep'])->name('jep');
-    Route::get('/acceso-justicia', [PublicDashboardController::class, 'accesoJusticia'])
-        ->middleware('analytics.page:acceso_justicia,organizaciones/acceso-justicia')
-        ->name('acceso-justicia');
-    Route::get('/fake-news', [PublicDashboardController::class, 'fakeNews'])->name('fake-news');
-    Route::get('/universidades', [PublicDashboardController::class, 'universidades'])->name('universidades');
-});
+Route::get('/justicia-encuentro-perdon', [PublicDashboardController::class, 'jep'])
+    ->name('organizations.jep');
+Route::get('/acceso-justicia', [PublicDashboardController::class, 'accesoJusticia'])
+    ->middleware('analytics.page:acceso_justicia,acceso-justicia')
+    ->name('organizations.acceso-justicia');
+Route::get('/fake-news', [PublicDashboardController::class, 'fakeNews'])
+    ->middleware('analytics.page:ovfn,fake-news')
+    ->name('organizations.fake-news');
+Route::get('/observatorio-universidades', [PublicDashboardController::class, 'universidades'])
+    ->name('organizations.universidades');
 
 Route::get('/analytics/content/{publication}/{source}', AnalyticsContentRedirectController::class)
     ->whereNumber('publication')
     ->whereIn('source', ['home', 'organization'])
     ->name('analytics.content.redirect');
 
+Route::get('/analytics/ovfn/content/{contentType}/{contentId}', AnalyticsOvfnContentRedirectController::class)
+    ->whereIn('contentType', ['analysis', 'noti_fake'])
+    ->whereNumber('contentId')
+    ->middleware('signed')
+    ->name('analytics.ovfn.content.redirect');
+
 Route::get('/analytics/navigation/{organization}/{source}', AnalyticsNavigationRedirectController::class)
-    ->whereIn('organization', ['acceso-justicia'])
+    ->whereIn('organization', ['acceso-justicia', 'ovfn'])
     ->whereIn('source', ['home'])
     ->name('analytics.navigation.redirect');
 
@@ -50,7 +61,7 @@ Route::get('/language/{locale}', function (string $locale) {
 
 Route::redirect('/entrar', '/login');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', UpdateUserLastActivity::class])->group(function () {
     Route::get('/admin', Dashboard::class)
         ->middleware(RedirectAccessJusticeUserFromAdmin::class)
         ->name('dashboard');
@@ -60,6 +71,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/acceso-justicia', AccesoJusticiaDashboardController::class)
         ->middleware('permission:view acceso justicia dashboard')
         ->name('admin.acceso-justicia.index');
+    Route::get('/admin/ovfn', OvfnDashboardController::class)
+        ->middleware('permission:view ovfn dashboard')
+        ->name('admin.ovfn.index');
+    Route::patch('/admin/ovfn/total-verifications', [OvfnDashboardController::class, 'updateTotalVerifications'])
+        ->middleware('permission:edit ovfn metrics')
+        ->name('admin.ovfn.total-verifications.update');
     Route::post('/admin/acceso-justicia/sync', AccesoJusticiaSyncController::class)
         ->middleware(['role:admin|super-admin', 'permission:sync acceso justicia dashboard'])
         ->name('admin.acceso-justicia.sync');

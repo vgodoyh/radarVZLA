@@ -33,7 +33,7 @@
                 <p>{{ \Illuminate\Support\Str::limit(data_get($post, 'text', ''), 150) }}</p>
 
                 @if (filled(data_get($post, 'image')))
-                    <a href="{{ data_get($post, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="fake-news-social-card__image">
+                        <a href="{{ filled(data_get($post, 'publication_id')) ? route('analytics.content.redirect', ['publication' => data_get($post, 'publication_id'), 'source' => 'organization']) : data_get($post, 'url', '#') }}" target="_blank" rel="noopener noreferrer" class="fake-news-social-card__image">
                         <img src="{{ data_get($post, 'image') }}" alt="" loading="lazy">
                     </a>
                 @endif
@@ -49,7 +49,7 @@
                         @endif
                         <span><i class="bi bi-repeat" aria-hidden="true"></i>{{ data_get($post, 'retweets', 0) }}</span>
                     </div>
-                    <a href="{{ data_get($post, 'url', '#') }}" target="_blank" rel="noopener noreferrer" aria-label="{{ __('dashboard.view_on_x') }}">
+                    <a href="{{ filled(data_get($post, 'publication_id')) ? route('analytics.content.redirect', ['publication' => data_get($post, 'publication_id'), 'source' => 'organization']) : data_get($post, 'url', '#') }}" target="_blank" rel="noopener noreferrer" aria-label="{{ __('dashboard.view_on_x') }}">
                         <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                     </a>
                 </footer>
