@@ -129,7 +129,7 @@ Route::middleware(['auth', 'verified', UpdateUserLastActivity::class])->group(fu
         ->middleware('permission:edit obu metrics')
         ->name('admin.obu.monitoring-period.update');
     Route::post('/admin/acceso-justicia/sync', AccesoJusticiaSyncController::class)
-        ->middleware(['role:admin|super-admin', 'permission:sync acceso justicia dashboard'])
+        ->middleware('permission:sync acceso justicia dashboard')
         ->name('admin.acceso-justicia.sync');
     Route::get('/admin/acceso-justicia/sync/status', [AccesoJusticiaSyncController::class, 'status'])
         ->middleware('permission:view acceso justicia dashboard')

@@ -160,7 +160,7 @@ class ObuMetricSnapshotTest extends TestCase
         $this->seed(ObuRoleSeeder::class);
 
         $role = Role::findByName('obu', 'web');
-        $this->assertSame(['view obu dashboard'], $role->permissions->pluck('name')->all());
+        $this->assertSame(['view obu dashboard', 'edit obu metrics'], $role->permissions->pluck('name')->all());
         $this->assertCount(1, Permission::where('name', 'edit obu metrics')->where('guard_name', 'web')->get());
     }
 

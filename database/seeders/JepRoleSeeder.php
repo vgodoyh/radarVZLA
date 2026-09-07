@@ -13,7 +13,7 @@ class JepRoleSeeder extends Seeder
         $view = Permission::firstOrCreate(['name' => 'view jep dashboard', 'guard_name' => 'web']);
         $edit = Permission::firstOrCreate(['name' => 'edit jep metrics', 'guard_name' => 'web']);
 
-        Role::firstOrCreate(['name' => 'jep', 'guard_name' => 'web'])->syncPermissions([$view]);
+        Role::firstOrCreate(['name' => 'jep', 'guard_name' => 'web'])->syncPermissions([$view, $edit]);
 
         foreach (['admin', 'super-admin'] as $roleName) {
             if ($role = Role::query()->where('name', $roleName)->where('guard_name', 'web')->first()) {

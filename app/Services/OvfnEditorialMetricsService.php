@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Organization;
 use App\Models\OvfnPlatformDistribution;
 use App\Models\OvfnVerificationTotal;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 
@@ -35,6 +37,38 @@ class OvfnEditorialMetricsService
         return $organization
             ? OvfnPlatformDistribution::query()->current()->where('organization_id', $organization->id)->with('items')->first()
             : null;
+    }
+
+    public function lastEditorialUpdate(): ?CarbonInterface
+    {
+        $organization = Schema::hasTable('organizations')
+            ? Organization::query()->where('slug', 'fake-news')->first()
+            : null;
+
+        if (! $organization) {
+            return null;
+        }
+
+        $verificationUpdate = Schema::hasTable('ovfn_verification_totals')
+            ? OvfnVerificationTotal::query()
+                ->where('organization_id', $organization->id)
+                ->latest('valid_from')
+                ->value('valid_from')
+            : null;
+        $distributionUpdate = Schema::hasTable('ovfn_platform_distributions')
+            ? OvfnPlatformDistribution::query()
+                ->where('organization_id', $organization->id)
+                ->latest('valid_from')
+                ->value('valid_from')
+            : null;
+
+        return collect([$verificationUpdate, $distributionUpdate])
+            ->filter()
+            ->map(fn ($value) => $value instanceof CarbonInterface ? $value : Carbon::parse($value))
+            ->sortByDesc(fn (CarbonInterface $value) => $value->getTimestamp())
+            ->first()
+            ?->copy()
+            ->setTimezone('America/Caracas');
     }
 
     /** @return Collection<int, array<string, mixed>> */

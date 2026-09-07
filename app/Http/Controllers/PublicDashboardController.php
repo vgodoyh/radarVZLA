@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use App\Services\DashboardQueryService;
 use App\Services\FakeNewsVenezuelaService;
+use App\Services\OvfnEditorialMetricsService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Schema;
@@ -78,7 +79,8 @@ class PublicDashboardController extends Controller
 
     public function fakeNews(
         DashboardQueryService $dashboard,
-        FakeNewsVenezuelaService $fakeNews
+        FakeNewsVenezuelaService $fakeNews,
+        OvfnEditorialMetricsService $ovfnMetrics,
     ): View {
         $data = $dashboard->get();
         $organization = $data['organizations']->firstWhere('slug', 'fake-news');
@@ -107,6 +109,7 @@ class PublicDashboardController extends Controller
             'organization' => $organization,
             'postsFakeNewsWeb' => $postsFakeNewsWeb,
             'currentVerificationTotal' => $currentVerificationTotal,
+            'lastSync' => $ovfnMetrics->lastEditorialUpdate(),
         ]);
     }
 

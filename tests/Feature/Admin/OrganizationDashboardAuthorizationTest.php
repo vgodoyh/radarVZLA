@@ -8,6 +8,9 @@ use App\Models\Organization;
 use App\Models\Publication;
 use App\Models\User;
 use Database\Seeders\AccessJusticeRoleSeeder;
+use Database\Seeders\JepRoleSeeder;
+use Database\Seeders\ObuRoleSeeder;
+use Database\Seeders\OvfnRoleSeeder;
 use Database\Seeders\AdminUserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -72,19 +75,33 @@ class OrganizationDashboardAuthorizationTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_access_justice_role_seeder_is_idempotent_and_has_only_dashboard_permission(): void
+    public function test_organization_role_seeders_are_idempotent_and_assign_view_and_edit_permissions(): void
     {
         $this->seed(AccessJusticeRoleSeeder::class);
         $this->seed(AccessJusticeRoleSeeder::class);
+        $this->seed(OvfnRoleSeeder::class);
+        $this->seed(OvfnRoleSeeder::class);
+        $this->seed(ObuRoleSeeder::class);
+        $this->seed(ObuRoleSeeder::class);
+        $this->seed(JepRoleSeeder::class);
+        $this->seed(JepRoleSeeder::class);
 
-        $role = Role::findByName('acceso-justicia', 'web');
+        $expected = [
+            'acceso-justicia' => ['view acceso justicia dashboard', 'sync acceso justicia dashboard'],
+            'ovfn' => ['view ovfn dashboard', 'edit ovfn metrics'],
+            'obu' => ['view obu dashboard', 'edit obu metrics'],
+            'jep' => ['view jep dashboard', 'edit jep metrics'],
+        ];
 
-        $this->assertCount(1, Role::where('name', 'acceso-justicia')->where('guard_name', 'web')->get());
-        $this->assertSame(['view acceso justicia dashboard'], $role->permissions->pluck('name')->all());
-        $this->assertFalse($role->permissions->pluck('name')->contains('view jep dashboard'));
-        $this->assertFalse($role->permissions->pluck('name')->contains('view ovfn dashboard'));
-        $this->assertFalse($role->permissions->pluck('name')->contains('view obu dashboard'));
-        $this->assertFalse($role->permissions->pluck('name')->contains('manage users'));
+        foreach ($expected as $roleName => $permissions) {
+            $role = Role::findByName($roleName, 'web');
+            $this->assertSame($permissions, $role->permissions->pluck('name')->all());
+        }
+
+        $this->assertFalse(Role::findByName('jep', 'web')->hasPermissionTo('view ovfn dashboard'));
+        $this->assertFalse(Role::findByName('ovfn', 'web')->hasPermissionTo('edit jep metrics'));
+        $this->assertFalse(Role::findByName('obu', 'web')->hasPermissionTo('sync acceso justicia dashboard'));
+        $this->assertFalse(Role::findByName('acceso-justicia', 'web')->permissions->pluck('name')->contains('manage users'));
     }
 
     public function test_user_with_access_justice_permission_can_access_dashboard(): void
@@ -124,7 +141,9 @@ class OrganizationDashboardAuthorizationTest extends TestCase
             ->post(route('admin.acceso-justicia.sync'))
             ->assertForbidden();
 
-        $accessUser = $this->userWithRolePermission('acceso-justicia', 'view acceso justicia dashboard');
+        $accessUser = $this->userWithRolePermissions('acceso-justicia', [
+            'view acceso justicia dashboard',
+        ]);
 
         $this->actingAs($accessUser)
             ->post(route('admin.acceso-justicia.sync'))
@@ -155,6 +174,21 @@ class OrganizationDashboardAuthorizationTest extends TestCase
         $this->actingAs($user)
             ->post(route('admin.acceso-justicia.sync'))
             ->assertSessionHas('sync_error');
+
+        Queue::assertPushed(SyncDashboardData::class, 1);
+    }
+
+    public function test_access_justice_role_can_queue_its_own_sync_action(): void
+    {
+        Queue::fake();
+        $user = $this->userWithRolePermissions('acceso-justicia', [
+            'view acceso justicia dashboard',
+            'sync acceso justicia dashboard',
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('admin.acceso-justicia.sync'))
+            ->assertRedirect();
 
         Queue::assertPushed(SyncDashboardData::class, 1);
     }
@@ -213,9 +247,16 @@ class OrganizationDashboardAuthorizationTest extends TestCase
 
     private function userWithRolePermission(string $roleName, string $permissionName): User
     {
-        $permission = Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'web']);
+        return $this->userWithRolePermissions($roleName, [$permissionName]);
+    }
+
+    private function userWithRolePermissions(string $roleName, array $permissionNames): User
+    {
+        $permissions = collect($permissionNames)->map(fn (string $permissionName) => Permission::firstOrCreate([
+            'name' => $permissionName, 'guard_name' => 'web',
+        ]));
         $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
-        $role->syncPermissions([$permission]);
+        $role->syncPermissions($permissions);
         $user = User::factory()->create();
         $user->assignRole($role);
 

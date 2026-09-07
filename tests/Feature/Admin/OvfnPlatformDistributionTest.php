@@ -49,6 +49,29 @@ class OvfnPlatformDistributionTest extends TestCase
         $this->get(route('organizations.fake-news'))->assertOk()->assertSee('157');
     }
 
+    public function test_public_fake_news_page_uses_the_latest_editorial_version_for_updated_card(): void
+    {
+        $this->withoutVite();
+        Http::fake(['https://fakenewsvenezuela.org/*' => Http::response('', 200)]);
+        $organization = $this->organization();
+
+        OvfnVerificationTotal::create([
+            'organization_id' => $organization->id,
+            'total' => 150,
+            'data_date' => '2030-01-01',
+            'valid_from' => '2026-09-07 22:25:00',
+        ]);
+        OvfnPlatformDistribution::create([
+            'organization_id' => $organization->id,
+            'data_from_date' => '2030-02-02',
+            'valid_from' => '2026-09-07 23:10:00',
+        ]);
+
+        $this->get(route('organizations.fake-news'))
+            ->assertOk()
+            ->assertSee('19:10');
+    }
+
     public function test_update_creates_a_new_version_and_closes_the_previous_one(): void
     {
         $user = $this->userWithPermission('edit ovfn metrics');

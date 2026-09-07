@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\Organization;
+use App\Models\OvfnPlatformDistribution;
 use App\Models\OvfnVerificationTotal;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,6 +21,23 @@ class OvfnVerificationTotalTest extends TestCase
         $this->organization();
 
         $this->actingAs($user)->get(route('admin.ovfn.index'))->assertOk();
+    }
+
+    public function test_view_only_user_can_see_current_verification_total_but_not_edit_controls(): void
+    {
+        $user = $this->userWithPermissions(['view ovfn dashboard']);
+        $organization = $this->organization();
+        OvfnVerificationTotal::create([
+            'organization_id' => $organization->id, 'total' => 137,
+            'data_date' => '2026-07-31', 'valid_from' => now(),
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('admin.ovfn.index'))
+            ->assertOk()
+            ->assertSee('137')
+            ->assertDontSee('Editar Total de Verificaciones')
+            ->assertDontSee('name="total"');
     }
 
     public function test_missing_view_permission_is_forbidden(): void
@@ -77,6 +95,36 @@ class OvfnVerificationTotalTest extends TestCase
         $this->actingAs($user)
             ->patch(route('admin.ovfn.total-verifications.update'), ['total' => 1, 'data_date' => '2026-08-01'])
             ->assertForbidden();
+    }
+
+    public function test_last_editorial_update_uses_the_latest_ovfn_version_and_not_the_data_date(): void
+    {
+        $organization = $this->organization();
+
+        OvfnVerificationTotal::create([
+            'organization_id' => $organization->id,
+            'total' => 150,
+            'data_date' => '2030-01-01',
+            'valid_from' => '2026-09-07 22:25:00',
+        ]);
+        OvfnPlatformDistribution::create([
+            'organization_id' => $organization->id,
+            'data_from_date' => '2030-02-02',
+            'valid_from' => '2026-09-07 23:10:00',
+        ]);
+
+        $lastUpdate = app(\App\Services\OvfnEditorialMetricsService::class)->lastEditorialUpdate();
+
+        $this->assertNotNull($lastUpdate);
+        $this->assertSame('2026-09-07 19:10:00', $lastUpdate->format('Y-m-d H:i:s'));
+        $this->assertSame('America/Caracas', $lastUpdate->getTimezone()->getName());
+    }
+
+    public function test_last_editorial_update_is_null_when_no_editorial_versions_exist(): void
+    {
+        $this->organization();
+
+        $this->assertNull(app(\App\Services\OvfnEditorialMetricsService::class)->lastEditorialUpdate());
     }
 
     private function organization(): Organization

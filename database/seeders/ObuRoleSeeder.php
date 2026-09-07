@@ -14,7 +14,7 @@ class ObuRoleSeeder extends Seeder
         $edit = Permission::firstOrCreate(['name' => 'edit obu metrics', 'guard_name' => 'web']);
 
         Role::firstOrCreate(['name' => 'obu', 'guard_name' => 'web'])
-            ->syncPermissions([$view]);
+            ->syncPermissions([$view, $edit]);
 
         foreach (['admin', 'super-admin'] as $roleName) {
             if ($role = Role::query()->where('name', $roleName)->where('guard_name', 'web')->first()) {

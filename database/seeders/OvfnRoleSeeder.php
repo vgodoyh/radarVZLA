@@ -14,7 +14,7 @@ class OvfnRoleSeeder extends Seeder
         $edit = Permission::firstOrCreate(['name' => 'edit ovfn metrics', 'guard_name' => 'web']);
 
         Role::firstOrCreate(['name' => 'ovfn', 'guard_name' => 'web'])
-            ->syncPermissions([$view]);
+            ->syncPermissions([$view, $edit]);
 
         foreach (['admin', 'super-admin'] as $roleName) {
             if ($role = Role::query()->where('name', $roleName)->where('guard_name', 'web')->first()) {
