@@ -1,42 +1,41 @@
-<section class="jep-section jep-trends-resources" aria-labelledby="jep-trends-resources-title">
-    @php
-        $featuredWomenValue = data_get(
-            collect(config('dashboard.stats', []))->firstWhere('key', 'women'),
-            'value'
-        );
+@php
+    $featuredIndicatorTitle = $jepSnapshot?->featured_indicator_title ?: __('dashboard.featured_title');
+    $featuredIndicatorText = $jepSnapshot?->featured_indicator_text ?: __('dashboard.featured_analysis_jep');
+    $featuredIndicatorImage = filled($jepSnapshot?->featured_indicator_image_path)
+        ? \Illuminate\Support\Facades\Storage::url($jepSnapshot->featured_indicator_image_path)
+        : null;
+@endphp
 
-        // DATOS PROVISIONALES PARA VISUALIZACIÓN.
-        // Reemplazar Ene-Abr y Jun-Jul cuando se disponga de las cifras oficiales.
-        // Mayo 2026 usa el único dato oficial disponible desde config/dashboard.php.
-        $womenDetentionTrend = [
-            'labels' => __('dashboard.jep_page.trends.months'),
-            'values' => [198, 207, 216, 225, (int) $featuredWomenValue, 242, 251],
-        ];
-    @endphp
-
+<section class="jep-section jep-featured-indicator" aria-labelledby="jep-featured-indicator-title">
     <header class="jep-section__header">
         <span></span>
-        <h2 id="jep-trends-resources-title">{{ __('dashboard.jep_page.trends.combined_title') }}</h2>
+        <h2 id="jep-featured-indicator-title">{{ __('dashboard.featured_indicator') }}</h2>
     </header>
 
-    <div class="jep-trends-resources__layout">
-        <div class="jep-trends">
-            <div class="jep-trends__chart">
-                <canvas
-                    id="jepWomenDetentionChart"
-                    data-labels='@json($womenDetentionTrend['labels'])'
-                    data-values='@json($womenDetentionTrend['values'])'
-                    data-dataset-label="{{ __('dashboard.jep_page.trends.dataset_label') }}"
-                    aria-label="{{ __('dashboard.jep_page.trends.chart_label') }}"
-                ></canvas>
+    <article class="jep-featured-indicator__card{{ $featuredIndicatorImage ? ' jep-featured-indicator__card--with-image' : '' }}">
+        <div class="jep-featured-indicator__copy">
+            <h3>{{ $featuredIndicatorTitle }}</h3>
+            <p class="jep-featured-indicator__text">{{ $featuredIndicatorText }}</p>
+            <div class="jep-featured-indicator__links">
+                @if (filled($jepSnapshot?->featured_indicator_instagram_url))
+                    <a href="{{ $jepSnapshot->featured_indicator_instagram_url }}" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-instagram" aria-hidden="true"></i>
+                        Publicación Instagram
+                    </a>
+                @endif
+                @if (filled($jepSnapshot?->featured_indicator_x_url))
+                    <a href="{{ $jepSnapshot->featured_indicator_x_url }}" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-twitter-x" aria-hidden="true"></i>
+                        Hilo en Twitter / X
+                    </a>
+                @endif
             </div>
-            <p class="jep-trends__note">{{ __('dashboard.jep_page.trends.note') }}</p>
         </div>
 
-        <aside class="jep-trends-resources__side" aria-label="{{ __('dashboard.jep_page.trends.conclusion_label') }}">
-            <p class="jep-trends-resources__description">{{ __('dashboard.jep_page.trends.description') }}</p>
-        </aside>
-    </div>
-
-    @include('dashboard.organizations.jep.resources')
+        @if ($featuredIndicatorImage)
+            <figure class="jep-featured-indicator__media">
+                <img src="{{ $featuredIndicatorImage }}" alt="{{ $featuredIndicatorTitle }}">
+            </figure>
+        @endif
+    </article>
 </section>

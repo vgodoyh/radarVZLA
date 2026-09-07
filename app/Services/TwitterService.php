@@ -12,6 +12,47 @@ class TwitterService
 {
     private string $baseUrl = 'https://twitter-api45.p.rapidapi.com';
 
+    /** @return array{status: int, text: ?string} */
+    public function fetchPostTextFromUrl(string $url): array
+    {
+        if (! preg_match('~^https?://(?:www\.)?(?:x\.com|twitter\.com)/[^/?#]+/status/(\d{1,19})(?:[?#].*)?$~i', trim($url), $matches)) {
+            return ['status' => 422, 'text' => null];
+        }
+
+        try {
+            $response = Http::timeout(15)
+                ->connectTimeout(5)
+                ->withHeaders([
+                    'X-RapidAPI-Key' => config('services.twitter.key'),
+                    'X-RapidAPI-Host' => config('services.twitter.host'),
+                ])
+                ->get($this->baseUrl.'/tweet.php', ['id' => $matches[1]]);
+
+            if ($response->failed()) {
+                Log::warning('Error consultando publicación puntual de X', [
+                    'tweet_id' => $matches[1],
+                    'status' => $response->status(),
+                ]);
+
+                return ['status' => $response->status(), 'text' => null];
+            }
+
+            $payload = $response->json();
+            $text = data_get($payload, 'text')
+                ?? data_get($payload, 'full_text')
+                ?? data_get($payload, 'tweet.text');
+
+            return ['status' => 200, 'text' => filled($text) ? trim((string) $text) : null];
+        } catch (\Throwable $exception) {
+            Log::error('Excepción consultando publicación puntual de X', [
+                'tweet_id' => $matches[1],
+                'message' => $exception->getMessage(),
+            ]);
+
+            return ['status' => 502, 'text' => null];
+        }
+    }
+
     public function getLatestPosts(string $username, int $limit = 7): Collection
     {
         $username = ltrim($username, '@');

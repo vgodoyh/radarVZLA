@@ -94,12 +94,12 @@
 
             @can('view jep dashboard')
                 <li class="nav-item">
-                    <div class="nav-link text-white organization-link organization-link--jep {{ request()->routeIs('admin.jep.*') ? 'active' : '' }}">
+                    <a class="nav-link text-white organization-link organization-link--jep {{ request()->routeIs('admin.jep.*') ? 'active' : '' }}" href="{{ route('admin.jep.index') }}" @if(request()->routeIs('admin.jep.*')) aria-current="page" @endif>
                         <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-scale-balanced text-sm text-gray-600"></i>
                         </div>
                         <span class="nav-link-text ms-1">JEP</span>
-                    </div>
+                    </a>
                 </li>
             @endcan
 

@@ -15,7 +15,7 @@
         $pulseStats = [
             [
                 'class' => 'jep',
-                'value' => data_get($stats ?? [], '0.value'),
+                'value' => $jepMetrics?->total_political_prisoners ?? 0,
                 'label' => __('dashboard.dashboard_v2.political_prisoners'),
                 'organization' => 'JEP',
             ],
@@ -33,7 +33,7 @@
             ],
             [
                 'class' => 'obu',
-                'value' => collect($economicSocialItems ?? [])->concat($civilPoliticalItems ?? [])->sum('value'),
+                'value' => $obuMetrics?->complaints ?? 0,
                 'label' => __('dashboard.dashboard_v2.university_complaints'),
                 'organization' => 'OBU',
             ],

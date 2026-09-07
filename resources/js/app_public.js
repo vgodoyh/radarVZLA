@@ -1,5 +1,7 @@
 import './bootstrap';
 import 'bootstrap';
+import '../css/obu-dashboard.css';
+import './obu-dashboard.js';
 import Chart from 'chart.js/auto';
 
 const locale = document.documentElement.lang.startsWith('en') ? 'en' : 'es';
@@ -89,61 +91,18 @@ const years = ['2020', '2021', '2022', '2023', '2024'];
 
 build('featuredChart', { type: 'bar', data: { labels: ['Ene 26', 'Feb 26', 'Mar 26', 'Abr 26', 'May 26', 'Jun 26', 'Jul 26'], datasets: [{ data: [32, 48, 57, 56, 61, 45, 59], borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } } });
 
-const jepWomenDetentionCanvas = document.getElementById('jepWomenDetentionChart');
-if (jepWomenDetentionCanvas) {
-    const labels = JSON.parse(jepWomenDetentionCanvas.dataset.labels || '[]');
-    const values = JSON.parse(jepWomenDetentionCanvas.dataset.values || '[]');
-    const featuredMonthIndex = 4;
-
-    const barValueLabels = {
-        id: 'jepWomenBarValueLabels',
-        afterDatasetsDraw(chart) {
-            const { ctx, chartArea } = chart;
-            const bars = chart.getDatasetMeta(0).data;
-
-            ctx.save();
-            ctx.fillStyle = '#10213f';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'bottom';
-
-            bars.forEach((bar, index) => {
-                ctx.font = `${index === featuredMonthIndex ? 700 : 600} 10px sans-serif`;
-                ctx.fillText(String(values[index]), bar.x, Math.max(bar.y - 7, chartArea.top + 11));
-            });
-
-            ctx.restore();
-        },
+const initializeJepDonut = (canvas) => {
+    const parseDataset = (value) => {
+        try {
+            return JSON.parse(value || '[]');
+        } catch {
+            return [];
+        }
     };
+    const values = parseDataset(canvas.dataset.values).map((value) => Number(value) || 0);
+    const colors = parseDataset((canvas.dataset.colors || '[]').replace(/\\"/g, '"'));
 
-    new Chart(jepWomenDetentionCanvas, {
-        type: 'bar',
-        data: {
-            labels,
-            datasets: [{
-                label: jepWomenDetentionCanvas.dataset.datasetLabel || '',
-                data: values,
-                backgroundColor: ['#dcebff', '#cde1ff', '#bdd7ff', '#98c2ff', '#1769f6', '#8bb8fa', '#a9cafa'],
-                borderRadius: 7,
-                borderSkipped: false,
-            }],
-        },
-        plugins: [barValueLabels],
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: { padding: { top: 18 } },
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
-                y: { beginAtZero: true, grid: { color: '#e8eef7' }, ticks: { color: '#64748b', precision: 0, font: { size: 10 } } },
-            },
-        },
-    });
-}
-
-document.querySelectorAll('.jep-donut__canvas').forEach((canvas) => {
-    const values = JSON.parse(canvas.dataset.values || '[]');
-    const colors = JSON.parse(canvas.dataset.colors || '[]');
+    Chart.getChart(canvas)?.destroy();
 
     new Chart(canvas, {
         type: 'doughnut',
@@ -166,7 +125,9 @@ document.querySelectorAll('.jep-donut__canvas').forEach((canvas) => {
             },
         },
     });
-});
+};
+
+document.querySelectorAll('.jep-donut__canvas').forEach(initializeJepDonut);
 
 // Protestas y denuncias combinadas en un solo gráfico de línea
 build('protestsComplaintsChart', {

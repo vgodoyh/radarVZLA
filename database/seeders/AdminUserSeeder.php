@@ -33,10 +33,12 @@ class AdminUserSeeder extends Seeder
             'view reports',
             'sync acceso justicia dashboard',
             'view jep dashboard',
+            'edit jep metrics',
             'view acceso justicia dashboard',
             'view ovfn dashboard',
             'edit ovfn metrics',
             'view obu dashboard',
+            'edit obu metrics',
         ])
             ->map(fn (string $name) => Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']));
         $role = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);

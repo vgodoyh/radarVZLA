@@ -13,7 +13,12 @@ use Illuminate\Support\Str;
 
 class DashboardQueryService
 {
-    public function __construct(private readonly OvfnEditorialMetricsService $ovfnEditorialMetrics) {}
+    public function __construct(
+        private readonly OvfnEditorialMetricsService $ovfnEditorialMetrics,
+        private readonly ObuEditorialMetricsService $obuEditorialMetrics,
+        private readonly ObuDashboardDataService $obuDashboardData,
+        private readonly JepEditorialMetricsService $jepEditorialMetrics,
+    ) {}
 
     /** @return array<string, mixed> */
     public function get(): array
@@ -28,16 +33,41 @@ class DashboardQueryService
             ->take(5)
             ->values();
         $ovfnDistribution = $this->ovfnEditorialMetrics->currentPlatformDistribution();
+        $jepMetrics = $this->jepEditorialMetrics->current();
 
         return [
-            'stats' => collect($this->configStats())->map(fn (array $stat) => [
+            'stats' => collect($this->configStats())->map(function (array $stat) use ($jepMetrics): array {
+                $jepValues = [
+                    'political_prisoners' => 'total_political_prisoners',
+                    'women' => 'women',
+                    'seriously_ill' => 'seriously_ill',
+                    'foreign_dual_nationals' => 'foreign_or_dual_nationality',
+                    'releases' => 'releases',
+                ];
+                $jepTrends = [
+                    'political_prisoners' => 'total_political_prisoners_trend',
+                    'women' => 'women_trend',
+                    'seriously_ill' => 'seriously_ill_trend',
+                    'foreign_dual_nationals' => 'foreign_or_dual_nationality_trend',
+                    'releases' => 'releases_trend',
+                ];
+                if ($jepMetrics && isset($jepValues[$stat['key']])) {
+                    $stat['value'] = $jepMetrics->{$jepValues[$stat['key']]};
+                    $trend = $jepMetrics->{$jepTrends[$stat['key']]};
+                    $stat['change'] = $this->jepEditorialMetrics->formatTrend($trend);
+                    $stat['direction'] = (float) $trend < 0 ? 'down' : 'up';
+                    $stat['sentiment'] = 'neutral';
+                }
+
+                return [
                 'label' => __("dashboard.stats.{$stat['key']}"),
                 'value' => number_format($stat['value'], 0, ',', '.'),
-                'change' => sprintf('%+.1f%%', $stat['change']),
+                'change' => $stat['change'] === null ? null : sprintf('%+.1f%%', $stat['change']),
                 'icon' => $stat['icon'],
                 'direction' => $stat['change'] >= 0 ? 'up' : 'down',
                 'sentiment' => $stat['sentiment'],
-            ])->all(),
+                ];
+            })->all(),
             'organizations' => $organizations,
             'alertasLegales' => $accesoLegalPosts,
             'accesoLegalPublicationsTotal' => $this->hasPublicationTables()
@@ -49,6 +79,9 @@ class DashboardQueryService
             'ovfnVerificationTotal' => $this->ovfnEditorialMetrics->currentVerificationTotal(),
             'fakeNewsSocialNetworks' => $this->ovfnEditorialMetrics->currentPlatformItems($ovfnDistribution)->all(),
             'fakeNewsSocialNetworksDataFrom' => $ovfnDistribution?->data_from_date,
+            'obuMetrics' => $this->obuEditorialMetrics->currentMetrics(),
+            'jepMetrics' => $jepMetrics,
+            ...$this->obuDashboardData->publicData(),
             'economicSocialItems' => [
                 ['label' => __('dashboard.indicators.living_wage'), 'icon' => 'bi-cash-coin', 'value' => 150],
                 ['label' => __('dashboard.indicators.infrastructure_damage'), 'icon' => 'bi-building', 'value' => 98],

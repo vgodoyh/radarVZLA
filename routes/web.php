@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\AccesoJusticiaDashboardController;
 use App\Http\Controllers\Admin\AccesoJusticiaSyncController;
 use App\Http\Controllers\Admin\OvfnDashboardController;
+use App\Http\Controllers\Admin\ObuDashboardController;
+use App\Http\Controllers\Admin\JepDashboardController;
 use App\Http\Controllers\AnalyticsContentRedirectController;
 use App\Http\Controllers\AnalyticsNavigationRedirectController;
 use App\Http\Controllers\AnalyticsOvfnContentRedirectController;
@@ -25,6 +27,7 @@ Route::get('/home', [PublicDashboardController::class, 'index'])
     ->name('home');
 
 Route::get('/justicia-encuentro-perdon', [PublicDashboardController::class, 'jep'])
+    ->middleware('analytics.page:jep,justicia-encuentro-perdon')
     ->name('organizations.jep');
 Route::get('/acceso-justicia', [PublicDashboardController::class, 'accesoJusticia'])
     ->middleware('analytics.page:acceso_justicia,acceso-justicia')
@@ -80,6 +83,51 @@ Route::middleware(['auth', 'verified', UpdateUserLastActivity::class])->group(fu
     Route::patch('/admin/ovfn/platform-distribution', [OvfnDashboardController::class, 'updatePlatformDistribution'])
         ->middleware('permission:edit ovfn metrics')
         ->name('admin.ovfn.platform-distribution.update');
+    Route::get('/admin/obu', ObuDashboardController::class)
+        ->middleware('permission:view obu dashboard')
+        ->name('admin.obu.index');
+    Route::get('/admin/jep', JepDashboardController::class)
+        ->middleware('permission:view jep dashboard')
+        ->name('admin.jep.index');
+    Route::patch('/admin/jep/metrics', [JepDashboardController::class, 'updateMetrics'])
+        ->middleware('permission:edit jep metrics')
+        ->name('admin.jep.metrics.update');
+    Route::patch('/admin/jep/main-metrics', [JepDashboardController::class, 'updateMainMetrics'])
+        ->middleware('permission:edit jep metrics')
+        ->name('admin.jep.main-metrics.update');
+    Route::patch('/admin/jep/featured-indicator', [JepDashboardController::class, 'updateFeaturedIndicator'])
+        ->middleware('permission:edit jep metrics')
+        ->name('admin.jep.featured-indicator.update');
+    Route::patch('/admin/jep/death-custody-distribution', [JepDashboardController::class, 'updateDeathCustodyDistribution'])
+        ->middleware('permission:edit jep metrics')
+        ->name('admin.jep.death-custody.update');
+    Route::patch('/admin/jep/monthly-alert', [JepDashboardController::class, 'updateMonthlyAlert'])
+        ->middleware('permission:edit jep metrics')
+        ->name('admin.jep.monthly-alert.update');
+    Route::patch('/admin/jep/indicators', [JepDashboardController::class, 'updateIndicators'])
+        ->middleware('permission:edit jep metrics')
+        ->name('admin.jep.indicators.update');
+    Route::patch('/admin/jep/vulnerable-groups', [JepDashboardController::class, 'updateVulnerableGroups'])
+        ->middleware('permission:edit jep metrics')
+        ->name('admin.jep.vulnerable-groups.update');
+    Route::patch('/admin/jep/detention-centers', [JepDashboardController::class, 'updateDetentionCenters'])
+        ->middleware('permission:edit jep metrics')
+        ->name('admin.jep.detention-centers.update');
+    Route::post('/admin/jep/monthly-alert/fetch-x-post', [JepDashboardController::class, 'fetchMonthlyAlertPost'])
+        ->middleware('permission:edit jep metrics')
+        ->name('admin.jep.monthly-alert.fetch-x-post');
+    Route::patch('/admin/obu/metrics', [ObuDashboardController::class, 'updateMetrics'])
+        ->middleware('permission:edit obu metrics')
+        ->name('admin.obu.metrics.update');
+    Route::post('/admin/obu/monthly-note', [ObuDashboardController::class, 'storeMonthlyNote'])
+        ->middleware('permission:edit obu metrics')
+        ->name('admin.obu.monthly-note.store');
+    Route::post('/admin/obu/bimonthly-alert', [ObuDashboardController::class, 'storeBimonthlyAlert'])
+        ->middleware('permission:edit obu metrics')
+        ->name('admin.obu.bimonthly-alert.store');
+    Route::patch('/admin/obu/monitoring-period', [ObuDashboardController::class, 'updateMonitoringPeriod'])
+        ->middleware('permission:edit obu metrics')
+        ->name('admin.obu.monitoring-period.update');
     Route::post('/admin/acceso-justicia/sync', AccesoJusticiaSyncController::class)
         ->middleware(['role:admin|super-admin', 'permission:sync acceso justicia dashboard'])
         ->name('admin.acceso-justicia.sync');

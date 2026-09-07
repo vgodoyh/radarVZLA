@@ -1,0 +1,119 @@
+import Chart from 'chart.js/auto';
+
+const dataElement = document.getElementById('obuDashboardData');
+
+const legendMarginPlugin = {
+    id: 'obuLegendMargin',
+    beforeInit(chart) {
+        const legend = chart.legend;
+        if (!legend || legend.__obuMarginApplied) return;
+
+        const originalFit = legend.fit;
+        legend.fit = function fit() {
+            originalFit.call(this);
+            this.height += 18;
+        };
+        legend.__obuMarginApplied = true;
+    },
+};
+
+const sourceLegendPlugin = {
+    id: 'obuSourceLegendVisibility',
+    beforeInit(chart) {
+        chart.options.plugins.legend.display = false;
+    },
+};
+
+if (dataElement) {
+    const payload = JSON.parse(dataElement.textContent || '{}');
+    const historical = payload.historical || [];
+    const sources = payload.sources || [];
+    const news = payload.news || [];
+    const findValue = (rows, predicate) => Number(rows.find(predicate)?.value || 0);
+
+    const historicalCanvas = document.getElementById('obuHistoricalComplaintsChart');
+    if (historicalCanvas) {
+        const years = [...new Set(historical.map(item => Number(item.year)))].sort((a, b) => a - b);
+        const valuesFor = category => years.map(year => findValue(historical, item => Number(item.year) === year && item.category === category));
+        new Chart(historicalCanvas, {
+            type: 'line',
+            data: { labels: years, datasets: [
+                { label: 'Derechos econ\u00f3micos y sociales', data: valuesFor('economic_social'), borderColor: '#2373c8', pointBackgroundColor: '#2373c8', borderWidth: 2, tension: .25, pointRadius: 4, pointHoverRadius: 6, fill: false },
+                { label: 'Derechos civiles y pol\u00edticos', data: valuesFor('civil_political'), borderColor: '#fd8700', pointBackgroundColor: '#fd8700', borderWidth: 2, tension: .25, pointRadius: 4, pointHoverRadius: 6, fill: false },
+            ] },
+            plugins: [legendMarginPlugin],
+            options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 8, usePointStyle: true, padding: 8 } }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: '#edf1f6' }, ticks: { precision: 0 } } } },
+        });
+    }
+
+    const sourceCanvas = document.getElementById('obuComplaintSourcesChart');
+    if (sourceCanvas) {
+        const years = [...new Set(sources.map(item => Number(item.year)))].sort((a, b) => a - b);
+        const labels = ['Representante estudiantil', 'Autoridad universitaria', 'Representante del gremio docente', 'Representante de sindicatos administrativo y obrero', 'Universidad', 'Otros'];
+        const colors = ['#2373c8', '#4cbe92', '#7667c7', '#fd8700', '#25a7a0', '#8291a5'];
+        const valueFor = label => years.map(year => findValue(sources, item => Number(item.year) === year && item.label === label));
+        const chartWrap = sourceCanvas.closest('.obu-chart-wrap');
+        const manualLegend = document.createElement('div');
+        manualLegend.className = 'obu-source-chart-legend';
+        labels.forEach((label, index) => {
+            const item = document.createElement('span');
+            item.className = 'obu-source-chart-legend__item';
+            item.innerHTML = `<i style="background:${colors[index]}" aria-hidden="true"></i><span>${label}</span>`;
+            manualLegend.appendChild(item);
+        });
+        chartWrap?.parentElement.insertBefore(manualLegend, chartWrap);
+        const valueLabels = { id: 'obuComplaintSourceValues', afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+            ctx.save();
+            ctx.font = '600 9px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            chart.data.datasets.forEach((dataset, datasetIndex) => chart.getDatasetMeta(datasetIndex).data.forEach((point, index) => {
+                const values = dataset.data.map(Number);
+                const maximum = Math.max(...values);
+                if (index !== 0 && index !== values.length - 1 && values[index] !== maximum) return;
+                ctx.fillStyle = dataset.borderColor;
+                const offset = index % 2 === 0 ? 8 : -8;
+                ctx.fillText(String(dataset.data[index]), point.x, point.y - offset);
+            }));
+            ctx.restore();
+        } };
+        new Chart(sourceCanvas, {
+            type: 'line',
+            data: { labels: years, datasets: labels.map((label, index) => ({ label, data: valueFor(label), borderColor: colors[index], backgroundColor: colors[index], borderWidth: 2, tension: .22, pointRadius: 3, pointHoverRadius: 5, pointBackgroundColor: '#fff', pointBorderWidth: 2, fill: false })) },
+            plugins: [valueLabels, legendMarginPlugin, sourceLegendPlugin],
+            options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, layout: { padding: { top: 10, right: 8, bottom: 0, left: 0 } }, plugins: { legend: { display: true, position: 'top', align: 'start', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, pointStyle: 'circle', padding: 6, color: '#52647c', font: { size: 10 } } }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { title: { display: true, text: 'A\u00f1o', color: '#52647c', font: { size: 10 } }, grid: { display: false }, ticks: { font: { size: 10 } } }, y: { title: { display: true, text: 'Cantidad', color: '#52647c', font: { size: 10 } }, beginAtZero: true, grid: { color: '#e8eef6' }, ticks: { precision: 0, font: { size: 10 } } } } },
+        });
+    }
+
+    const newsCanvas = document.getElementById('obuNewsTypeChart');
+    if (newsCanvas) {
+        const categories = ['DENUNCIA', 'ACTIVIDAD', 'INFORMACI\u00d3N'];
+        const subgroups = ['Experimentales y aut\u00f3nomas', 'Controladas'];
+        const years = [...new Set(news.map(item => Number(item.year)))].sort((a, b) => a - b);
+        const rows = years.flatMap(year => subgroups.map(subgroup => ({ year, subgroup })));
+        const chartLabels = rows.map(row => `${row.year} \u00b7 ${row.subgroup}`);
+        const chartData = category => rows.map(row => findValue(news, item => Number(item.year) === row.year && item.category === category && item.subgroup === row.subgroup));
+        const segmentLabels = { id: 'obuNewsTypeValues', afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+            ctx.save();
+            ctx.fillStyle = '#fff';
+            ctx.font = '600 10px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            chart.data.datasets.forEach((dataset, datasetIndex) => chart.getDatasetMeta(datasetIndex).data.forEach((bar, index) => {
+                const value = Number(dataset.data[index] || 0);
+                if (value > 0 && bar.width > 28) ctx.fillText(String(value), bar.x - (bar.width / 2), bar.y + 3);
+            }));
+            ctx.restore();
+        } };
+        new Chart(newsCanvas, {
+            type: 'bar',
+            plugins: [segmentLabels, legendMarginPlugin],
+            data: { labels: chartLabels, datasets: [
+                { label: categories[0], data: chartData(categories[0]), backgroundColor: '#2373c8', borderRadius: 4, barPercentage: .78, categoryPercentage: .86 },
+                { label: categories[1], data: chartData(categories[1]), backgroundColor: '#4cbe92', borderRadius: 4, barPercentage: .78, categoryPercentage: .86 },
+                { label: categories[2], data: chartData(categories[2]), backgroundColor: '#fd8700', borderRadius: 4, barPercentage: .78, categoryPercentage: .86 },
+            ] },
+            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: true, padding: 14 } }, tooltip: { callbacks: { title: items => items[0]?.label || '', label: item => `${item.dataset.label}: ${item.raw}` } } }, scales: { x: { title: { display: true, text: 'Cantidad', color: '#52647c' }, beginAtZero: true, stacked: true, grid: { color: '#e8eef6' }, ticks: { precision: 0 } }, y: { stacked: true, grid: { display: false }, ticks: { autoSkip: false } } } },
+        });
+    }
+}

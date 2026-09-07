@@ -21,8 +21,21 @@
              JUSTICIA, ENCUENTRO Y PERDÓN
         ====================================================== --}}
         @php
-            $jepFeaturedStat = data_get($stats ?? [], 0);
-            $jepSecondaryStats = collect($stats ?? [])->slice(1, 4);
+            $formatJepTrend = fn ($value): ?string => app(\App\Services\JepEditorialMetricsService::class)->formatTrend($value);
+            $jepFeaturedStat = [
+                'label' => __('dashboard.stats.political_prisoners'),
+                'value' => $jepMetrics?->total_political_prisoners ?? 0,
+                'change' => $formatJepTrend($jepMetrics?->total_political_prisoners_trend),
+                'direction' => (float) ($jepMetrics?->total_political_prisoners_trend ?? 0) < 0 ? 'down' : 'up',
+                'sentiment' => 'neutral',
+                'icon' => 'bi-people-fill',
+            ];
+            $jepSecondaryStats = collect([
+                ['label' => __('dashboard.stats.women'), 'value' => $jepMetrics?->women ?? 0, 'change' => $formatJepTrend($jepMetrics?->women_trend), 'direction' => (float) ($jepMetrics?->women_trend ?? 0) < 0 ? 'down' : 'up', 'sentiment' => 'neutral', 'icon' => 'bi-gender-female'],
+                ['label' => __('dashboard.stats.seriously_ill'), 'value' => $jepMetrics?->seriously_ill ?? 0, 'change' => $formatJepTrend($jepMetrics?->seriously_ill_trend), 'direction' => (float) ($jepMetrics?->seriously_ill_trend ?? 0) < 0 ? 'down' : 'up', 'sentiment' => 'neutral', 'icon' => 'bi-heart-pulse-fill'],
+                ['label' => __('dashboard.stats.foreign_dual_nationals'), 'value' => $jepMetrics?->foreign_or_dual_nationality ?? 0, 'change' => $formatJepTrend($jepMetrics?->foreign_or_dual_nationality_trend), 'direction' => (float) ($jepMetrics?->foreign_or_dual_nationality_trend ?? 0) < 0 ? 'down' : 'up', 'sentiment' => 'neutral', 'icon' => 'bi-globe'],
+                ['label' => __('dashboard.stats.releases'), 'value' => $jepMetrics?->releases ?? 0, 'change' => $formatJepTrend($jepMetrics?->releases_trend), 'direction' => (float) ($jepMetrics?->releases_trend ?? 0) < 0 ? 'down' : 'up', 'sentiment' => 'neutral', 'icon' => 'bi-unlock-fill'],
+            ]);
         @endphp
 
         <div class="panorama-jep">
@@ -98,10 +111,10 @@
                     <span class="panorama-jep__alert-icon" aria-hidden="true">
                         <i class="bi bi-exclamation-triangle"></i>
                     </span>
-                    <h3>{{ __('dashboard.jep_page.indicators.monthly_alert') }}</h3>
+                    <h3>{{ $jepMetrics?->monthly_alert_title ?: __('dashboard.jep_page.indicators.monthly_alert') }}</h3>
                 </div>
-                <p>{{ __('dashboard.jep_page.indicators.alert_text') }}</p>
-                <a href="{{ route('organizations.jep') }}">
+                <p class="panorama-jep__alert-text">{{ $jepMetrics?->monthly_alert_excerpt ?: __('dashboard.jep_page.indicators.alert_text') }}</p>
+                <a href="{{ route('organizations.jep') }}#alerta-del-mes">
                     {{ __('dashboard.jep_page.indicators.view_alert') }}
                     <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </a>
@@ -129,12 +142,11 @@
             $fakeFeaturedDate = filled($fakeFeaturedDateValue)
                 ? rescue(fn () => \Carbon\Carbon::parse($fakeFeaturedDateValue)->locale(app()->getLocale())->translatedFormat('d M Y'), '', false)
                 : '';
-            $obuItems = collect($economicSocialItems ?? [])->concat($civilPoliticalItems ?? []);
             $obuYears = collect($years ?? [])->filter()->values();
-            $obuMetrics = [
-                ['value' => $obuItems->isNotEmpty() ? $obuItems->sum('value') : null, 'label' => __('dashboard.dashboard_v2.university_monitoring')],
-                ['value' => $obuItems->isNotEmpty() ? $obuItems->count() : null, 'label' => __('dashboard.protests')],
-                ['value' => collect($protestsData ?? [])->isNotEmpty() ? collect($protestsData)->sum() : null, 'label' => __('dashboard.complaints')],
+            $obuMetricItems = [
+                ['value' => $obuMetrics?->universities_monitored, 'label' => __('dashboard.dashboard_v2.university_monitoring')],
+                ['value' => $obuMetrics?->protests, 'label' => __('dashboard.protests')],
+                ['value' => $obuMetrics?->complaints, 'label' => __('dashboard.complaints')],
                 ['value' => $obuYears->isNotEmpty() ? $obuYears->first().' – '.$obuYears->last() : null, 'label' => __('dashboard.obu.analysis_period'), 'period' => true],
             ];
             $obuPeriod = $obuYears->isNotEmpty() ? $obuYears->first().' – '.$obuYears->last() : null;
@@ -281,10 +293,10 @@
                 <p class="panorama-secondary-card__eyebrow">{{ __('dashboard.panorama_secondary.universities_in_figures') }}</p>
 
                 <div class="panorama-obu__metrics">
-                    @foreach (collect($obuMetrics)->take(3) as $obuMetric)
+                    @foreach (collect($obuMetricItems)->take(3) as $obuMetric)
                         @if (filled($obuMetric['value']))
                             <div class="panorama-obu__metric">
-                                <strong class="{{ ! empty($obuMetric['period']) ? 'panorama-obu__metric-value--period' : '' }}">{{ $obuMetric['value'] }}</strong>
+                                <strong class="{{ ! empty($obuMetric['period']) ? 'panorama-obu__metric-value--period' : '' }}">{{ is_numeric($obuMetric['value']) ? number_format((int) $obuMetric['value'], 0, ',', '.') : $obuMetric['value'] }}</strong>
                                 <span>{{ $obuMetric['label'] }}</span>
                             </div>
                         @endif

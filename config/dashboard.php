@@ -11,10 +11,10 @@ return [
     ],
 
     'stats' => [
-        ['key' => 'political_prisoners', 'value' => 1875, 'change' => 5.2, 'icon' => 'bi-people-fill', 'sentiment' => 'negative'],
-        ['key' => 'women', 'value' => 234, 'change' => 6.4, 'icon' => 'bi-gender-female', 'sentiment' => 'negative'],
-        ['key' => 'seriously_ill', 'value' => 142, 'change' => 18.3, 'icon' => 'bi-heart-pulse-fill', 'sentiment' => 'negative'],
-        ['key' => 'foreign_dual_nationals', 'value' => 23, 'change' => 21.1, 'icon' => 'bi-globe', 'sentiment' => 'negative'],
-        ['key' => 'releases', 'value' => 87, 'change' => 12.9, 'icon' => 'bi-unlock-fill', 'sentiment' => 'positive'],
+        ['key' => 'political_prisoners', 'value' => 0, 'change' => null, 'icon' => 'bi-people-fill', 'sentiment' => 'negative'],
+        ['key' => 'women', 'value' => 0, 'change' => null, 'icon' => 'bi-gender-female', 'sentiment' => 'negative'],
+        ['key' => 'seriously_ill', 'value' => 0, 'change' => null, 'icon' => 'bi-heart-pulse-fill', 'sentiment' => 'negative'],
+        ['key' => 'foreign_dual_nationals', 'value' => 0, 'change' => null, 'icon' => 'bi-globe', 'sentiment' => 'negative'],
+        ['key' => 'releases', 'value' => 0, 'change' => null, 'icon' => 'bi-unlock-fill', 'sentiment' => 'positive'],
     ],
 ];

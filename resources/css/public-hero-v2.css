@@ -3026,6 +3026,12 @@ body {
     background: #e9f8f2;
 }
 
+.panorama-jep__variation--neutral > span,
+.panorama-jep__stat-change--neutral {
+    color: var(--jep-navy);
+    background: var(--jep-soft-light);
+}
+
 .panorama-jep__variation small {
     max-width: 145px;
     color: var(--jep-muted);
@@ -3194,7 +3200,11 @@ body {
     text-transform: uppercase;
 }
 
-.panorama-jep__alert p {
+.panorama-jep__alert-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 7;
+    overflow: hidden;
     margin: 0 0 26px;
     color: #536278;
     font-size: .84rem;
@@ -3207,6 +3217,10 @@ body {
     align-self: flex-end;
     margin-top: auto;
     color: #a72c44;
+}
+
+#alerta-del-mes {
+    scroll-margin-top: 90px;
 }
 
 @media (max-width: 899.98px) {
@@ -3228,6 +3242,7 @@ body {
     .panorama-jep__stat:nth-child(n+3) { padding-top: 20px; border-top: 1px solid var(--jep-border); }
     .panorama-jep__footer { align-items: flex-start; flex-direction: column; }
     .panorama-jep__alert { min-height: 220px; padding: 24px; }
+    .panorama-jep__alert-text { -webkit-line-clamp: 6; }
     .panorama-jep__alert-decoration { right: -15px; bottom: -8px; width: clamp(200px, 65%, 260px); max-width: 70%; opacity: .16; }
 }
 

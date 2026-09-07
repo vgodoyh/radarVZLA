@@ -24,5 +24,11 @@ class DatabaseSeeder extends Seeder
         $this->call(OvfnRoleSeeder::class);
         $this->call(OvfnVerificationTotalSeeder::class);
         $this->call(OvfnPlatformDistributionSeeder::class);
+        $this->call(ObuRoleSeeder::class);
+        $this->call(JepRoleSeeder::class);
+        $this->call(ObuMetricSnapshotSeeder::class);
+        $this->call(ObuMonitoringPeriodSeeder::class);
+        $this->call(ObuDatasetSeeder::class);
+        $this->call(JepMetricSnapshotSeeder::class);
     }
 }

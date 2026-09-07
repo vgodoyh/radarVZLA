@@ -932,6 +932,34 @@ body.auth-login-page input:-webkit-autofill:active {
 .sidenav .organization-link--access.active { --organization-accent: #ff7a1a; }
 .sidenav .organization-link--ovfn.active { --organization-accent: #f2c600; }
 .sidenav .organization-link--obu.active { --organization-accent: #2373c8; }
+
+.jep-admin-dashboard .jep-monthly-alert-fetch,
+.obu-metrics-editor .jep-monthly-alert-fetch {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.jep-admin-dashboard .jep-monthly-alert-fetch input,
+.obu-metrics-editor .jep-monthly-alert-fetch input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 42px;
+}
+
+.jep-admin-dashboard .jep-monthly-alert-fetch button,
+.obu-metrics-editor .jep-monthly-alert-fetch button {
+    flex: 0 0 auto;
+    min-width: 160px;
+    height: 42px;
+}
+
+@media (max-width: 767.98px) {
+    .jep-admin-dashboard .jep-monthly-alert-fetch,
+    .obu-metrics-editor .jep-monthly-alert-fetch { flex-direction: column; gap: 8px; }
+    .jep-admin-dashboard .jep-monthly-alert-fetch button,
+    .obu-metrics-editor .jep-monthly-alert-fetch button { width: 100%; }
+}
 .sidenav .organization-link.active i { color: #fff !important; }
 
 .admin-sidenav__toggle,
@@ -1474,4 +1502,100 @@ body.auth-login-page input:-webkit-autofill:active {
 @media (max-width: 767.98px) {
     .admin-user-activity-card__summary { align-items: flex-end; flex-direction: column; gap: 2px; }
     .admin-user-activity-card__table { min-width: 620px; }
+}
+.jep-featured-indicator-preview {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    max-height: 180px;
+    margin-top: 8px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.jep-admin-dashboard { padding-bottom: 32px; }
+.jep-admin-section-card,
+.jep-admin-history-card {
+    margin: 0 0 24px;
+    padding: 24px 28px;
+    background: #fff;
+    border: 1px solid #e6ebf2;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(23, 42, 74, .05);
+}
+.jep-admin-section-card__header,
+.jep-admin-history-card__header { margin-bottom: 22px; }
+.jep-admin-section-card__header h2,
+.jep-admin-history-card__header h3 { margin: 0; color: #10213f; font-size: 1.25rem; font-weight: 700; line-height: 1.25; }
+.jep-admin-section-card__header p,
+.jep-admin-history-card__header p { margin: 4px 0 0; color: #64748b; font-size: .81rem; line-height: 1.5; }
+.jep-admin-form label { display: block; margin-bottom: 6px; color: #344766; font-size: .78rem; font-weight: 700; }
+.jep-admin-form .form-control { min-height: 42px; padding: 10px 12px; }
+.jep-admin-form textarea.form-control { min-height: 130px; line-height: 1.55; }
+.jep-admin-form__submit { margin-top: 20px; }
+.jep-main-metrics-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.jep-main-metric-group { min-width: 0; padding: 16px 18px; background: #f8fafc; border: 1px solid #e7edf4; border-radius: 10px; }
+.jep-main-metric-group legend { float: none; width: 100%; margin: 0 0 14px; color: #10213f; font-size: .9rem; font-weight: 700; }
+.jep-main-metric-group__fields { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.jep-main-metric-group__fields--single { grid-template-columns: minmax(0, 1fr); }
+.jep-indicator-metric-group > legend { min-height: 42px; line-height: 1.3; }
+.jep-indicators-first-row,
+.jep-indicators-second-row { display: grid; gap: 16px; }
+.jep-indicators-first-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.jep-indicators-second-row { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 16px; }
+.jep-indicators-period-row { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 16px; }
+.jep-indicator-period-fields { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.jep-admin-form__summary { display: block; margin-top: 12px; color: #64748b; font-size: .78rem; font-weight: 700; }
+.jep-records-grid { display: grid; gap: 16px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.jep-record-card { height: 100%; }
+.jep-record-card > legend { min-height: 22px; }
+.jep-record-card__fields { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+.jep-monthly-alert-grid { display: grid; gap: 16px; grid-template-columns: minmax(0, .8fr) minmax(0, 1.6fr); }
+.jep-monthly-alert-field { min-width: 0; }
+.jep-monthly-alert-field--full { grid-column: 1 / -1; }
+.jep-main-metric-group__fields label,
+.jep-release-period label { margin-bottom: 6px; }
+.jep-main-metric-group--releases { grid-column: 1 / -1; }
+.jep-release-period { display: grid; gap: 10px 14px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: 16px; padding-top: 14px; border-top: 1px solid #e7edf4; }
+.jep-release-period > span { grid-column: 1 / -1; color: #42536d; font-size: .78rem; font-weight: 700; }
+.jep-admin-history-card { margin-top: -8px; margin-bottom: 32px; padding: 18px 20px; background: #fbfcfe; box-shadow: none; }
+.jep-admin-history-card__header { margin-bottom: 14px; }
+.jep-admin-history-card__header h3 { font-size: 1rem; }
+.jep-admin-history-card__table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.jep-admin-history-table { min-width: 760px; margin: 0; color: #42536d; font-size: .76rem; white-space: nowrap; }
+.jep-admin-history-table th { color: #64748b; font-size: .67rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.jep-admin-history-table td,
+.jep-admin-history-table th { padding: 10px 12px; vertical-align: middle; }
+.jep-admin-history-table td { max-width: 280px; }
+.jep-admin-history-table--alert { table-layout: fixed; width: 100%; min-width: 760px; }
+.jep-admin-history-table--alert th:nth-child(1) { width: 12%; }
+.jep-admin-history-table--alert th:nth-child(2) { width: 32%; }
+.jep-admin-history-table--alert th:nth-child(3) { width: 14%; }
+.jep-admin-history-table--alert th:nth-child(4),
+.jep-admin-history-table--alert th:nth-child(5),
+.jep-admin-history-table--alert th:nth-child(6) { width: 14%; }
+.jep-admin-history-table--alert td { overflow: hidden; white-space: normal; }
+.jep-admin-history-excerpt { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.4; max-width: 100%; overflow: hidden; }
+.jep-admin-history-table--alert .jep-admin-history-url { color: #315f9b; display: inline-block; font-weight: 700; white-space: nowrap; }
+.jep-admin-history-centers { display: grid; min-width: 280px; gap: 4px; white-space: normal; }
+.jep-admin-history-centers span { display: flex; justify-content: space-between; gap: 12px; }
+
+@media (max-width: 767.98px) {
+    .jep-admin-section-card { padding: 20px; }
+    .jep-admin-history-card { padding: 16px; }
+    .jep-main-metrics-grid,
+    .jep-main-metric-group__fields,
+    .jep-release-period { grid-template-columns: 1fr; }
+    .jep-main-metric-group--releases { grid-column: auto; }
+    .jep-release-period > span { grid-column: auto; }
+    .jep-indicators-first-row,
+    .jep-indicators-second-row,
+    .jep-indicator-period-fields,
+    .jep-records-grid,
+    .jep-monthly-alert-grid { grid-template-columns: 1fr; }
+    .jep-monthly-alert-field--full { grid-column: auto; }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .jep-records-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

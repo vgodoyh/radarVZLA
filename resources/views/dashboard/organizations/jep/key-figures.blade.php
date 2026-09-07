@@ -8,8 +8,10 @@
             </span>
             <p>{{ $mainFigure['label'] }}</p>
             <strong>{{ $mainFigure['value'] }}</strong>
-            <span class="jep-change jep-change--{{ $mainFigure['tone'] }}">{{ $mainFigure['change'] }}</span>
-            <small>{{ __('dashboard.previous_month_comparison') }}</small>
+            @if (filled($mainFigure['change']))
+                <span class="jep-change jep-change--{{ $mainFigure['tone'] }}">{{ $mainFigure['change'] }}</span>
+                <small>{{ __('dashboard.previous_month_comparison') }}</small>
+            @endif
         </article>
 
         <div class="jep-figures-secondary">
@@ -20,7 +22,9 @@
                     </span>
                     <p>{{ $figure['label'] }}</p>
                     <strong>{{ $figure['value'] }}</strong>
-                    <small class="jep-change jep-change--{{ $figure['tone'] }}">{{ $figure['change'] }}</small>
+                    @if (filled($figure['change']))
+                        <small class="jep-change jep-change--{{ $figure['tone'] }}">{{ $figure['change'] }}</small>
+                    @endif
                 </article>
             @endforeach
         </div>

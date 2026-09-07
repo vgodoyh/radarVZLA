@@ -26,147 +26,90 @@
         ])
 
         @php
-            $obuResultGroups = [
-                [
-                    'modifier' => 'economic',
-                    'title' => __('dashboard.obu.economic_social_cultural_rights'),
-                    'icon' => 'bi-mortarboard-fill',
-                    'total' => 99,
-                    'items' => [
-                        ['label' => __('dashboard.obu.decent_wages'), 'value' => 68, 'icon' => 'bi-currency-dollar'],
-                        ['label' => __('dashboard.obu.infrastructure_damage'), 'value' => 19, 'icon' => 'bi-buildings-fill'],
-                        ['label' => __('dashboard.obu.student_welfare'), 'value' => 12, 'icon' => 'bi-people-fill'],
-                    ],
-                ],
-                [
-                    'modifier' => 'political',
-                    'title' => __('dashboard.obu.political_civil_rights'),
-                    'icon' => 'bi-bank2',
-                    'total' => 28,
-                    'items' => [
-                        ['label' => __('dashboard.obu.university_autonomy'), 'value' => 8, 'icon' => 'bi-bank2'],
-                        ['label' => __('dashboard.obu.freedom_of_expression'), 'value' => 6, 'icon' => 'bi-chat-dots'],
-                        ['label' => __('dashboard.obu.public_affairs_participation'), 'value' => 14, 'icon' => 'bi-hand-index-thumb'],
-                    ],
-                ],
-                [
-                    'modifier' => 'protests',
-                    'title' => __('dashboard.obu.economic_rights_protests'),
-                    'icon' => 'bi-megaphone-fill',
-                    'total' => 75,
-                    'items' => [
-                        ['label' => __('dashboard.obu.strike'), 'value' => 29, 'icon' => 'bi-pause-circle-fill'],
-                        ['label' => __('dashboard.obu.gathering'), 'value' => 20, 'icon' => 'bi-people-fill'],
-                        ['label' => __('dashboard.obu.banner_protest'), 'value' => 7, 'icon' => 'bi-flag-fill'],
-                        ['label' => __('dashboard.obu.march'), 'value' => 14, 'icon' => 'bi-person-walking'],
-                        ['label' => __('dashboard.obu.other'), 'value' => 5, 'icon' => 'bi-three-dots'],
-                    ],
-                ],
-            ];
-
-            $obuSummary = [
-                [
-                    'modifier' => 'blue',
-                    'label' => __('dashboard.obu.total_reports'),
-                    'value' => 222,
-                    'subtitle' => app()->isLocale('en') ? 'in the last 6 months' : 'en los últimos 6 meses',
-                    'icon' => 'bi-file-earmark-bar-graph-fill',
-                ],
-                [
-                    'modifier' => 'green',
-                    'label' => __('dashboard.obu.documented_categories'),
-                    'value' => 8,
-                    'subtitle' => app()->isLocale('en') ? 'across 3 main areas' : 'en 3 áreas principales',
-                    'icon' => 'bi-grid-fill',
-                ],
-                [
-                    'modifier' => 'orange',
-                    'label' => __('dashboard.obu.registered_protests'),
-                    'value' => 75,
-                    'subtitle' => app()->isLocale('en') ? 'across 5 modalities' : 'en 5 modalidades',
-                    'icon' => 'bi-megaphone-fill',
-                ],
-            ];
+            $monitoringPeriod = $obuMonitoringPeriod;
+            $monitoringLabel = $monitoringPeriod?->period_start && $monitoringPeriod?->period_end
+                ? $monitoringPeriod->period_start->locale('es')->isoFormat('MMMM').' – '.$monitoringPeriod->period_end->locale('es')->isoFormat('MMMM YYYY')
+                : 'Período no disponible';
+            $complaintsByGroup = collect($obuDatasets['documented_complaints'] ?? [])->groupBy('category');
+            $ranking = collect($obuDatasets['university_ranking'] ?? []);
+            $historical = collect($obuDatasets['historical_complaints'] ?? []);
+            $sourceRows = collect($obuDatasets['complaint_sources'] ?? []);
+            $newsRows = collect($obuDatasets['news_by_university_type'] ?? []);
+            $datasetYears = $obuDatasetYears ?? range(2020, 2025);
+            $selectedYear = 2025;
         @endphp
 
-        <main class="obu-monitoring-results obu-page__main">
+        <main class="obu-dashboard-public obu-page__main">
             <div class="jep-page__container">
-                <section class="obu-monitoring-panel">
-                <div class="obu-summary-grid obu-monitoring-metrics" aria-label="{{ __('dashboard.obu.monitoring_results') }}">
-                    @foreach ($obuSummary as $summary)
-                        <article class="hero-kpi-card obu-summary-card obu-monitoring-metric obu-summary-card--{{ $summary['modifier'] }}">
-                            <span class="obu-summary-card__icon obu-monitoring-metric__icon"><i class="bi {{ $summary['icon'] }}" aria-hidden="true"></i></span>
-                            <div class="obu-monitoring-metric__content">
-                                <strong class="obu-monitoring-metric__value">{{ $summary['value'] }}</strong>
-                                <span class="obu-summary-card__title obu-monitoring-metric__label">{{ $summary['label'] }}</span>
-                                <small class="obu-monitoring-metric__subtitle">{{ $summary['subtitle'] }}</small>
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-
-                <header class="obu-monitoring-results__heading obu-monitoring-panel__heading" style="margin-top:60px; margin-bottom:20px;">
-                    <h2>{{ __('dashboard.obu.monitoring_results') }}</h2>
-                </header>
-
-                <section class="obu-results-grid" aria-label="{{ __('dashboard.obu.monitoring_results') }}">
-                    @foreach ($obuResultGroups as $group)
-                        @php($maxValue = max(array_column($group['items'], 'value')))
-                        <article class="obu-result-card obu-result-card--{{ $group['modifier'] }}">
-                            <header class="obu-result-card__header">
-                                <span class="obu-result-card__icon"><i class="bi {{ $group['icon'] }}" aria-hidden="true"></i></span>
-                                <h2>{{ $group['title'] }}</h2>
-                                <span class="obu-result-card__badge">OBU</span>
-                            </header>
-
-                            <div class="obu-result-card__columns" aria-hidden="true">
-                                <span>{{ __('dashboard.obu.categories') }}</span>
-                                <span>#</span>
-                            </div>
-
-                            <div class="obu-result-card__list">
-                                @foreach ($group['items'] as $item)
-                                    <div class="obu-result-row">
-                                        <div class="obu-result-row__label">
-                                            <i class="bi {{ $item['icon'] }}" aria-hidden="true"></i>
-                                            <span>{{ $item['label'] }}</span>
-                                        </div>
-                                        <strong class="obu-result-row__value">{{ $item['value'] }}</strong>
-                                        <div class="obu-result-row__progress" aria-hidden="true">
-                                            <span style="--value: {{ ($item['value'] / $maxValue) * 100 }}%"></span>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <footer class="obu-result-card__total">
-                                <span>{{ __('dashboard.obu.total') }}</span>
-                                <strong>{{ $group['total'] }}</strong>
-                            </footer>
-                        </article>
-                    @endforeach
-                </section>
-
-                <section class="obu-methodology-grid">
-                    <article class="obu-methodology-card">
-                        <span class="obu-methodology-card__icon"><i class="bi bi-info-circle" aria-hidden="true"></i></span>
-                        <div>
-                            <h2>{{ __('dashboard.obu.methodological_note') }}</h2>
-                            <p>{{ __('dashboard.obu.methodological_text') }}</p>
-                        </div>
+                <section class="obu-editorial-grid obu-public-section" aria-label="Contenido editorial">@include('dashboard.organizations.partials.obu-editorial-cards') @if (false)
+                    <article class="obu-editorial-card obu-editorial-card--note">
+                        <div class="obu-editorial-card__copy"><span class="obu-public-eyebrow">Nota mensual</span><small>{{ $obuMonthlyNote['publication_date'] ?? 'Contenido editorial OBU' }}</small><h2>{{ $obuMonthlyNote['title'] ?? 'Nota mensual' }}</h2><p>{{ $obuMonthlyNote['excerpt'] ?? 'La próxima nota mensual del Observatorio de Universidades estará disponible próximamente.' }}</p>@if (! empty($obuMonthlyNote['url']))<a class="obu-public-link" href="{{ $obuMonthlyNote['url'] }}">Leer nota <i class="bi bi-arrow-right"></i></a>@endif</div>@if (! empty($obuMonthlyNote['image_url']))<img src="{{ $obuMonthlyNote['image_url'] }}" alt="" loading="lazy">@else<div class="obu-editorial-card__placeholder"><i class="bi bi-journal-text"></i></div>@endif
                     </article>
-
-                    <article class="obu-methodology-card obu-methodology-card--period">
-                        <span class="obu-methodology-card__icon"><i class="bi bi-calendar3" aria-hidden="true"></i></span>
-                        <div>
-                            <h2>{{ __('dashboard.obu.analysis_period') }}</h2>
-                            <p>{{ __('dashboard.obu.analysis_period_text') }}</p>
-                        </div>
+                    <article class="obu-editorial-card obu-editorial-card--alert">
+                        <div class="obu-editorial-card__copy"><span class="obu-public-eyebrow">Alerta bimensual</span><small>@if ($obuBimonthlyAlert){{ \Carbon\Carbon::parse($obuBimonthlyAlert['period_start'])->locale('es')->isoFormat('MMMM') }} – {{ \Carbon\Carbon::parse($obuBimonthlyAlert['period_end'])->locale('es')->isoFormat('MMMM YYYY') }}@else Contenido editorial OBU @endif</small><h2>{{ $obuBimonthlyAlert['title'] ?? 'Alerta bimensual' }}</h2><p>{{ $obuBimonthlyAlert['excerpt'] ?? 'La próxima alerta bimensual del Observatorio de Universidades estará disponible próximamente.' }}</p>@if (! empty($obuBimonthlyAlert['file_url']))<a class="obu-public-link" href="{{ $obuBimonthlyAlert['file_url'] }}" download>Descargar alerta <i class="bi bi-download"></i></a>@endif</div>@if (! empty($obuBimonthlyAlert['image_url']))<img src="{{ $obuBimonthlyAlert['image_url'] }}" alt="" loading="lazy">@else<div class="obu-editorial-card__placeholder"><i class="bi bi-exclamation-triangle"></i></div>@endif
                     </article>
+                @endif</section>
+
+                <section class="obu-three-column-grid obu-public-section">
+                    <article class="obu-data-card"><header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span><div><span class="obu-stat-card__title">Denuncias documentadas</span><p class="obu-stat-card__subtitle">Por derechos documentados</p></div></header>@foreach (['economic_social' => 'Derechos económicos, sociales y culturales', 'civil_political' => 'Derechos políticos y civiles'] as $groupKey => $groupLabel)<div class="obu-bar-group"><h3>{{ $groupLabel }}</h3>@php($items = $complaintsByGroup->get($groupKey, collect()))@php($max = max(1, (int) $items->max('value')))<div class="obu-bars">@foreach ($items as $item)<div class="obu-bar-row"><span>{{ $item['label'] }}</span><strong>{{ $item['value'] }}</strong><div><i style="width: {{ ($item['value'] / $max) * 100 }}%"></i></div></div>@endforeach</div></div>@endforeach</article>
+                    <article class="obu-data-card obu-protest-card"><header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-megaphone"></i></span><div><span class="obu-stat-card__title">Protestas universitarias</span><p class="obu-stat-card__subtitle">{{ number_format((int) ($obuMetrics?->protests ?? 0), 0, ',', '.') }} protestas registradas</p></div></header>@php($protestRows = collect($obuDatasets['protest_types'] ?? []))@php($max = max(1, (int) $protestRows->max('value')))<div class="obu-bars">@foreach ($protestRows as $item)<div class="obu-bar-row"><span>{{ $item['label'] }}</span><strong>{{ $item['value'] }}</strong><div><i style="width: {{ ($item['value'] / $max) * 100 }}%"></i></div></div>@endforeach</div></article>
+                    <article class="obu-data-card obu-chart-card"><header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span><div><span class="obu-stat-card__title">Evolución histórica 2020–2025</span><p class="obu-stat-card__subtitle">Denuncias por derechos</p></div></header><div class="obu-chart-wrap"><canvas id="obuHistoricalComplaintsChart" aria-label="Evolución histórica de denuncias" role="img"></canvas></div><div class="obu-chart-legend"><span><i class="obu-legend-dot obu-legend-dot--navy"></i> Derechos económicos y sociales</span><span><i class="obu-legend-dot obu-legend-dot--orange"></i> Derechos civiles y políticos</span></div></article>
                 </section>
+
+                <section class="obu-observatory-secondary-grid obu-public-section">
+                    <article class="obu-data-card obu-ranking-card obu-ranking-section">
+                        <header class="obu-chart-card__header">
+                            <span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-building"></i></span>
+                            <div>
+                                <span class="obu-stat-card__title">Universidades más reseñadas en el último año</span>
+                                <p class="obu-stat-card__subtitle">Top 10 de menciones registradas</p>
+                            </div>
+                        </header>
+                        <div class="obu-ranking-section__content">
+                            <div class="obu-ranking-table-wrap">
+                            <table class="obu-ranking-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Universidad</th>
+                                        <th>Menciones</th>
+                                        <th>%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($ranking as $index => $item)
+                                        <tr class="{{ $index < 3 ? 'obu-ranking-row--top' : '' }}">
+                                            <td>
+                                                <span class="obu-ranking-number">{{ $index + 1 }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="obu-ranking-university">
+                                                    <span class="obu-ranking-code">{{ $item['category'] }}</span>
+                                                    <span class="obu-ranking-separator" aria-hidden="true">·</span>
+                                                    <span class="obu-ranking-name">{{ $item['label'] }}</span>
+                                                </div>
+                                            </td>
+                                            <td>{{ $item['value'] }}</td>
+                                            <td>{{ number_format((float) $item['percentage'], 0) }}%</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </article>
+                    <article class="obu-data-card obu-news-card"><header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-newspaper"></i></span><div><span class="obu-public-eyebrow">Tipo de noticia por tipo de universidad</span><p>Distribución por año</p></div></header><div class="obu-chart-wrap obu-chart-wrap--news"><canvas id="obuNewsTypeChart" aria-label="Tipo de noticia por tipo de universidad" role="img"></canvas></div></article>
                 </section>
+
+                <section class="obu-data-card obu-source-chart-card obu-source-chart-card--full obu-public-section">
+                    <header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-people"></i></span><div><span class="obu-public-eyebrow">Denuncias según quién las realiza</span><p>Distribución por año</p></div></header><div class="obu-chart-wrap obu-chart-wrap--sources"><canvas id="obuComplaintSourcesChart" aria-label="Denuncias según quién las realiza por año" role="img"></canvas></div>
+                </section>
+
+                <section class="obu-methodology-strip obu-public-section"><span class="obu-methodology-strip__icon"><i class="bi bi-info-circle"></i></span><div><strong>Fuente y nota metodológica</strong><p>Fuente: Monitoreo de prensa y fuentes abiertas realizado por el Observatorio de Universidades (OBU). Los datos corresponden al período seleccionado y están sujetos a actualización.</p></div></section>
             </div>
         </main>
+
+        <script type="application/json" id="obuDashboardData">@json(['historical' => $historical, 'sources' => $sourceRows, 'news' => $newsRows])</script>
     </div>
 
     @include('dashboard.partials.organization-footer', [

@@ -53,7 +53,7 @@
                         </div>
 
                         <span>{{ __('dashboard.stats.political_prisoners') }}</span>
-                        <strong>1.875</strong>
+                        <strong>{{ data_get($stats ?? [], '0.value', 0) }}</strong>
 
                         <small class="metric-change metric-change--danger">
                             <i class="bi bi-arrow-up-short"></i>
