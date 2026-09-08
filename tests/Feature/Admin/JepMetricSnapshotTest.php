@@ -526,6 +526,43 @@ class JepMetricSnapshotTest extends TestCase
         ])->assertStatus(422)->assertJsonValidationErrors('url');
     }
 
+    public function test_jep_last_editorial_update_uses_the_latest_snapshot_timestamp(): void
+    {
+        $organization = $this->organization();
+        JepMetricSnapshot::create([
+            'organization_id' => $organization->id,
+            'total_political_prisoners' => 1,
+            'women' => 1,
+            'seriously_ill' => 1,
+            'foreign_or_dual_nationality' => 1,
+            'releases' => 1,
+            'active_retired_officials' => 1,
+            'new_detentions' => 1,
+            'missing_location' => 1,
+            'deaths_in_custody' => 1,
+            'valid_from' => '2026-09-07 22:25:00',
+        ]);
+        JepMetricSnapshot::create([
+            'organization_id' => $organization->id,
+            'total_political_prisoners' => 2,
+            'women' => 2,
+            'seriously_ill' => 2,
+            'foreign_or_dual_nationality' => 2,
+            'releases' => 2,
+            'active_retired_officials' => 2,
+            'new_detentions' => 2,
+            'missing_location' => 2,
+            'deaths_in_custody' => 2,
+            'valid_from' => '2026-09-07 23:10:00',
+        ]);
+
+        $lastUpdate = app(\App\Services\JepEditorialMetricsService::class)->lastEditorialUpdate($organization);
+
+        $this->assertNotNull($lastUpdate);
+        $this->assertSame('2026-09-07 19:10:00', $lastUpdate->format('Y-m-d H:i:s'));
+        $this->assertSame('America/Caracas', $lastUpdate->getTimezone()->getName());
+    }
+
     private function organization(): Organization
     {
         return Organization::create(['slug' => 'jep', 'name' => 'Justicia, Encuentro y Perdón', 'active' => true]);

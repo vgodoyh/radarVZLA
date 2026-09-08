@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use App\Services\DashboardQueryService;
 use App\Services\FakeNewsVenezuelaService;
+use App\Services\JepEditorialMetricsService;
+use App\Services\ObuDashboardDataService;
 use App\Services\OvfnEditorialMetricsService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -20,9 +22,9 @@ class PublicDashboardController extends Controller
         return $this->dashboardView($dashboard, 'dashboard.index');
     }
 
-    public function jep(DashboardQueryService $dashboard): View
+    public function jep(DashboardQueryService $dashboard, JepEditorialMetricsService $jepMetrics): View
     {
-        return $this->organizationView($dashboard, 'dashboard.organizations.jep', 'jep');
+        return $this->organizationView($dashboard, 'dashboard.organizations.jep', 'jep', null, $jepMetrics->lastEditorialUpdate());
     }
 
     public function accesoJusticia(Request $request, DashboardQueryService $dashboard): View
@@ -113,9 +115,9 @@ class PublicDashboardController extends Controller
         ]);
     }
 
-    public function universidades(DashboardQueryService $dashboard): View
+    public function universidades(DashboardQueryService $dashboard, ObuDashboardDataService $obuMetrics): View
     {
-        return $this->organizationView($dashboard, 'dashboard.organizations.universidades', 'universidades');
+        return $this->organizationView($dashboard, 'dashboard.organizations.universidades', 'universidades', null, $obuMetrics->lastEditorialUpdate());
     }
 
     private function dashboardView(DashboardQueryService $dashboard, string $view): View
@@ -127,7 +129,8 @@ class PublicDashboardController extends Controller
         DashboardQueryService $dashboard,
         string $view,
         string $slug,
-        ?string $postsKey = null
+        ?string $postsKey = null,
+        mixed $lastSync = null,
     ): View {
         $data = $dashboard->get();
         $organization = $data['organizations']->firstWhere('slug', $slug);
@@ -140,6 +143,7 @@ class PublicDashboardController extends Controller
             'posts' => $postsKey
                 ? collect($data[$postsKey] ?? [])
                 : collect($organization['posts'] ?? []),
+            'lastSync' => $lastSync,
         ]);
     }
 }

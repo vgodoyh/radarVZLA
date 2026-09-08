@@ -164,6 +164,24 @@ class ObuMetricSnapshotTest extends TestCase
         $this->assertCount(1, Permission::where('name', 'edit obu metrics')->where('guard_name', 'web')->get());
     }
 
+    public function test_obu_last_editorial_update_uses_the_latest_editorial_model_timestamp(): void
+    {
+        $organization = $this->organization();
+        ObuMetricSnapshot::create([
+            'organization_id' => $organization->id,
+            'universities_monitored' => 1,
+            'protests' => 1,
+            'complaints' => 1,
+            'valid_from' => '2026-09-07 22:25:00',
+        ]);
+
+        $lastUpdate = app(\App\Services\ObuDashboardDataService::class)->lastEditorialUpdate();
+
+        $this->assertNotNull($lastUpdate);
+        $this->assertSame('2026-09-07 18:25:00', $lastUpdate->format('Y-m-d H:i:s'));
+        $this->assertSame('America/Caracas', $lastUpdate->getTimezone()->getName());
+    }
+
     private function organization(): Organization
     {
         return Organization::create([

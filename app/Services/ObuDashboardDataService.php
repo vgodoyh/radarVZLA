@@ -4,9 +4,12 @@ namespace App\Services;
 
 use App\Models\ObuBimonthlyAlert;
 use App\Models\ObuDatasetValue;
+use App\Models\ObuMetricSnapshot;
 use App\Models\ObuMonitoringPeriod;
 use App\Models\ObuMonthlyNote;
 use App\Models\Organization;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -29,6 +32,35 @@ class ObuDashboardDataService
         }
 
         return ObuMonitoringPeriod::query()->current()->latest('valid_from')->first();
+    }
+
+    public function lastEditorialUpdate(): ?CarbonInterface
+    {
+        $organizationId = $this->organizationId();
+
+        if (! $organizationId) {
+            return null;
+        }
+
+        $timestamps = collect([
+            Schema::hasTable('obu_metric_snapshots')
+                ? ObuMetricSnapshot::query()->where('organization_id', $organizationId)->max('valid_from')
+                : null,
+            Schema::hasTable('obu_monitoring_periods')
+                ? ObuMonitoringPeriod::query()->where('organization_id', $organizationId)->max('valid_from')
+                : null,
+            Schema::hasTable('obu_monthly_notes')
+                ? ObuMonthlyNote::query()->where('organization_id', $organizationId)->max('created_at')
+                : null,
+            Schema::hasTable('obu_bimonthly_alerts')
+                ? ObuBimonthlyAlert::query()->where('organization_id', $organizationId)->max('created_at')
+                : null,
+        ])->filter()->map(fn ($value) => $value instanceof CarbonInterface ? $value : Carbon::parse($value));
+
+        return $timestamps->sortByDesc(fn (CarbonInterface $value) => $value->getTimestamp())
+            ->first()
+            ?->copy()
+            ->setTimezone('America/Caracas');
     }
 
     /** @return array<string, mixed> */

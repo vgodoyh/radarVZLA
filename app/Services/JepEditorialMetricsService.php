@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\JepMetricSnapshot;
 use App\Models\Organization;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -51,6 +53,25 @@ class JepEditorialMetricsService
             ->with(['vulnerableGroups', 'detentionCenters', 'deathCustodyDistribution', 'user:id,name'])
             ->orderByDesc('valid_from')
             ->get();
+    }
+
+    public function lastEditorialUpdate(?Organization $organization = null): ?CarbonInterface
+    {
+        if (! Schema::hasTable('jep_metric_snapshots')) {
+            return null;
+        }
+
+        $organization ??= Organization::query()->where('slug', 'jep')->first();
+
+        if (! $organization) {
+            return null;
+        }
+
+        $value = JepMetricSnapshot::query()
+            ->where('organization_id', $organization->id)
+            ->max('valid_from');
+
+        return $value ? Carbon::parse($value)->setTimezone('America/Caracas') : null;
     }
 
     /**
