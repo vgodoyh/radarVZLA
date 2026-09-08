@@ -30,6 +30,13 @@ class LoginResponse implements LoginResponseContract
             return redirect()->route('admin.ovfn.index');
         }
 
+        if (
+            $user?->can('view jep dashboard')
+            && ! $user->hasAnyRole(['admin', 'super-admin'])
+        ) {
+            return redirect()->route('admin.jep.index');
+        }
+
         return redirect()->intended(Fortify::redirects('login'));
     }
 }

@@ -63,6 +63,23 @@ class AuthenticationTest extends TestCase
         ])->assertRedirect(route('admin.acceso-justicia.index', absolute: false));
     }
 
+    public function test_jep_users_are_sent_to_their_module_after_login(): void
+    {
+        $permission = Permission::firstOrCreate([
+            'name' => 'view jep dashboard',
+            'guard_name' => 'web',
+        ]);
+        $role = Role::firstOrCreate(['name' => 'jep', 'guard_name' => 'web']);
+        $role->syncPermissions([$permission]);
+        $user = User::factory()->create();
+        $user->assignRole($role);
+
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertRedirect(route('admin.jep.index', absolute: false));
+    }
+
     public function test_admin_and_super_admin_keep_the_general_admin_destination(): void
     {
         foreach (['admin', 'super-admin'] as $roleName) {

@@ -26,6 +26,13 @@ class RedirectAccessJusticeUserFromAdmin
             return redirect()->route('admin.ovfn.index');
         }
 
+        if (
+            $user?->can('view jep dashboard')
+            && ! $user->hasAnyRole(['admin', 'super-admin'])
+        ) {
+            return redirect()->route('admin.jep.index');
+        }
+
         return $next($request);
     }
 }
