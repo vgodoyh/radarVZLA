@@ -16,7 +16,7 @@
                     @if ($kind === 'main')
                         <tr><th>Actualizado hasta</th><th>Presos políticos</th><th>Mujeres</th><th>Enfermos graves</th><th>Extranjeros/doble</th><th>Excarcelaciones</th><th>Vigente desde</th><th>Vigente hasta</th><th>Modificado por</th></tr>
                     @elseif ($kind === 'featured')
-                        <tr><th>Título</th><th>Texto</th><th>Imagen</th><th>Instagram</th><th>X</th><th>Vigente desde</th><th>Vigente hasta</th><th>Modificado por</th></tr>
+                        <tr><th>Título</th><th>Texto</th><th>Imagen</th><th>Instagram</th><th>X</th><th>{{ __('dashboard.jep_admin.featured.history_read_more') }}</th><th>Vigente desde</th><th>Vigente hasta</th><th>Modificado por</th></tr>
                     @elseif ($kind === 'death')
                         <tr><th>Arresto domiciliario</th><th>Centros de reclusión</th><th>Hospitales</th><th>Total</th><th>Período</th><th>Vigente desde</th><th>Vigente hasta</th><th>Modificado por</th></tr>
                     @elseif ($kind === 'methodology')
@@ -39,7 +39,7 @@
                             @if ($kind === 'main')
                                 <td>{{ $version->data_date?->format('d/m/Y') ?? 'Sin fecha' }}</td><td>{{ number_format($version->total_political_prisoners, 0, ',', '.') }}</td><td>{{ $version->women }}</td><td>{{ $version->seriously_ill }}</td><td>{{ $version->foreign_or_dual_nationality }}</td><td>{{ $version->releases }}</td>
                             @elseif ($kind === 'featured')
-                                <td>{{ $version->featured_indicator_title }}</td><td>{{ $excerpt($version->featured_indicator_text) }}</td><td>{{ filled($version->featured_indicator_image_path) ? 'Sí' : 'No' }}</td><td>{{ filled($version->featured_indicator_instagram_url) ? 'Sí' : 'No' }}</td><td>{{ filled($version->featured_indicator_x_url) ? 'Sí' : 'No' }}</td>
+                                <td>{{ $version->featured_indicator_title }}</td><td>{{ $excerpt($version->featured_indicator_text) }}</td><td>{{ filled($version->featured_indicator_image_path) ? 'Sí' : 'No' }}</td><td>{{ filled($version->featured_indicator_instagram_url) ? 'Sí' : 'No' }}</td><td>{{ filled($version->featured_indicator_x_url) ? 'Sí' : 'No' }}</td><td>{{ filled($version->featured_indicator_read_more_url) ? 'Sí' : 'No' }}</td>
                             @elseif ($kind === 'death')
                                 <td>{{ $deathByKey->get('home_arrest')?->value ?? 0 }}</td><td>{{ $deathByKey->get('detention_centers')?->value ?? 0 }}</td><td>{{ $deathByKey->get('hospitals')?->value ?? 0 }}</td><td>{{ $version->deathCustodyDistribution->sum('value') }}</td><td>@if ($version->deaths_period_start_day && $version->deaths_period_end_day){{ sprintf('%02d/%02d/%04d', $version->deaths_period_start_day, $version->deaths_period_start_month, $version->deaths_period_start_year) }} – {{ sprintf('%02d/%02d/%04d', $version->deaths_period_end_day, $version->deaths_period_end_month, $version->deaths_period_end_year) }}@else{{ $version->deaths_period_start_month }}/{{ $version->deaths_period_start_year }} – {{ $version->deaths_period_end_month }}/{{ $version->deaths_period_end_year }}@endif</td>
                             @elseif ($kind === 'methodology')

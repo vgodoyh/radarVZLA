@@ -202,7 +202,7 @@ class JepMetricSnapshotTest extends TestCase
     {
         $this->organization();
         $this->seed(JepMetricSnapshotSeeder::class);
-        $user = $this->userWithPermissions(['edit jep metrics']);
+        $user = $this->userWithPermissions(['view jep dashboard', 'edit jep metrics']);
         $current = JepMetricSnapshot::query()->current()->firstOrFail();
         $payload = $this->payload($current->toArray());
         $payload['groups'][0]['value'] = 20;
@@ -264,13 +264,17 @@ class JepMetricSnapshotTest extends TestCase
         $organization = $this->organization();
         $this->seed(JepMetricSnapshotSeeder::class);
         Storage::fake('public');
-        $user = $this->userWithPermissions(['edit jep metrics']);
+        $user = $this->userWithPermissions(['view jep dashboard', 'edit jep metrics']);
+        $this->actingAs($user)->get(route('admin.jep.index'))
+            ->assertOk()
+            ->assertSee('jep-featured-admin-preview')
+            ->assertSee('jep-featured-preview-placeholder');
         $old = JepMetricSnapshot::query()->current()->firstOrFail();
         $payload = $this->payload($old->toArray());
         $payload['featured_indicator_title'] = 'Indicador de prueba';
         $payload['featured_indicator_image'] = UploadedFile::fake()->image('indicador.jpg');
 
-        $this->actingAs($user)->patch(route('admin.jep.metrics.update'), $payload)->assertRedirect();
+        $this->actingAs($user)->patch(route('admin.jep.featured-indicator.update'), $payload)->assertRedirect();
 
         $old->refresh();
         $new = JepMetricSnapshot::query()->where('organization_id', $organization->id)->current()->firstOrFail();
@@ -278,13 +282,25 @@ class JepMetricSnapshotTest extends TestCase
         $this->assertNotSame($old->featured_indicator_image_path, $new->featured_indicator_image_path);
         Storage::disk('public')->assertExists($new->featured_indicator_image_path);
         $this->get(route('organizations.jep'))->assertOk()->assertSee(Storage::url($new->featured_indicator_image_path));
+        $this->actingAs($user)->get(route('admin.jep.index'))
+            ->assertOk()
+            ->assertSee('jep-featured-preview-image')
+            ->assertSee(Storage::url($new->featured_indicator_image_path));
 
         $secondPayload = $this->payload($new->toArray());
         $secondPayload['featured_indicator_text'] = 'Texto actualizado sin reemplazar imagen.';
-        $this->actingAs($user)->patch(route('admin.jep.metrics.update'), $secondPayload)->assertRedirect();
+        $this->actingAs($user)->patch(route('admin.jep.featured-indicator.update'), $secondPayload)->assertRedirect();
         $current = JepMetricSnapshot::query()->current()->firstOrFail();
         $this->assertSame($new->featured_indicator_image_path, $current->featured_indicator_image_path);
         $this->assertNotNull($new->fresh()->valid_until);
+
+        $thirdPayload = $this->payload($current->toArray());
+        $thirdPayload['featured_indicator_image'] = UploadedFile::fake()->image('indicador-nuevo.jpg', 1200, 800);
+        $this->actingAs($user)->patch(route('admin.jep.featured-indicator.update'), $thirdPayload)->assertRedirect();
+        $latest = JepMetricSnapshot::query()->current()->firstOrFail();
+        $this->assertNotSame($current->featured_indicator_image_path, $latest->featured_indicator_image_path);
+        Storage::disk('public')->assertExists($current->featured_indicator_image_path);
+        Storage::disk('public')->assertExists($latest->featured_indicator_image_path);
     }
 
     public function test_featured_indicator_rejects_unsupported_image_formats(): void
@@ -301,6 +317,87 @@ class JepMetricSnapshotTest extends TestCase
         $this->assertCount(1, JepMetricSnapshot::all());
     }
 
+    public function test_featured_indicator_read_more_url_is_versioned_and_rendered_only_when_present(): void
+    {
+        $organization = $this->organization();
+        $this->seed(JepMetricSnapshotSeeder::class);
+        $user = $this->userWithPermissions(['edit jep metrics']);
+        $current = JepMetricSnapshot::query()->current()->firstOrFail();
+        $url = 'https://example.com/analisis-jep';
+
+        $this->actingAs($user)->patch(route('admin.jep.featured-indicator.update'), [
+            'featured_indicator_title' => $current->featured_indicator_title,
+            'featured_indicator_text' => $current->featured_indicator_text,
+            'featured_indicator_instagram_url' => null,
+            'featured_indicator_x_url' => null,
+            'featured_indicator_read_more_url' => $url,
+        ])->assertRedirect();
+
+        $updated = JepMetricSnapshot::query()->current()->firstOrFail();
+        $this->assertSame($url, $updated->featured_indicator_read_more_url);
+        $this->assertNotSame($current->id, $updated->id);
+        app()->setLocale('es');
+        $this->get(route('organizations.jep'))
+            ->assertOk()
+            ->assertSee('Leer más')
+            ->assertSee($url);
+    }
+
+    public function test_featured_indicator_update_persists_all_fields_and_public_view_uses_current_snapshot(): void
+    {
+        $this->organization();
+        $this->seed(JepMetricSnapshotSeeder::class);
+        Storage::fake('public');
+        $user = $this->userWithPermissions(['view jep dashboard', 'edit jep metrics']);
+        $before = JepMetricSnapshot::query()->count();
+        $image = UploadedFile::fake()->image('destacado-completo.jpg', 1200, 800);
+
+        $response = $this->actingAs($user)->patch(route('admin.jep.featured-indicator.update'), [
+            'featured_indicator_title' => 'Destacado actualizado para prueba',
+            'featured_indicator_text' => 'Texto completo actualizado para prueba.',
+            'featured_indicator_image' => $image,
+            'featured_indicator_instagram_url' => 'https://instagram.com/p/ejemplo',
+            'featured_indicator_x_url' => 'https://x.com/jepvzla/status/1234567890',
+            'featured_indicator_read_more_url' => 'https://example.com/leer-mas',
+        ]);
+
+        $response->assertRedirect(route('admin.jep.index'))
+            ->assertSessionHas('jep_metrics_success', 'Indicador destacado actualizado correctamente.');
+
+        $snapshot = JepMetricSnapshot::query()->current()->firstOrFail();
+        $this->assertSame($before + 1, JepMetricSnapshot::query()->count());
+        $this->assertSame('Destacado actualizado para prueba', $snapshot->featured_indicator_title);
+        $this->assertSame('Texto completo actualizado para prueba.', $snapshot->featured_indicator_text);
+        $this->assertSame('https://instagram.com/p/ejemplo', $snapshot->featured_indicator_instagram_url);
+        $this->assertSame('https://x.com/jepvzla/status/1234567890', $snapshot->featured_indicator_x_url);
+        $this->assertSame('https://example.com/leer-mas', $snapshot->featured_indicator_read_more_url);
+        $this->assertNotEmpty($snapshot->featured_indicator_image_path);
+        Storage::disk('public')->assertExists($snapshot->featured_indicator_image_path);
+
+        $this->get(route('organizations.jep'))
+            ->assertOk()
+            ->assertSee('Destacado actualizado para prueba')
+            ->assertSee('Texto completo actualizado para prueba.')
+            ->assertSee('https://instagram.com/p/ejemplo')
+            ->assertSee('https://x.com/jepvzla/status/1234567890')
+            ->assertSee('https://example.com/leer-mas')
+            ->assertSee(Storage::url($snapshot->featured_indicator_image_path));
+    }
+
+    public function test_featured_indicator_interface_uses_the_english_translation(): void
+    {
+        $this->organization();
+        $this->seed(JepMetricSnapshotSeeder::class);
+        app()->setLocale('en');
+
+        $this->get(route('organizations.jep'))
+            ->assertOk()
+            ->assertSee('FEATURED')
+            ->assertDontSee('INDICADOR DESTACADO DEL MES');
+        session()->put('locale', 'es');
+        app()->setLocale('es');
+    }
+
     public function test_modular_updates_preserve_unrelated_editorial_blocks_and_admin_is_split(): void
     {
         $this->organization();
@@ -311,7 +408,7 @@ class JepMetricSnapshotTest extends TestCase
         $this->actingAs($user)->get(route('admin.jep.index'))
             ->assertOk()
             ->assertSee('Actualizar cifras principales')
-            ->assertSee('Actualizar indicador destacado')
+            ->assertSee('Update Featured Content')
             ->assertSee('Actualizar fallecidos en custodia')
             ->assertDontSee('Actualizar distribución')
             ->assertDontSee('Actualizar nota metodológica')
@@ -578,7 +675,7 @@ class JepMetricSnapshotTest extends TestCase
             'deaths_period_start_month', 'deaths_period_start_year', 'deaths_period_end_month', 'deaths_period_end_year',
             'detentions_methodology_note',
             'monthly_alert_title', 'monthly_alert_excerpt', 'monthly_alert_x_url',
-            'featured_indicator_title', 'featured_indicator_text', 'featured_indicator_instagram_url', 'featured_indicator_x_url',
+            'featured_indicator_title', 'featured_indicator_text', 'featured_indicator_instagram_url', 'featured_indicator_x_url', 'featured_indicator_read_more_url',
         ];
         $payload = collect($keys)->mapWithKeys(fn ($key) => [$key => $source[$key] ?? null])->all();
         $payload['data_date'] = null;

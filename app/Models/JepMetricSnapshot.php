@@ -17,7 +17,7 @@ class JepMetricSnapshot extends Model
         'new_detentions', 'missing_location', 'deaths_in_custody', 'deaths_period_start_month', 'deaths_period_start_day',
         'deaths_period_start_year', 'deaths_period_end_month', 'deaths_period_end_day', 'deaths_period_end_year',
         'detentions_methodology_note', 'monthly_alert_title', 'monthly_alert_excerpt', 'monthly_alert_x_url',
-        'featured_indicator_title', 'featured_indicator_text', 'featured_indicator_instagram_url', 'featured_indicator_x_url', 'featured_indicator_image_path',
+        'featured_indicator_title', 'featured_indicator_text', 'featured_indicator_instagram_url', 'featured_indicator_x_url', 'featured_indicator_read_more_url', 'featured_indicator_image_path',
         'data_date', 'valid_from', 'valid_until', 'user_id',
     ];
 

@@ -16,7 +16,19 @@
         @endforeach
     </div>
     <div class="jep-criteria__note">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
-        <p>{{ __('dashboard.jep_page.criteria.note') }}</p>
+        <div class="jep-criteria__note-copy">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <p>{{ __('dashboard.jep_page.criteria.note') }}</p>
+        </div>
+        <a
+            class="jep-criteria__link"
+            href="https://www.jepvenezuela.com/criterios-de-calificacion-y-documentacion-de-presos-politicos/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+            <span>{{ __('dashboard.jep_page.criteria.view_full') }}</span>
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </a>
     </div>
 </section>

@@ -111,7 +111,18 @@
                     <span class="panorama-jep__alert-icon" aria-hidden="true">
                         <i class="bi bi-exclamation-triangle"></i>
                     </span>
-                    <h3>{{ $jepMetrics?->monthly_alert_title ?: __('dashboard.jep_page.indicators.monthly_alert') }}</h3>
+                    @php
+                        $monthlyAlertLabel = __('dashboard.jep_page.indicators.monthly_alert');
+                        $monthlyAlertStoredTitle = trim((string) ($jepMetrics?->monthly_alert_title ?? ''));
+                        $monthlyAlertDefaultTitles = [
+                            mb_strtolower(trim(trans('dashboard.jep_page.indicators.monthly_alert', [], 'es'))),
+                            mb_strtolower(trim(trans('dashboard.jep_page.indicators.monthly_alert', [], 'en'))),
+                        ];
+                        $monthlyAlertTitle = $monthlyAlertStoredTitle === '' || in_array(mb_strtolower($monthlyAlertStoredTitle), $monthlyAlertDefaultTitles, true)
+                            ? $monthlyAlertLabel
+                            : $jepMetrics->monthly_alert_title;
+                    @endphp
+                    <h3>{{ $monthlyAlertTitle }}</h3>
                 </div>
                 <p class="panorama-jep__alert-text">{{ $jepMetrics?->monthly_alert_excerpt ?: __('dashboard.jep_page.indicators.alert_text') }}</p>
                 <a href="{{ route('organizations.jep') }}#alerta-del-mes">

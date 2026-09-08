@@ -7,6 +7,7 @@ use App\Models\Organization;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class JepEditorialMetricsService
@@ -80,12 +81,19 @@ class JepEditorialMetricsService
      */
     public function updateSnapshot(Organization $organization, array $changes, array $relations = []): bool
     {
-        return DB::transaction(function () use ($organization, $changes, $relations): bool {
+        try {
+            return DB::transaction(function () use ($organization, $changes, $relations): bool {
             $current = JepMetricSnapshot::query()
                 ->where('organization_id', $organization->id)
                 ->current()
                 ->lockForUpdate()
                 ->first();
+
+            Log::debug('JEP saveChanges current snapshot', [
+                'current_id' => $current?->id,
+                'valid_from' => $current?->valid_from,
+                'changes_received' => $changes,
+            ]);
 
             if (! $current) {
                 return false;
@@ -93,13 +101,33 @@ class JepEditorialMetricsService
 
             $scalarChanges = collect($changes)->except(array_keys(self::RELATION_FIELDS))->all();
             $relationChanges = collect($relations)->only(array_keys(self::RELATION_FIELDS))->all();
-            $scalarChanged = collect($scalarChanges)->some(fn ($value, $key) => ! $this->sameValue($current->{$key}, $value, str_ends_with((string) $key, '_trend')));
+            $comparisonDetails = collect($scalarChanges)->mapWithKeys(function ($value, $key) use ($current): array {
+                $same = $this->sameValue($current->{$key}, $value, str_ends_with((string) $key, '_trend'));
+
+                return [$key => [
+                    'current_value' => $current->{$key},
+                    'new_value' => $value,
+                    'current_type' => get_debug_type($current->{$key}),
+                    'new_type' => get_debug_type($value),
+                    'same' => $same,
+                ]];
+            })->all();
+            $scalarChanged = collect($comparisonDetails)->contains(fn (array $detail) => ! $detail['same']);
             $relationsChanged = collect($relationChanges)->some(function ($items, $key) use ($current): bool {
                 $relation = self::RELATION_FIELDS[$key];
                 return $this->normalizeRelation($current->{$relation}, $key) !== $this->normalizeRelation(collect($items), $key);
             });
+            $hasChanges = $scalarChanged || $relationsChanged;
 
-            if (! $scalarChanged && ! $relationsChanged) {
+            Log::debug('JEP saveChanges comparison', [
+                'current_id' => $current->id,
+                'changes_received' => $changes,
+                'field_comparisons' => $comparisonDetails,
+                'relations_changed' => $relationsChanged,
+                'has_changes' => $hasChanges,
+            ]);
+
+            if (! $hasChanges) {
                 return false;
             }
 
@@ -115,6 +143,14 @@ class JepEditorialMetricsService
 
             $current->update(['valid_until' => $changedAt]);
             $snapshot = JepMetricSnapshot::create($payload);
+            if (collect($changes)->keys()->intersect([
+                'featured_indicator_title', 'featured_indicator_text', 'featured_indicator_image_path',
+                'featured_indicator_instagram_url', 'featured_indicator_x_url', 'featured_indicator_read_more_url',
+            ])->isNotEmpty()) {
+                Log::debug('JEP featured indicator: snapshot created', [
+                    'snapshot_id' => $snapshot->id,
+                ]);
+            }
 
             foreach (self::RELATION_FIELDS as $key => $relation) {
                 $items = array_key_exists($key, $relationChanges)
@@ -126,7 +162,17 @@ class JepEditorialMetricsService
             }
 
             return true;
-        });
+            });
+        } catch (\Throwable $exception) {
+            Log::error('JEP saveChanges rollback/exception', [
+                'exception_class' => get_class($exception),
+                'message' => $exception->getMessage(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+            ]);
+
+            throw $exception;
+        }
     }
 
     private function sameValue($left, $right, bool $decimal = false): bool

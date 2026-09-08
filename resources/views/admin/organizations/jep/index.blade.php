@@ -63,7 +63,7 @@
             return new \Illuminate\Pagination\LengthAwarePaginator($filtered->forPage($currentPage, $perPage)->values(), $filtered->count(), $perPage, $currentPage, ['path' => request()->url(), 'pageName' => $pageName]);
         };
         $mainHistory = $historyFor(['total_political_prisoners', 'total_political_prisoners_trend', 'women', 'women_trend', 'seriously_ill', 'seriously_ill_trend', 'foreign_or_dual_nationality', 'foreign_or_dual_nationality_trend', 'releases', 'releases_trend', 'releases_period_start_month', 'releases_period_start_day', 'releases_period_start_year', 'releases_period_end_month', 'releases_period_end_day', 'releases_period_end_year'], null, 'main_history_page');
-        $featuredHistory = $historyFor(['featured_indicator_title', 'featured_indicator_text', 'featured_indicator_instagram_url', 'featured_indicator_x_url', 'featured_indicator_image_path'], null, 'featured_history_page');
+        $featuredHistory = $historyFor(['featured_indicator_title', 'featured_indicator_text', 'featured_indicator_instagram_url', 'featured_indicator_x_url', 'featured_indicator_read_more_url', 'featured_indicator_image_path'], null, 'featured_history_page');
         $deathHistory = $historyFor(['deaths_period_start_day', 'deaths_period_start_month', 'deaths_period_start_year', 'deaths_period_end_day', 'deaths_period_end_month', 'deaths_period_end_year'], 'deathCustodyDistribution', 'death_history_page');
         $alertHistory = $historyFor(['monthly_alert_title', 'monthly_alert_excerpt', 'monthly_alert_x_url'], null, 'alert_history_page');
         $indicatorHistory = $historyFor(['active_retired_officials', 'new_detentions', 'missing_location'], null, 'indicators_history_page');
@@ -234,24 +234,66 @@
                 <header class="jep-admin-section-card__header"><div><h2>Alerta del mes</h2><p>Actualiza el texto editorial y conserva la referencia al post de X.</p></div></header>
                 <form method="POST" action="{{ route('admin.jep.monthly-alert.update') }}" class="jep-admin-form">
                     @csrf @method('PATCH')
-                    <div class="jep-monthly-alert-grid"><div class="jep-monthly-alert-field"><label for="jep-alert-title">Título</label><input id="jep-alert-title" class="form-control" type="text" name="monthly_alert_title" value="{{ old('monthly_alert_title', $snapshot?->monthly_alert_title ?: __('dashboard.jep_page.indicators.monthly_alert')) }}"></div><div class="jep-monthly-alert-field"><label for="jep-alert-url">URL del post de X</label><div class="jep-monthly-alert-fetch"><input id="jep-monthly-alert-url" class="form-control" type="url" name="monthly_alert_x_url" placeholder="https://x.com/usuario/status/123456789" value="{{ old('monthly_alert_x_url', $snapshot?->monthly_alert_x_url) }}"><button id="jep-fetch-monthly-alert" class="btn btn-outline-primary" type="button" data-endpoint="{{ route('admin.jep.monthly-alert.fetch-x-post') }}">Buscar publicación</button></div><small id="jep-fetch-monthly-alert-status" class="form-text" role="status"></small></div><div class="jep-monthly-alert-field jep-monthly-alert-field--full"><label for="jep-alert-excerpt">Texto / resumen</label><textarea id="jep-alert-excerpt" class="form-control" name="monthly_alert_excerpt" rows="6" maxlength="10000">{{ old('monthly_alert_excerpt', $snapshot?->monthly_alert_excerpt ?: __('dashboard.jep_page.indicators.alert_text')) }}</textarea></div></div>
+                    <div class="jep-monthly-alert-grid">
+                        <div class="jep-monthly-alert-field">
+                            <label for="jep-alert-title">Título</label>
+                            <input id="jep-alert-title" class="form-control" type="text" name="monthly_alert_title" value="{{ old('monthly_alert_title', $snapshot?->monthly_alert_title ?: __('dashboard.jep_page.indicators.monthly_alert')) }}">
+                        </div>
+                        <div class="jep-monthly-alert-field">
+                            <label for="jep-alert-url">URL del post de X</label>
+                            <div class="jep-monthly-alert-fetch">
+                                <input id="jep-monthly-alert-url" class="form-control mt-0" type="url" name="monthly_alert_x_url" placeholder="https://x.com/usuario/status/123456789" value="{{ old('monthly_alert_x_url', $snapshot?->monthly_alert_x_url) }}">
+                                <button id="jep-fetch-monthly-alert" class="btn btn-outline-primary" type="button" data-endpoint="{{ route('admin.jep.monthly-alert.fetch-x-post') }}">
+                                    Buscar publicación
+                                </button>
+                            </div>
+                            <small id="jep-fetch-monthly-alert-status" class="form-text" role="status"></small>
+                        </div>
+                        <div class="jep-monthly-alert-field jep-monthly-alert-field--full">
+                            <label for="jep-alert-excerpt">Texto / resumen</label>
+                            <textarea id="jep-alert-excerpt" class="form-control" name="monthly_alert_excerpt" rows="6" maxlength="10000">{{ old('monthly_alert_excerpt', $snapshot?->monthly_alert_excerpt ?: __('dashboard.jep_page.indicators.alert_text')) }}</textarea>
+                        </div>
+                    </div>
                     <button class="btn btn-primary jep-admin-form__submit" type="submit">Actualizar alerta del mes</button>
                 </form>
             </section>
             @include('admin.organizations.jep.history', ['history' => $alertHistory, 'kind' => 'alert'])
 
             <section class="jep-admin-section-card">
-                <header class="jep-admin-section-card__header"><div><h2>Indicador destacado</h2><p>Edita el título, contenido, imagen y publicaciones asociadas.</p></div></header>
+                <header class="jep-admin-section-card__header"><div><h2>{{ __('dashboard.jep_admin.featured.section_title') }}</h2><p>{{ __('dashboard.jep_admin.featured.description') }}</p></div></header>
                 <form method="POST" action="{{ route('admin.jep.featured-indicator.update') }}" enctype="multipart/form-data" class="jep-admin-form">
                     @csrf @method('PATCH')
-                    <div class="row g-3">
-                        <div class="col-md-6"><label for="jep-featured-title">Título</label><input id="jep-featured-title" class="form-control" type="text" name="featured_indicator_title" maxlength="255" value="{{ old('featured_indicator_title', $snapshot?->featured_indicator_title ?: __('dashboard.featured_title')) }}"></div>
-                        <div class="col-12"><label for="jep-featured-text">Texto</label><textarea id="jep-featured-text" class="form-control" name="featured_indicator_text" rows="5" maxlength="10000">{{ old('featured_indicator_text', $snapshot?->featured_indicator_text ?: __('dashboard.featured_analysis_jep')) }}</textarea></div>
-                        <div class="col-md-4"><label for="jep-featured-image">Imagen</label><input id="jep-featured-image" class="form-control" type="file" name="featured_indicator_image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">@if (filled($snapshot?->featured_indicator_image_path))<small class="form-text d-block mt-2">Imagen actual</small><img class="jep-featured-indicator-preview" src="{{ \Illuminate\Support\Facades\Storage::url($snapshot->featured_indicator_image_path) }}" alt="Imagen actual del indicador destacado">@endif</div>
-                        <div class="col-md-4"><label for="jep-featured-instagram">URL publicación Instagram</label><input id="jep-featured-instagram" class="form-control" type="url" name="featured_indicator_instagram_url" value="{{ old('featured_indicator_instagram_url', $snapshot?->featured_indicator_instagram_url) }}"></div>
-                        <div class="col-md-4"><label for="jep-featured-x">URL hilo de X</label><input id="jep-featured-x" class="form-control" type="url" name="featured_indicator_x_url" value="{{ old('featured_indicator_x_url', $snapshot?->featured_indicator_x_url) }}"></div>
+                    @if ($errors->hasAny(['featured_indicator_title', 'featured_indicator_text', 'featured_indicator_image', 'featured_indicator_instagram_url', 'featured_indicator_x_url', 'featured_indicator_read_more_url']))
+                        <div class="alert alert-danger" role="alert">
+                            @foreach (['featured_indicator_title', 'featured_indicator_text', 'featured_indicator_image', 'featured_indicator_instagram_url', 'featured_indicator_x_url', 'featured_indicator_read_more_url'] as $field)
+                                @error($field)<div>{{ $message }}</div>@enderror
+                            @endforeach
+                        </div>
+                    @endif
+                    <div class="jep-featured-admin-top">
+                        <div class="jep-featured-admin-fields">
+                            <div class="jep-featured-admin-field"><label for="jep-featured-title">{{ __('dashboard.jep_admin.featured.title') }}</label><input id="jep-featured-title" class="form-control" type="text" name="featured_indicator_title" maxlength="255" value="{{ old('featured_indicator_title', $snapshot?->featured_indicator_title ?: __('dashboard.featured_title')) }}"></div>
+                            <div class="jep-featured-admin-field"><label for="jep-featured-text">{{ __('dashboard.jep_admin.featured.text') }}</label><textarea id="jep-featured-text" class="form-control" name="featured_indicator_text" rows="5" maxlength="10000">{{ old('featured_indicator_text', $snapshot?->featured_indicator_text ?: __('dashboard.featured_analysis_jep')) }}</textarea></div>
+                            <div class="jep-featured-admin-field"><label for="jep-featured-image">{{ __('dashboard.jep_admin.featured.image') }}</label><input id="jep-featured-image" class="form-control" type="file" name="featured_indicator_image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"><small class="form-text">{{ __('dashboard.jep_admin.featured.image_help') }}</small></div>
+                        </div>
+                        <div class="jep-featured-admin-preview-column">
+                            <div id="jep-featured-preview" class="jep-featured-admin-preview">
+                                @if (filled($snapshot?->featured_indicator_image_path))
+                                    <img id="jep-featured-preview-image" src="{{ \Illuminate\Support\Facades\Storage::url($snapshot->featured_indicator_image_path) }}" alt="{{ __('dashboard.jep_admin.featured.current_image') }}">
+                                    <span id="jep-featured-preview-placeholder" class="d-none">{{ __('dashboard.jep_admin.featured.preview_placeholder') }}</span>
+                                @else
+                                    <img id="jep-featured-preview-image" class="d-none" src="" alt="">
+                                    <span id="jep-featured-preview-placeholder">{{ __('dashboard.jep_admin.featured.preview_placeholder') }}</span>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                    <button class="btn btn-primary jep-admin-form__submit" type="submit">Actualizar indicador destacado</button>
+                    <div class="jep-featured-admin-url-grid">
+                        <div class="jep-featured-admin-field"><label for="jep-featured-instagram">{{ __('dashboard.jep_admin.featured.instagram_url') }}</label><input id="jep-featured-instagram" class="form-control" type="url" name="featured_indicator_instagram_url" value="{{ old('featured_indicator_instagram_url', $snapshot?->featured_indicator_instagram_url) }}"></div>
+                        <div class="jep-featured-admin-field"><label for="jep-featured-x">{{ __('dashboard.jep_admin.featured.x_url') }}</label><input id="jep-featured-x" class="form-control" type="url" name="featured_indicator_x_url" value="{{ old('featured_indicator_x_url', $snapshot?->featured_indicator_x_url) }}"></div>
+                        <div class="jep-featured-admin-field"><label for="jep-featured-read-more">{{ __('dashboard.jep_admin.featured.read_more_url') }}</label><input id="jep-featured-read-more" class="form-control" type="url" name="featured_indicator_read_more_url" value="{{ old('featured_indicator_read_more_url', $snapshot?->featured_indicator_read_more_url) }}"></div>
+                    </div>
+                    <button class="btn btn-primary jep-admin-form__submit" type="submit">{{ __('dashboard.jep_admin.featured.update') }}</button>
                 </form>
             </section>
             @include('admin.organizations.jep.history', ['history' => $featuredHistory, 'kind' => 'featured'])
@@ -268,6 +310,25 @@
             const excerpt = document.getElementById('jep-alert-excerpt');
             const status = document.getElementById('jep-fetch-monthly-alert-status');
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const featuredImageInput = document.getElementById('jep-featured-image');
+            const featuredPreviewImage = document.getElementById('jep-featured-preview-image');
+            const featuredPreviewPlaceholder = document.getElementById('jep-featured-preview-placeholder');
+            let featuredPreviewObjectUrl = null;
+
+            if (featuredImageInput && featuredPreviewImage && featuredPreviewPlaceholder) {
+                featuredImageInput.addEventListener('change', () => {
+                    const [file] = featuredImageInput.files || [];
+                    if (!file) return;
+
+                    if (featuredPreviewObjectUrl) URL.revokeObjectURL(featuredPreviewObjectUrl);
+                    featuredPreviewObjectUrl = URL.createObjectURL(file);
+                    featuredPreviewImage.src = featuredPreviewObjectUrl;
+                    featuredPreviewImage.alt = file.name;
+                    featuredPreviewImage.classList.remove('d-none');
+                    featuredPreviewPlaceholder.classList.add('d-none');
+                });
+            }
+
             if (!button || !urlInput || !excerpt || !status) return;
             button.addEventListener('click', async () => {
                 status.textContent = 'Buscando publicación...';

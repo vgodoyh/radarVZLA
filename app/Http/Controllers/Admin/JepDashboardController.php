@@ -9,9 +9,12 @@ use App\Models\Organization;
 use App\Services\Analytics\OrganizationAnalyticsService;
 use App\Services\JepEditorialMetricsService;
 use App\Services\TwitterService;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class JepDashboardController extends Controller
@@ -63,6 +66,7 @@ class JepDashboardController extends Controller
             'featured_indicator_text' => ['nullable', 'string', 'max:10000'],
             'featured_indicator_instagram_url' => ['nullable', 'url', 'max:2048'],
             'featured_indicator_x_url' => ['nullable', 'url', 'max:2048'],
+            'featured_indicator_read_more_url' => ['nullable', 'url', 'max:2048'],
             'featured_indicator_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'data_date' => ['nullable', 'date'],
             'groups' => ['required', 'array', 'min:1'],
@@ -81,8 +85,9 @@ class JepDashboardController extends Controller
             'death_custody_distribution.*.sort_order' => ['required', 'integer', 'min:0'],
         ]);
         $changes = collect($validated)->except(['groups', 'centers', 'death_custody_distribution', 'featured_indicator_image'])->map(fn ($value) => $value === '' ? null : $value)->all();
-        if (isset($validated['featured_indicator_image'])) {
-            $changes['featured_indicator_image_path'] = Storage::disk('public')->putFile('jep/featured-indicator', $validated['featured_indicator_image']);
+        $image = $request->file('featured_indicator_image');
+        if ($image instanceof UploadedFile && $image->isValid()) {
+            $changes['featured_indicator_image_path'] = $this->storeFeaturedIndicatorImage($image);
         }
         return $this->saveChanges($changes, [
             'groups' => $validated['groups'],
@@ -142,18 +147,102 @@ class JepDashboardController extends Controller
 
     public function updateFeaturedIndicator(Request $request): RedirectResponse
     {
+        Log::debug('JEP featured indicator: request received', [
+            'user_id' => auth()->id(),
+            'has_image' => $request->hasFile('featured_indicator_image'),
+            'title' => $request->input('featured_indicator_title'),
+            'text_length' => strlen((string) $request->input('featured_indicator_text')),
+            'instagram' => $request->input('featured_indicator_instagram_url'),
+            'x' => $request->input('featured_indicator_x_url'),
+            'read_more' => $request->input('featured_indicator_read_more_url'),
+        ]);
+
         $validated = $request->validate([
             'featured_indicator_title' => ['nullable', 'string', 'max:255'],
             'featured_indicator_text' => ['nullable', 'string', 'max:10000'],
             'featured_indicator_instagram_url' => ['nullable', 'url', 'max:2048'],
             'featured_indicator_x_url' => ['nullable', 'url', 'max:2048'],
+            'featured_indicator_read_more_url' => ['nullable', 'url', 'max:2048'],
             'featured_indicator_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
+        Log::debug('JEP featured indicator: validated', [
+            'keys' => array_keys($validated),
+            'has_image_key' => array_key_exists('featured_indicator_image', $validated),
+        ]);
         $changes = collect($validated)->except('featured_indicator_image')->map(fn ($value) => $value === '' ? null : $value)->all();
-        if (isset($validated['featured_indicator_image'])) {
-            $changes['featured_indicator_image_path'] = Storage::disk('public')->putFile('jep/featured-indicator', $validated['featured_indicator_image']);
+        Log::debug('JEP featured indicator: changes before image', ['changes' => $changes]);
+        $image = $request->file('featured_indicator_image');
+        if ($image instanceof UploadedFile && $image->isValid()) {
+            $changes['featured_indicator_image_path'] = $this->storeFeaturedIndicatorImage($image);
         }
+        Log::debug('JEP featured indicator: changes after image', ['changes' => $changes]);
+        Log::debug('JEP featured indicator: calling saveChanges', ['changes' => $changes]);
         return $this->saveChanges($changes, [], 'Indicador destacado actualizado correctamente.');
+    }
+
+    private function storeFeaturedIndicatorImage(UploadedFile $image): string
+    {
+        $realPath = $image->getRealPath();
+        $pathname = $image->getPathname();
+
+        Log::debug('JEP featured indicator image upload diagnostics', [
+            'class' => get_class($image),
+            'is_uploaded_file' => $image instanceof UploadedFile,
+            'is_valid' => $image->isValid(),
+            'error' => $image->getError(),
+            'error_message' => $image->getErrorMessage(),
+            'client_name' => $image->getClientOriginalName(),
+            'client_extension' => $image->getClientOriginalExtension(),
+            'mime' => $image->getMimeType(),
+            'size' => $image->getSize(),
+            'pathname' => $pathname,
+            'real_path' => $realPath,
+            'file_exists' => is_string($pathname) && file_exists($pathname),
+            'is_readable' => is_string($pathname) && is_readable($pathname),
+            'public_disk_root' => config('filesystems.disks.public.root'),
+        ]);
+
+        $sourcePath = $image->getRealPath();
+        if (! $sourcePath) {
+            $sourcePath = $image->getPathname();
+        }
+
+        Log::debug('JEP featured indicator: selected source path', [
+            'source_path' => $sourcePath,
+            'exists' => $sourcePath ? file_exists($sourcePath) : false,
+            'readable' => $sourcePath ? is_readable($sourcePath) : false,
+        ]);
+
+        if (! is_string($sourcePath) || $sourcePath === '' || ! is_file($sourcePath) || ! is_readable($sourcePath)) {
+            throw new \RuntimeException('No se pudo acceder al archivo temporal de la imagen.');
+        }
+
+        $extension = strtolower($image->getClientOriginalExtension() ?: 'bin');
+        $filename = Str::uuid().'.'.$extension;
+        $relativePath = 'jep/featured-indicator/'.$filename;
+        $stream = fopen($sourcePath, 'rb');
+        if ($stream === false) {
+            throw new \RuntimeException('No se pudo abrir el archivo temporal de la imagen.');
+        }
+
+        try {
+            $stored = Storage::disk('public')->writeStream($relativePath, $stream);
+            Log::debug('JEP featured indicator: image write result', [
+                'result' => $stored,
+                'relative_path' => $relativePath,
+                'exists_after_write' => Storage::disk('public')->exists($relativePath),
+            ]);
+        } finally {
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+        }
+
+        if ($stored === false) {
+            throw new \RuntimeException('No se pudo almacenar la imagen del indicador destacado.');
+        }
+
+        return $relativePath;
     }
 
     public function updateDeathCustodyDistribution(Request $request): RedirectResponse

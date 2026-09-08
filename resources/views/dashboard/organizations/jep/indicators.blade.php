@@ -18,29 +18,29 @@
 
             <div class="jep-indicator-bottom-row">
                 <article class="jep-indicator-card jep-indicator-card--donut jep-indicator-card--custody">
-                    <header class="jep-indicator-card__header"><i class="bi bi-heartbreak" aria-hidden="true"></i><p>Fallecidos en custodia</p></header>
+                    <header class="jep-indicator-card__header"><i class="bi bi-heartbreak" aria-hidden="true"></i><p>{{ __('dashboard.jep_page.indicators.deaths_in_custody') }}</p></header>
                     @php($deathDistribution = $jepSnapshot?->deathCustodyDistribution ?? collect())
                     @php($deathDistributionValues = $deathDistribution->pluck('value')->values())
                     <div class="jep-donut-layout jep-donut-card__body">
-                        <div class="jep-donut"><canvas id="jepDeathsCustodyChart" class="jep-donut__canvas" data-values='@json($deathDistributionValues)' data-colors='[\"#6f4bb8\", \"#9874d3\", \"#c8b5e8\"]' role="img" aria-label="Distribución de fallecidos en custodia"></canvas><span class="jep-donut__total"><strong>{{ number_format((int) $deathDistributionValues->sum(), 0, ',', '.') }}</strong><small>Total</small></span></div>
+                        <div class="jep-donut"><canvas id="jepDeathsCustodyChart" class="jep-donut__canvas" data-values='@json($deathDistributionValues)' data-colors='[\"#6f4bb8\", \"#9874d3\", \"#c8b5e8\"]' role="img" aria-label="{{ __('dashboard.jep_page.indicators.deaths_distribution_aria') }}"></canvas><span class="jep-donut__total"><strong>{{ number_format((int) $deathDistributionValues->sum(), 0, ',', '.') }}</strong><small>{{ __('dashboard.jep_page.indicators.total') }}</small></span></div>
                         <ul class="jep-donut-legend">
                             @foreach ($deathDistribution as $distribution)
-                                <li style="--legend-color: {{ ['#6f4bb8', '#9874d3', '#c8b5e8'][$loop->index % 3] }}"><span>{{ $distribution->label }}</span><strong>{{ number_format($distribution->value, 0, ',', '.') }}</strong></li>
+                                <li style="--legend-color: {{ ['#6f4bb8', '#9874d3', '#c8b5e8'][$loop->index % 3] }}"><span>{{ __('dashboard.jep_page.indicators.death_categories.' . $distribution->category_key) }}</span><strong>{{ number_format($distribution->value, 0, ',', '.') }}</strong></li>
                             @endforeach
                         </ul>
                     </div>
-                    <p class="jep-custody-period">Desde {{ $jepDeathsPeriod }}</p>
+                    <p class="jep-custody-period">{{ __('dashboard.jep_page.indicators.period_from') }} {{ $jepDeathsPeriod }}</p>
                 </article>
 
                 @php($vulnerableValues = collect($vulnerableGroups)->pluck('value')->values())
                 @php($vulnerableColors = ['#F28A1A', '#F5AA3C', '#F7C967'])
                 <article class="jep-indicator-card jep-indicator-card--donut jep-indicator-card--vulnerable">
-                    <header class="jep-indicator-card__header"><i class="bi bi-people" aria-hidden="true"></i><p>Grupos vulnerables</p></header>
+                    <header class="jep-indicator-card__header"><i class="bi bi-people" aria-hidden="true"></i><p>{{ __('dashboard.jep_page.indicators.vulnerable_groups') }}</p></header>
                     <div class="jep-donut-layout jep-donut-card__body">
-                        <div class="jep-donut"><canvas id="jepVulnerableGroupsChart" class="jep-donut__canvas" data-values='@json($vulnerableValues)' data-colors='@json($vulnerableColors)' role="img" aria-label="Grupos vulnerables"></canvas><span class="jep-donut__total"><strong>{{ number_format((int) $vulnerableValues->sum(), 0, ',', '.') }}</strong><small>Total</small></span></div>
+                        <div class="jep-donut"><canvas id="jepVulnerableGroupsChart" class="jep-donut__canvas" data-values='@json($vulnerableValues)' data-colors='@json($vulnerableColors)' role="img" aria-label="{{ __('dashboard.jep_page.indicators.vulnerable_groups') }}"></canvas><span class="jep-donut__total"><strong>{{ number_format((int) $vulnerableValues->sum(), 0, ',', '.') }}</strong><small>{{ __('dashboard.jep_page.indicators.total') }}</small></span></div>
                         <ul class="jep-donut-legend">
                             @foreach ($vulnerableGroups as $group)
-                                <li style="--legend-color: {{ $vulnerableColors[$loop->index % count($vulnerableColors)] }}"><span>{{ $group['label'] }}</span><strong>{{ number_format($group['value'], 0, ',', '.') }}</strong></li>
+                                <li style="--legend-color: {{ $vulnerableColors[$loop->index % count($vulnerableColors)] }}"><span>{{ __('dashboard.jep_page.indicators.vulnerable_categories.' . $group['group_key']) }}</span><strong>{{ number_format($group['value'], 0, ',', '.') }}</strong></li>
                             @endforeach
                         </ul>
                     </div>
@@ -51,7 +51,7 @@
         <div class="jep-indicators-layout__right">
         @php($maxDetentionCenter = max(1, (int) collect($detentionCenters)->max('value')))
         <article class="jep-indicator-card jep-indicator-card--centers">
-            <header class="jep-indicator-card__header"><i class="bi bi-building" aria-hidden="true"></i><p>Centros de detención con mayor número de presos políticos</p></header>
+            <header class="jep-indicator-card__header"><i class="bi bi-building" aria-hidden="true"></i><p>{{ __('dashboard.jep_page.centers.title') }}</p></header>
             <ol class="jep-centers-ranking">
                 @foreach ($detentionCenters as $center)
                     <li><div class="jep-centers-ranking__row"><span><i class="bi bi-building" aria-hidden="true"></i>{{ $center['name'] }}</span><strong>{{ number_format($center['value'], 0, ',', '.') }}</strong></div><span class="jep-centers-ranking__track" aria-hidden="true"><span style="width: {{ min(100, ((float) $center['value'] / $maxDetentionCenter) * 100) }}%"></span></span></li>

@@ -10,9 +10,9 @@
             $startYear = $snapshot?->{$prefix.'_start_year'};
             $endMonth = $snapshot?->{$prefix.'_end_month'};
             $endYear = $snapshot?->{$prefix.'_end_year'};
-            if (! $startMonth || ! $startYear || ! $endMonth || ! $endYear) return 'Período no disponible';
-            $start = \Carbon\Carbon::create($startYear, $startMonth, $snapshot?->{$prefix.'_start_day'} ?: 1)->locale('es');
-            $end = \Carbon\Carbon::create($endYear, $endMonth, $snapshot?->{$prefix.'_end_day'} ?: 1)->locale('es');
+            if (! $startMonth || ! $startYear || ! $endMonth || ! $endYear) return __('dashboard.jep_page.indicators.period_unavailable');
+            $start = \Carbon\Carbon::create($startYear, $startMonth, $snapshot?->{$prefix.'_start_day'} ?: 1)->locale(app()->getLocale());
+            $end = \Carbon\Carbon::create($endYear, $endMonth, $snapshot?->{$prefix.'_end_day'} ?: 1)->locale(app()->getLocale());
             return $snapshot?->{$prefix.'_start_day'} && $snapshot?->{$prefix.'_end_day'}
                 ? $start->isoFormat('D MMM').' – '.$end->isoFormat('D MMM YYYY')
                 : $start->isoFormat('MMM YYYY').' – '.$end->isoFormat('MMM YYYY');
@@ -26,9 +26,17 @@
         ];
         $criteria = collect(__('dashboard.jep_page.criteria.items'))->map(fn (string $text, int $index) => ['number' => str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT), 'text' => $text]);
         $detentionCenters = $jepSnapshot?->detentionCenters?->map(fn ($center) => $center->only(['name', 'value']))->all() ?? [];
-        $vulnerableGroups = $jepSnapshot?->vulnerableGroups?->map(fn ($group) => $group->only(['label', 'value']))->all() ?? [];
+        $vulnerableGroups = $jepSnapshot?->vulnerableGroups?->map(fn ($group) => $group->only(['group_key', 'label', 'value']))->all() ?? [];
         $jepDeathsPeriod = $formatPeriod($jepSnapshot, 'deaths_period');
-        $jepMonthlyAlertTitle = $jepSnapshot?->monthly_alert_title ?: __('dashboard.jep_page.indicators.monthly_alert');
+        $monthlyAlertLabel = __('dashboard.jep_page.indicators.monthly_alert');
+        $monthlyAlertStoredTitle = trim((string) ($jepSnapshot?->monthly_alert_title ?? ''));
+        $monthlyAlertDefaultTitles = [
+            mb_strtolower(trim(trans('dashboard.jep_page.indicators.monthly_alert', [], 'es'))),
+            mb_strtolower(trim(trans('dashboard.jep_page.indicators.monthly_alert', [], 'en'))),
+        ];
+        $jepMonthlyAlertTitle = $monthlyAlertStoredTitle === '' || in_array(mb_strtolower($monthlyAlertStoredTitle), $monthlyAlertDefaultTitles, true)
+            ? $monthlyAlertLabel
+            : $jepSnapshot->monthly_alert_title;
         $jepMonthlyAlertExcerpt = $jepSnapshot?->monthly_alert_excerpt ?: __('dashboard.jep_page.indicators.alert_text');
         $jepMonthlyAlertXUrl = $jepSnapshot?->monthly_alert_x_url;
     @endphp
@@ -54,7 +62,7 @@
                         @endif
                         @if (filled($jepMonthlyAlertXUrl))
                             <div class="jep-monthly-alert__footer">
-                                <a class="jep-monthly-alert__external" href="{{ $jepMonthlyAlertXUrl }}" target="_blank" rel="noopener noreferrer">Ver publicación original en X <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a>
+                                <a class="jep-monthly-alert__external" href="{{ $jepMonthlyAlertXUrl }}" target="_blank" rel="noopener noreferrer">{{ __('dashboard.jep_page.indicators.view_original_x_post') }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a>
                             </div>
                         @endif
                     </div>

@@ -1,9 +1,10 @@
 @php
     $featuredIndicatorTitle = $jepSnapshot?->featured_indicator_title ?: __('dashboard.featured_title');
     $featuredIndicatorText = $jepSnapshot?->featured_indicator_text ?: __('dashboard.featured_analysis_jep');
-    $featuredIndicatorImage = filled($jepSnapshot?->featured_indicator_image_path)
-        ? \Illuminate\Support\Facades\Storage::url($jepSnapshot->featured_indicator_image_path)
-        : null;
+        $featuredIndicatorImage = filled($jepSnapshot?->featured_indicator_image_path)
+            ? \Illuminate\Support\Facades\Storage::url($jepSnapshot->featured_indicator_image_path)
+            : null;
+        $featuredIndicatorReadMoreUrl = $jepSnapshot?->featured_indicator_read_more_url;
 @endphp
 
 <section class="jep-section jep-featured-indicator" aria-labelledby="jep-featured-indicator-title">
@@ -20,13 +21,19 @@
                 @if (filled($jepSnapshot?->featured_indicator_instagram_url))
                     <a href="{{ $jepSnapshot->featured_indicator_instagram_url }}" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-instagram" aria-hidden="true"></i>
-                        Publicación Instagram
+                        {{ __('dashboard.jep_page.trends_actions.instagram') }}
                     </a>
                 @endif
                 @if (filled($jepSnapshot?->featured_indicator_x_url))
                     <a href="{{ $jepSnapshot->featured_indicator_x_url }}" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-twitter-x" aria-hidden="true"></i>
-                        Hilo en Twitter / X
+                        {{ __('dashboard.jep_page.trends_actions.x_thread') }}
+                    </a>
+                @endif
+                @if (filled($featuredIndicatorReadMoreUrl))
+                    <a href="{{ $featuredIndicatorReadMoreUrl }}" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-arrow-up-right-square" aria-hidden="true"></i>
+                        {{ __('dashboard.jep_page.trends_actions.read_more') }}
                     </a>
                 @endif
             </div>
