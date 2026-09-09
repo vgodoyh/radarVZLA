@@ -30,7 +30,7 @@ class DashboardQueryService
                 Str::lower($post['text'] ?? ''),
                 '#alertalegal'
             ))
-            ->take(5)
+            ->take(6)
             ->values();
         $ovfnDistribution = $this->ovfnEditorialMetrics->currentPlatformDistribution();
         $jepMetrics = $this->jepEditorialMetrics->current();

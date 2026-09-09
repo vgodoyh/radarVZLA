@@ -35,6 +35,17 @@
             $historical = collect($obuDatasets['historical_complaints'] ?? []);
             $sourceRows = collect($obuDatasets['complaint_sources'] ?? []);
             $newsRows = collect($obuDatasets['news_by_university_type'] ?? []);
+            $newsChartCopy = [
+                'no_controlled' => __('dashboard.obu.no_controlled'),
+                'controlled' => __('dashboard.obu.controlled'),
+                'quantity' => __('dashboard.obu.complaint_quantity'),
+            ];
+            $dashboardPayload = [
+                'historical' => $historical,
+                'sources' => $sourceRows,
+                'news' => $newsRows,
+                'newsChart' => $newsChartCopy,
+            ];
             $datasetYears = $obuDatasetYears ?? range(2020, 2025);
             $selectedYear = 2025;
         @endphp
@@ -56,15 +67,17 @@
                     <article class="obu-data-card obu-chart-card"><header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span><div><span class="obu-stat-card__title">Evolución histórica 2020–2025</span><p class="obu-stat-card__subtitle">Denuncias por derechos</p></div></header><div class="obu-chart-wrap"><canvas id="obuHistoricalComplaintsChart" aria-label="Evolución histórica de denuncias" role="img"></canvas></div><div class="obu-chart-legend"><span><i class="obu-legend-dot obu-legend-dot--navy"></i> Derechos económicos y sociales</span><span><i class="obu-legend-dot obu-legend-dot--orange"></i> Derechos civiles y políticos</span></div></article>
                 </section>
 
-                <section class="obu-observatory-secondary-grid obu-public-section">
-                    <article class="obu-data-card obu-ranking-card obu-ranking-section">
-                        <header class="obu-chart-card__header">
-                            <span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-building"></i></span>
-                            <div>
-                                <span class="obu-stat-card__title">Universidades más reseñadas en el último año</span>
-                                <p class="obu-stat-card__subtitle">Top 10 de menciones registradas</p>
-                            </div>
+                <section class="obu-observatory-secondary-grid obu-observatory-secondary-grid--map-ranking obu-public-section">
+                    <article class="obu-data-card obu-map-ranking-card">
+                        <header class="obu-map-ranking-card__header text-center">
+                            <span class="obu-map-ranking-card__title">UNIVERSIDADES M&Aacute;S RESE&Ntilde;ADAS EN EL &Uacute;LTIMO A&Ntilde;O</span>
+                            <p class="obu-map-ranking-card__subtitle">Top 10 de menciones registradas</p>
                         </header>
+                        <div class="obu-map-ranking-card__content">
+                            <div class="obu-map-wrap">
+                            <img src="{{ asset('assets/img/mapa-obu.png') }}" alt="Mapa de universidades monitoreadas por OBU" loading="lazy">
+                            </div>
+                    <article class="obu-data-card obu-ranking-card obu-ranking-section">
                         <div class="obu-ranking-section__content">
                             <div class="obu-ranking-table-wrap">
                             <table class="obu-ranking-table">
@@ -98,18 +111,21 @@
                         </div>
                     </div>
                     </article>
-                    <article class="obu-data-card obu-news-card"><header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-newspaper"></i></span><div><span class="obu-public-eyebrow">Tipo de noticia por tipo de universidad</span><p>Distribución por año</p></div></header><div class="obu-chart-wrap obu-chart-wrap--news"><canvas id="obuNewsTypeChart" aria-label="Tipo de noticia por tipo de universidad" role="img"></canvas></div></article>
+                        </div>
+                    </article>
                 </section>
 
-                <section class="obu-data-card obu-source-chart-card obu-source-chart-card--full obu-public-section">
-                    <header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-people"></i></span><div><span class="obu-public-eyebrow">Denuncias según quién las realiza</span><p>Distribución por año</p></div></header><div class="obu-chart-wrap obu-chart-wrap--sources"><canvas id="obuComplaintSourcesChart" aria-label="Denuncias según quién las realiza por año" role="img"></canvas></div>
+                <section class="obu-observatory-secondary-grid obu-public-section">
+                    <article class="obu-data-card obu-news-card"><header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-newspaper"></i></span><div><span class="obu-public-eyebrow">{{ __('dashboard.obu.complaints_by_university_type') }}</span><p>{{ __('dashboard.obu.distribution_by_year') }}</p></div></header><div class="obu-chart-wrap obu-chart-wrap--news"><canvas id="obuNewsTypeChart" aria-label="{{ __('dashboard.obu.complaints_by_university_type') }}" role="img"></canvas></div></article>
+                    <article class="obu-data-card obu-source-chart-card">
+                    <header class="obu-chart-card__header"><span class="obu-chart-card__icon" aria-hidden="true"><i class="bi bi-people"></i></span><div><span class="obu-public-eyebrow">{{ __('dashboard.obu.who_reports') }}</span><p>Distribución por año</p></div></header><div class="obu-chart-wrap obu-chart-wrap--sources"><canvas id="obuComplaintSourcesChart" aria-label="{{ __('dashboard.obu.who_reports') }} - Distribución por año" role="img"></canvas></div>
                 </section>
 
                 <section class="obu-methodology-strip obu-public-section"><span class="obu-methodology-strip__icon"><i class="bi bi-info-circle"></i></span><div><strong>Fuente y nota metodológica</strong><p>Fuente: Monitoreo de prensa y fuentes abiertas realizado por el Observatorio de Universidades (OBU). Los datos corresponden al período seleccionado y están sujetos a actualización.</p></div></section>
             </div>
         </main>
 
-        <script type="application/json" id="obuDashboardData">@json(['historical' => $historical, 'sources' => $sourceRows, 'news' => $newsRows])</script>
+        <script type="application/json" id="obuDashboardData">@json($dashboardPayload)</script>
     </div>
 
     @include('dashboard.partials.organization-footer', [

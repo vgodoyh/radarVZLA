@@ -3795,7 +3795,8 @@ body {
 
 .panorama-ovfn__networks {
     display: grid;
-    gap: 4px;
+    row-gap: 12px;
+    column-gap: 4px;
     margin-top: 13px;
 }
 
@@ -4148,6 +4149,7 @@ body {
     .panorama-access__featured { grid-template-columns: 1fr; }
     .panorama-access__featured > img { max-height: 190px; }
     .panorama-ovfn__network { grid-template-columns: minmax(0, 1fr) auto auto; gap: 5px 8px; padding-block: 3px; }
+    .panorama-ovfn__networks { row-gap: 8px; }
     .panorama-ovfn__network-bar { grid-column: 1 / -1; grid-row: 2; }
     .panorama-secondary-card__header { align-items: flex-start; }
     .panorama-secondary-card__header img { width: 58px !important; height: 44px; }

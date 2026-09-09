@@ -139,9 +139,9 @@
         </div>
 
         @php
-            $accessPosts = collect($accesoPosts ?? [])->take(5)->values();
+            $accessPosts = collect($accesoPosts ?? [])->take(6)->values();
             $accessFeatured = $accessPosts->first();
-            $accessSecondaryPosts = $accessPosts->skip(1)->take(4)->values();
+            $accessSecondaryPosts = $accessPosts->skip(1)->take(5)->values();
 
             $fakeDeepPosts = collect(data_get($postsFakeNewsWeb ?? [], 'en_profundidad', []));
             $fakeNotiPosts = collect(data_get($postsFakeNewsWeb ?? [], 'noti_fake', []));

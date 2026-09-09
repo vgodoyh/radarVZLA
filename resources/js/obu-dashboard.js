@@ -87,33 +87,42 @@ if (dataElement) {
 
     const newsCanvas = document.getElementById('obuNewsTypeChart');
     if (newsCanvas) {
-        const categories = ['DENUNCIA', 'ACTIVIDAD', 'INFORMACI\u00d3N'];
-        const subgroups = ['Experimentales y aut\u00f3nomas', 'Controladas'];
-        const years = [...new Set(news.map(item => Number(item.year)))].sort((a, b) => a - b);
-        const rows = years.flatMap(year => subgroups.map(subgroup => ({ year, subgroup })));
-        const chartLabels = rows.map(row => `${row.year} \u00b7 ${row.subgroup}`);
-        const chartData = category => rows.map(row => findValue(news, item => Number(item.year) === row.year && item.category === category && item.subgroup === row.subgroup));
+        const chartCopy = payload.newsChart || {};
+        const subgroups = [
+            { key: 'Experimentales y aut\u00f3nomas', label: chartCopy.no_controlled || 'No controladas' },
+            { key: 'Controladas', label: chartCopy.controlled || 'Controladas' },
+        ];
+        const newsComplaints = news.filter(item => item.category === 'DENUNCIA' && subgroups.some(subgroup => item.subgroup === subgroup.key));
+        const years = [...new Set(newsComplaints.map(item => Number(item.year)))].sort((a, b) => a - b);
+        const chartData = subgroup => years.map(year => findValue(newsComplaints, item => Number(item.year) === year && item.subgroup === subgroup.key));
         const segmentLabels = { id: 'obuNewsTypeValues', afterDatasetsDraw(chart) {
             const { ctx } = chart;
             ctx.save();
-            ctx.fillStyle = '#fff';
             ctx.font = '600 10px Inter, sans-serif';
-            ctx.textAlign = 'center';
             chart.data.datasets.forEach((dataset, datasetIndex) => chart.getDatasetMeta(datasetIndex).data.forEach((bar, index) => {
                 const value = Number(dataset.data[index] || 0);
-                if (value > 0 && bar.width > 28) ctx.fillText(String(value), bar.x - (bar.width / 2), bar.y + 3);
+                if (!value) return;
+
+                if (datasetIndex === 0) {
+                    ctx.fillStyle = '#fff';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(String(value), bar.x - 6, bar.y + 4);
+                } else {
+                    ctx.fillStyle = '#0b2447';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(String(value), Math.min(bar.x + 6, chart.chartArea.right - 16), bar.y + 4);
+                }
             }));
             ctx.restore();
         } };
         new Chart(newsCanvas, {
             type: 'bar',
             plugins: [segmentLabels, legendMarginPlugin],
-            data: { labels: chartLabels, datasets: [
-                { label: categories[0], data: chartData(categories[0]), backgroundColor: '#2373c8', borderRadius: 4, barPercentage: .78, categoryPercentage: .86 },
-                { label: categories[1], data: chartData(categories[1]), backgroundColor: '#4cbe92', borderRadius: 4, barPercentage: .78, categoryPercentage: .86 },
-                { label: categories[2], data: chartData(categories[2]), backgroundColor: '#fd8700', borderRadius: 4, barPercentage: .78, categoryPercentage: .86 },
+            data: { labels: years, datasets: [
+                { label: subgroups[0].label, data: chartData(subgroups[0]), backgroundColor: '#2373c8', borderRadius: 4, barPercentage: .72, categoryPercentage: .78, stack: 'complaints' },
+                { label: subgroups[1].label, data: chartData(subgroups[1]), backgroundColor: '#8bb9e8', borderRadius: 4, barPercentage: .72, categoryPercentage: .78, stack: 'complaints' },
             ] },
-            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: true, padding: 14 } }, tooltip: { callbacks: { title: items => items[0]?.label || '', label: item => `${item.dataset.label}: ${item.raw}` } } }, scales: { x: { title: { display: true, text: 'Cantidad', color: '#52647c' }, beginAtZero: true, stacked: true, grid: { color: '#e8eef6' }, ticks: { precision: 0 } }, y: { stacked: true, grid: { display: false }, ticks: { autoSkip: false } } } },
+            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: true, padding: 14 } }, tooltip: { callbacks: { title: items => items[0]?.label || '', label: item => `${item.dataset.label}: ${item.raw}` } } }, scales: { x: { title: { display: true, text: chartCopy.quantity || 'Cantidad de denuncias', color: '#52647c' }, beginAtZero: true, max: 300, stacked: true, grid: { color: '#e8eef6' }, ticks: { stepSize: 50, precision: 0 } }, y: { stacked: true, grid: { display: false }, ticks: { autoSkip: false } } } },
         });
     }
 }
