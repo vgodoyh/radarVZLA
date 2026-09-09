@@ -153,14 +153,51 @@
             $fakeFeaturedDate = filled($fakeFeaturedDateValue)
                 ? rescue(fn () => \Carbon\Carbon::parse($fakeFeaturedDateValue)->locale(app()->getLocale())->translatedFormat('d M Y'), '', false)
                 : '';
-            $obuYears = collect($years ?? [])->filter()->values();
+            $obuPeriodStart = $obuMonitoringPeriod?->period_start;
+            $obuPeriodEnd = $obuMonitoringPeriod?->period_end;
             $obuMetricItems = [
-                ['value' => $obuMetrics?->universities_monitored, 'label' => __('dashboard.dashboard_v2.university_monitoring')],
+                ['value' => $obuMonitoringPeriod?->analyzed_information, 'label' => __('dashboard.obu.analyzed_information')],
                 ['value' => $obuMetrics?->protests, 'label' => __('dashboard.protests')],
-                ['value' => $obuMetrics?->complaints, 'label' => __('dashboard.complaints')],
-                ['value' => $obuYears->isNotEmpty() ? $obuYears->first().' – '.$obuYears->last() : null, 'label' => __('dashboard.obu.analysis_period'), 'period' => true],
+                ['value' => $obuMetrics?->complaints, 'label' => __('dashboard.dashboard_v2.university_complaints')],
             ];
-            $obuPeriod = $obuYears->isNotEmpty() ? $obuYears->first().' – '.$obuYears->last() : null;
+            $obuPeriod = $obuPeriodStart && $obuPeriodEnd
+                ? $obuPeriodStart->locale(app()->getLocale())->translatedFormat('F').'–'.$obuPeriodEnd->locale(app()->getLocale())->translatedFormat('F').' '.$obuPeriodEnd->year
+                : null;
+            $obuRightsBreakdown = $obuMetrics?->rights_breakdown ?? [];
+            $obuRightsGroups = [
+                [
+                    'type' => __('dashboard.complaints'),
+                    'icon' => 'bi-file-earmark-text',
+                    'classification' => __('dashboard.obu.economic_social_cultural_rights'),
+                    'items' => [
+                        'fair_wages' => __('dashboard.obu.decent_wages'),
+                        'infrastructure_damage' => __('dashboard.obu.infrastructure_damage'),
+                        'student_welfare' => __('dashboard.obu.student_welfare'),
+                    ],
+                ],
+                [
+                    'type' => __('dashboard.complaints'),
+                    'icon' => 'bi-shield-check',
+                    'classification' => __('dashboard.obu.political_civil_rights'),
+                    'items' => [
+                        'university_autonomy' => __('dashboard.obu.university_autonomy'),
+                        'freedom_of_expression' => __('dashboard.obu.freedom_of_expression'),
+                        'public_affairs_participation' => __('dashboard.obu.public_affairs_participation'),
+                    ],
+                ],
+                [
+                    'type' => __('dashboard.obu.economic_rights_protests'),
+                    'icon' => 'bi-people',
+                    'classification' => null,
+                    'items' => [
+                        'strike' => __('dashboard.obu.strike'),
+                        'gathering' => __('dashboard.obu.gathering'),
+                        'banner_protest' => __('dashboard.obu.banner_protest'),
+                        'march' => __('dashboard.obu.march'),
+                        'other' => __('dashboard.obu.other'),
+                    ],
+                ],
+            ];
         @endphp
 
         <div class="panorama-secondary-grid">
@@ -314,31 +351,29 @@
                     @endforeach
                 </div>
 
-                {{-- Datos temporales hasta implementar la carga desde el panel administrativo --}}
-                @php
-                    $obuCategories = collect($obuDocumentedCategories ?? [
-                        ['name' => __('dashboard.obu.panorama_categories.student_rights'), 'total' => 142, 'icon' => 'bi-people'],
-                        ['name' => __('dashboard.obu.panorama_categories.university_autonomy'), 'total' => 98, 'icon' => 'bi-mortarboard'],
-                        ['name' => __('dashboard.obu.panorama_categories.working_conditions'), 'total' => 87, 'icon' => 'bi-briefcase'],
-                        ['name' => __('dashboard.obu.panorama_categories.funding'), 'total' => 76, 'icon' => 'bi-currency-dollar'],
-                        ['name' => __('dashboard.obu.panorama_categories.repression_security'), 'total' => 68, 'icon' => 'bi-shield'],
-                        ['name' => __('dashboard.obu.panorama_categories.other'), 'total' => 92, 'icon' => 'bi-three-dots'],
-                    ]);
-                @endphp
-
                 <section class="panorama-obu__categories-section" aria-labelledby="panorama-obu-categories-title">
-                    <h4 id="panorama-obu-categories-title">{{ __('dashboard.obu.types_of_rights') }}</h4>
-
                     <div class="panorama-obu__categories">
-                        @foreach ($obuCategories as $category)
-                            <div class="panorama-obu__category">
-                                <div class="panorama-obu__category-main">
-                                    <span class="panorama-obu__category-icon" aria-hidden="true">
-                                        <i class="bi {{ data_get($category, 'icon') }}"></i>
+                        @foreach ($obuRightsGroups as $group)
+                            <div class="panorama-obu__category-group">
+                                <header class="panorama-obu__category-group-header">
+                                    <span class="panorama-obu__category-group-icon" aria-hidden="true">
+                                        <i class="bi {{ $group['icon'] }}"></i>
                                     </span>
-                                    <span class="panorama-obu__category-name">{{ data_get($category, 'name') }}</span>
+                                    <div>
+                                        <div class="panorama-obu__category-group-type">{{ $group['type'] }}</div>
+                                        @if ($group['classification'])
+                                            <div class="panorama-obu__category-group-title">{{ $group['classification'] }}</div>
+                                        @endif
+                                    </div>
+                                </header>
+                                <div class="panorama-obu__category-group-items">
+                                    @foreach ($group['items'] as $key => $label)
+                                        <div class="panorama-obu__category">
+                                            <span class="panorama-obu__category-name">{{ $label }}</span>
+                                            <strong class="panorama-obu__category-total">{{ number_format((int) data_get($obuRightsBreakdown, $key, 0), 0, ',', '.') }}</strong>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <strong class="panorama-obu__category-total">{{ number_format((int) data_get($category, 'total'), 0, ',', '.') }}</strong>
                             </div>
                         @endforeach
                     </div>
@@ -346,7 +381,7 @@
 
                 @if (filled($obuPeriod))
                     <p class="panorama-obu__period-note">
-                        {{ __('dashboard.obu.accumulated_period', ['period' => $obuPeriod]) }}
+                        {{ __('dashboard.obu.accumulated_period_summary', ['period' => $obuPeriod]) }}
                     </p>
                 @endif
 

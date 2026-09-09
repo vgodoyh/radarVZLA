@@ -57,6 +57,19 @@ class ObuDashboardController extends Controller
             'universities_monitored' => ['required', 'integer', 'min:0'],
             'protests' => ['required', 'integer', 'min:0'],
             'complaints' => ['required', 'integer', 'min:0'],
+            'complaints_five_years' => ['required', 'integer', 'min:0'],
+            'rights_breakdown' => ['required', 'array'],
+            'rights_breakdown.fair_wages' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.infrastructure_damage' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.student_welfare' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.university_autonomy' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.freedom_of_expression' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.public_affairs_participation' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.strike' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.gathering' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.banner_protest' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.march' => ['required', 'integer', 'min:0'],
+            'rights_breakdown.other' => ['required', 'integer', 'min:0'],
             'data_date' => ['nullable', 'date'],
         ]);
         $organization = $this->organization();
@@ -75,6 +88,8 @@ class ObuDashboardController extends Controller
                 && (int) $current->universities_monitored === (int) $validated['universities_monitored']
                 && (int) $current->protests === (int) $validated['protests']
                 && (int) $current->complaints === (int) $validated['complaints']
+                && (int) $current->complaints_five_years === (int) $validated['complaints_five_years']
+                && $current->rights_breakdown === $validated['rights_breakdown']
                 && $current->data_date?->toDateString() === $newDate) {
                 return false;
             }
@@ -87,6 +102,8 @@ class ObuDashboardController extends Controller
                 'universities_monitored' => $validated['universities_monitored'],
                 'protests' => $validated['protests'],
                 'complaints' => $validated['complaints'],
+                'complaints_five_years' => $validated['complaints_five_years'],
+                'rights_breakdown' => $validated['rights_breakdown'],
                 'data_date' => $newDate,
                 'valid_from' => $changedAt,
                 'user_id' => auth()->id(),

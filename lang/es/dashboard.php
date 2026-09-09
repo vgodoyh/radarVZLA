@@ -353,6 +353,8 @@ return [
     'civil_political_complaints' => 'Denuncias por derechos políticos y civiles',
 
     'obu' => [
+        'analyzed_information' => 'Informaciones analizadas',
+        'complaints_period' => 'en 5 años',
         'monitoring_results' => 'Resultados del monitoreo',
         'economic_social_cultural_rights' => 'Derechos económicos, sociales y culturales',
         'political_civil_rights' => 'Derechos políticos y civiles',
@@ -376,6 +378,8 @@ return [
         'analysis_period_text' => 'Los datos corresponden al período comprendido entre el 1 de enero y el 30 de junio de 2026.',
         'total_reports' => 'Total denuncias',
         'types_of_rights' => 'Tipos de Derecho',
+        'complaints_and_protests' => 'Denuncias y protestas',
+        'accumulated_period_summary' => 'Cifras acumuladas durante el período de :period',
         'registered_protests' => 'Protestas registradas',
         'last_six_months' => 'en los últimos 6 meses',
         'last_six_months_short' => 'Últimos 6 meses',

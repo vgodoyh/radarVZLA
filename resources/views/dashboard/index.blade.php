@@ -33,9 +33,10 @@
             ],
             [
                 'class' => 'obu',
-                'value' => $obuMetrics?->complaints ?? 0,
+                'value' => $obuMetrics?->complaints_five_years ?? 0,
                 'label' => __('dashboard.dashboard_v2.university_complaints'),
                 'organization' => 'OBU',
+                'subtitle' => __('dashboard.obu.complaints_period'),
             ],
         ];
     @endphp
@@ -104,7 +105,12 @@
                     @foreach ($pulseStats as $pulseStat)
                         <article class="dashboard-v2-stat dashboard-v2-stat--{{ $pulseStat['class'] }}">
                             <strong>{{ filled($pulseStat['value']) ? $pulseStat['value'] : '—' }}</strong>
-                            <p>{{ $pulseStat['label'] }}</p>
+                            <div class="dashboard-v2-stat__label">
+                                <p>{{ $pulseStat['label'] }}</p>
+                                @if (! empty($pulseStat['subtitle']))
+                                    <small class="dashboard-v2-stat__subtitle">{{ $pulseStat['subtitle'] }}</small>
+                                @endif
+                            </div>
                             <span>{{ $pulseStat['organization'] }}</span>
                         </article>
                     @endforeach

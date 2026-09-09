@@ -36,6 +36,8 @@ class ObuMetricSnapshotTest extends TestCase
         $this->assertSame(94, $snapshot->universities_monitored);
         $this->assertSame(75, $snapshot->protests);
         $this->assertSame(68, $snapshot->complaints);
+        $this->assertSame(1226, $snapshot->complaints_five_years);
+        $this->assertSame($this->rightsBreakdown(), $snapshot->rights_breakdown);
         $this->assertNull($snapshot->data_date);
         $this->assertSame(1, ObuMetricSnapshot::count());
     }
@@ -55,11 +57,11 @@ class ObuMetricSnapshotTest extends TestCase
             ->assertSee('Historial de cifras de OBU');
     }
 
-    public function test_public_index_and_obu_panorama_use_the_same_current_complaints_value(): void
+    public function test_public_index_uses_separate_five_year_and_current_complaints_values(): void
     {
         app()->setLocale('es');
         $this->organization();
-        $this->snapshot(['complaints' => 68]);
+        $this->snapshot();
         $this->seed(ObuMonitoringPeriodSeeder::class);
         $this->seed(ObuDatasetSeeder::class);
 
@@ -67,25 +69,29 @@ class ObuMetricSnapshotTest extends TestCase
         $panorama = $this->get(route('organizations.universidades'))->assertOk();
 
         $this->assertStringContainsString('Denuncias Universitarias', $index->getContent());
+        $this->assertStringContainsString('>1226<', $index->getContent());
+        $this->assertStringContainsString('en 5 años', $index->getContent());
         $this->assertStringContainsString('>68<', $index->getContent());
-        $this->assertStringNotContainsString('Universidades en cifras', $panorama->getContent());
-        $this->assertStringContainsString('Denuncias registradas', $panorama->getContent());
-        $this->assertStringContainsString('934', $panorama->getContent());
-        $this->assertStringContainsString('assets/img/mapa-obu.png', $panorama->getContent());
-        $this->assertStringContainsString('UCV', $panorama->getContent());
+        $this->assertSame(1, substr_count($index->getContent(), 'en 5 años'));
+        $this->assertStringContainsString('Denuncias y protestas', $index->getContent());
+        $this->assertStringContainsString('Salarios dignos', $index->getContent());
+        $this->assertStringContainsString('Protestas por derechos económicos', $index->getContent());
+        $this->assertStringNotContainsString('Derechos estudiantiles', $index->getContent());
     }
 
     public function test_update_creates_a_new_version_and_closes_the_previous_one(): void
     {
         $user = $this->userWithPermissions(['view obu dashboard', 'edit obu metrics']);
         $organization = $this->organization();
-        $old = $this->snapshot(['complaints' => 68]);
+        $old = $this->snapshot();
 
         Carbon::setTestNow('2026-08-30 12:00:00');
         $this->actingAs($user)->patch(route('admin.obu.metrics.update'), [
             'universities_monitored' => 94,
             'protests' => 75,
             'complaints' => 70,
+            'complaints_five_years' => 1226,
+            'rights_breakdown' => $this->rightsBreakdown(),
             'data_date' => null,
         ])->assertRedirect(route('admin.obu.index'))
             ->assertSessionHas('obu_metrics_success', 'Cifras de OBU actualizadas correctamente.');
@@ -95,6 +101,7 @@ class ObuMetricSnapshotTest extends TestCase
         $this->assertSame('2026-08-30 12:00:00', $old->valid_until->toDateTimeString());
         $this->assertTrue($old->valid_until->equalTo($current->valid_from));
         $this->assertSame(70, $current->complaints);
+        $this->assertSame(1226, $current->complaints_five_years);
         $this->assertNull($current->valid_until);
         $this->assertSame($user->id, $current->user_id);
         Carbon::setTestNow();
@@ -119,7 +126,28 @@ class ObuMetricSnapshotTest extends TestCase
         $this->assertSame(94, $current->universities_monitored);
         $this->assertSame(75, $current->protests);
         $this->assertSame(68, $current->complaints);
+        $this->assertSame(1226, $current->complaints_five_years);
         $this->assertNull($current->valid_until);
+    }
+
+    public function test_updating_five_year_complaints_does_not_change_current_period_complaints(): void
+    {
+        $user = $this->userWithPermissions(['edit obu metrics']);
+        $this->organization();
+        $this->snapshot();
+
+        $this->actingAs($user)->patch(route('admin.obu.metrics.update'), [
+            'universities_monitored' => 94,
+            'protests' => 75,
+            'complaints' => 68,
+            'complaints_five_years' => 1300,
+            'rights_breakdown' => $this->rightsBreakdown(),
+            'data_date' => null,
+        ])->assertRedirect();
+
+        $current = ObuMetricSnapshot::query()->current()->firstOrFail();
+        $this->assertSame(68, $current->complaints);
+        $this->assertSame(1300, $current->complaints_five_years);
     }
 
     public function test_unchanged_values_do_not_create_a_new_version(): void
@@ -132,6 +160,8 @@ class ObuMetricSnapshotTest extends TestCase
             'universities_monitored' => 94,
             'protests' => 75,
             'complaints' => 68,
+            'complaints_five_years' => 1226,
+            'rights_breakdown' => $this->rightsBreakdown(),
             'data_date' => null,
         ])->assertRedirect()
             ->assertSessionHas('obu_metrics_info', 'No se detectaron cambios para guardar.');
@@ -150,6 +180,7 @@ class ObuMetricSnapshotTest extends TestCase
                 'universities_monitored' => 1,
                 'protests' => 1,
                 'complaints' => 1,
+                'rights_breakdown' => $this->rightsBreakdown(),
             ])
             ->assertForbidden();
     }
@@ -198,9 +229,28 @@ class ObuMetricSnapshotTest extends TestCase
             'universities_monitored' => 94,
             'protests' => 75,
             'complaints' => 68,
+            'complaints_five_years' => 1226,
+            'rights_breakdown' => $this->rightsBreakdown(),
             'data_date' => null,
             'valid_from' => now()->subDay(),
         ], $overrides));
+    }
+
+    private function rightsBreakdown(): array
+    {
+        return [
+            'fair_wages' => 68,
+            'infrastructure_damage' => 19,
+            'student_welfare' => 12,
+            'university_autonomy' => 8,
+            'freedom_of_expression' => 6,
+            'public_affairs_participation' => 14,
+            'strike' => 29,
+            'gathering' => 20,
+            'banner_protest' => 7,
+            'march' => 14,
+            'other' => 5,
+        ];
     }
 
     private function userWithPermissions(array $permissions): User

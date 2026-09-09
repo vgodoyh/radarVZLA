@@ -2,6 +2,38 @@
     @php
         $summary = $summary ?? [];
         $currentMetrics = $currentMetrics;
+        $rightsBreakdown = $currentMetrics?->rights_breakdown ?? [];
+        $rightsBreakdownGroups = [
+            [
+                'type' => __('dashboard.complaints'),
+                'classification' => __('dashboard.obu.economic_social_cultural_rights'),
+                'items' => [
+                    'fair_wages' => __('dashboard.obu.decent_wages'),
+                    'infrastructure_damage' => __('dashboard.obu.infrastructure_damage'),
+                    'student_welfare' => __('dashboard.obu.student_welfare'),
+                ],
+            ],
+            [
+                'type' => __('dashboard.complaints'),
+                'classification' => __('dashboard.obu.political_civil_rights'),
+                'items' => [
+                    'university_autonomy' => __('dashboard.obu.university_autonomy'),
+                    'freedom_of_expression' => __('dashboard.obu.freedom_of_expression'),
+                    'public_affairs_participation' => __('dashboard.obu.public_affairs_participation'),
+                ],
+            ],
+            [
+                'type' => __('dashboard.obu.economic_rights_protests'),
+                'classification' => null,
+                'items' => [
+                    'strike' => __('dashboard.obu.strike'),
+                    'gathering' => __('dashboard.obu.gathering'),
+                    'banner_protest' => __('dashboard.obu.banner_protest'),
+                    'march' => __('dashboard.obu.march'),
+                    'other' => __('dashboard.obu.other'),
+                ],
+            ],
+        ];
         $period = today()->subDays(29)->locale('es')->isoFormat('D MMM YYYY').' – '.today()->locale('es')->isoFormat('D MMM YYYY');
     @endphp
 
@@ -30,8 +62,27 @@
                     <div class="row g-3">
                         <div class="col-md-3"><label for="obu-universities-monitored">Universidades monitoreadas</label><input id="obu-universities-monitored" class="form-control" type="number" min="0" name="universities_monitored" required value="{{ old('universities_monitored', $currentMetrics?->universities_monitored) }}"></div>
                         <div class="col-md-3"><label for="obu-protests">Protestas</label><input id="obu-protests" class="form-control" type="number" min="0" name="protests" required value="{{ old('protests', $currentMetrics?->protests) }}"></div>
-                        <div class="col-md-3"><label for="obu-complaints">Denuncias</label><input id="obu-complaints" class="form-control" type="number" min="0" name="complaints" required value="{{ old('complaints', $currentMetrics?->complaints) }}"></div>
+                        <div class="col-md-3"><label for="obu-complaints">Denuncias del período actual</label><input id="obu-complaints" class="form-control" type="number" min="0" name="complaints" required value="{{ old('complaints', $currentMetrics?->complaints) }}"></div>
+                        <div class="col-md-3"><label for="obu-complaints-five-years">Denuncias acumuladas en 5 años</label><input id="obu-complaints-five-years" class="form-control" type="number" min="0" name="complaints_five_years" required value="{{ old('complaints_five_years', $currentMetrics?->complaints_five_years) }}"></div>
                         <div class="col-md-3"><label for="obu-data-date">Actualizado hasta</label><input id="obu-data-date" class="form-control" type="date" name="data_date" value="{{ old('data_date', $currentMetrics?->data_date?->format('Y-m-d')) }}"></div>
+                    </div>
+                    <div class="obu-rights-breakdown-editor mt-4">
+                        @foreach ($rightsBreakdownGroups as $group)
+                            <div class="obu-rights-breakdown-editor__group">
+                                <div class="text-muted text-sm text-uppercase fw-semibold">{{ $group['type'] }}</div>
+                                @if ($group['classification'])
+                                    <h3 class="h6 mt-1 mb-3">{{ $group['classification'] }}</h3>
+                                @endif
+                                <div class="row g-2">
+                                    @foreach ($group['items'] as $key => $label)
+                                        <div class="col-md-4">
+                                            <label for="obu-right-{{ $key }}">{{ $label }}</label>
+                                            <input id="obu-right-{{ $key }}" class="form-control" type="number" min="0" name="rights_breakdown[{{ $key }}]" required value="{{ old('rights_breakdown.'.$key, data_get($rightsBreakdown, $key)) }}">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                     <button class="btn btn-primary mt-3" type="submit">Guardar actualización</button>
                 </form>
@@ -85,7 +136,7 @@
                     <div class="row g-3">
                         <div class="col-md-3"><label for="obu-period-start">Desde</label><input id="obu-period-start" class="form-control" type="date" name="period_start" required value="{{ old('period_start', $monitoringPeriod?->period_start?->format('Y-m-d')) }}"></div>
                         <div class="col-md-3"><label for="obu-period-end">Hasta</label><input id="obu-period-end" class="form-control" type="date" name="period_end" required value="{{ old('period_end', $monitoringPeriod?->period_end?->format('Y-m-d')) }}"></div>
-                        <div class="col-md-2"><label for="obu-analyzed">Informaciones</label><input id="obu-analyzed" class="form-control" type="number" min="0" name="analyzed_information" required value="{{ old('analyzed_information', $monitoringPeriod?->analyzed_information) }}"></div>
+                        <div class="col-md-2"><label for="obu-analyzed">{{ __('dashboard.obu.analyzed_information') }}</label><input id="obu-analyzed" class="form-control" type="number" min="0" name="analyzed_information" required value="{{ old('analyzed_information', $monitoringPeriod?->analyzed_information) }}"></div>
                         <div class="col-md-2"><label for="obu-period-protests">Protestas</label><input id="obu-period-protests" class="form-control" type="number" min="0" name="protests" required value="{{ old('protests', $monitoringPeriod?->protests) }}"></div>
                         <div class="col-md-2"><label for="obu-period-complaints">Denuncias</label><input id="obu-period-complaints" class="form-control" type="number" min="0" name="complaints" required value="{{ old('complaints', $monitoringPeriod?->complaints) }}"></div>
                     </div>

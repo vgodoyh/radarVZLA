@@ -18,7 +18,7 @@ return [
         'verifications' => 'Verifications',
         'legal_alerts' => 'Legal alerts',
         'university_monitoring' => 'University monitoring',
-        'university_omplaints' => 'University Complaints',
+        'university_complaints' => 'University Complaints',
         'acceso_short' => 'Access to Justice',
     ],
 
@@ -351,6 +351,8 @@ return [
     'civil_political_complaints' => 'Reports of Civil and Political Rights Violations',
 
     'obu' => [
+        'analyzed_information' => 'Information analyzed',
+        'complaints_period' => 'in 5 years',
         'monitoring_results' => 'Monitoring results',
         'economic_social_cultural_rights' => 'Economic, social and cultural rights',
         'political_civil_rights' => 'Political and civil rights',
@@ -374,6 +376,8 @@ return [
         'analysis_period_text' => 'The data corresponds to the period from January 1 through June 30, 2026.',
         'total_reports' => 'Total reports',
         'types_of_rights' => 'Types of Rights',
+        'complaints_and_protests' => 'Complaints and protests',
+        'accumulated_period_summary' => 'Figures accumulated during the :period period',
         'registered_protests' => 'Registered protests',
         'last_six_months' => 'in the last 6 months',
         'last_six_months_short' => 'Last 6 months',

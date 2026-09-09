@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ObuMetricSnapshot extends Model
 {
     protected $fillable = [
-        'organization_id', 'universities_monitored', 'protests', 'complaints',
+        'organization_id', 'universities_monitored', 'protests', 'complaints', 'complaints_five_years',
+        'rights_breakdown',
         'data_date', 'valid_from', 'valid_until', 'user_id',
     ];
 
@@ -19,6 +20,8 @@ class ObuMetricSnapshot extends Model
             'universities_monitored' => 'integer',
             'protests' => 'integer',
             'complaints' => 'integer',
+            'complaints_five_years' => 'integer',
+            'rights_breakdown' => 'array',
             'data_date' => 'date',
             'valid_from' => 'datetime',
             'valid_until' => 'datetime',
