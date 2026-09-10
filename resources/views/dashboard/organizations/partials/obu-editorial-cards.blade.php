@@ -1,25 +1,17 @@
 <article class="obu-editorial-card obu-editorial-card--note">
     <div class="obu-editorial-card__copy">
-        <span class="obu-public-eyebrow">Nota mensual</span>
-        <small>{{ $obuMonthlyNote['publication_date'] ?? 'Contenido editorial OBU' }}</small>
-        <h2>{{ $obuMonthlyNote['title'] ?? 'Nota mensual' }}</h2>
-        <p>{{ $obuMonthlyNote['excerpt'] ?? 'La próxima nota mensual del Observatorio de Universidades estará disponible próximamente.' }}</p>
-        @if (! empty($obuMonthlyNote['url']))
-            <a class="obu-editorial-button obu-editorial-button--note" href="{{ $obuMonthlyNote['url'] }}" target="_blank" rel="noopener noreferrer">Ver nota mensual <i class="bi bi-arrow-up-right"></i></a>
-        @endif
+        <span class="obu-public-eyebrow">{{ __('dashboard.obu.monthly_note') }}</span>
+        <small>{{ __('dashboard.obu.editorial_content') }}</small>
+        <h2>Las continuas violaciones a los derechos laborales movilizan a los universitarios en 2026</h2>
+        <p>El OBU registró 59 protestas y 57 denuncias por la exigencia de salarios justos para los universitarios durante los primeros cinco meses de 2026...</p>
+        <a class="obu-editorial-button obu-editorial-button--note" href="https://observatoriodeuniversidades.com/noticias-obu-las-continuas-violaciones-a-los-derechos-laborales-movilizan-a-los-universitarios-en-2026/" target="_blank" rel="noopener noreferrer">{{ __('dashboard.obu.read_full_note') }} <i class="bi bi-arrow-up-right"></i></a>
     </div>
     <div class="obu-editorial-card__media">
-        @if (! empty($obuMonthlyNote['image_path_url']))
-            <img src="{{ $obuMonthlyNote['image_path_url'] }}" alt="{{ $obuMonthlyNote['title'] ?? 'Nota mensual del OBU' }}" loading="lazy">
-        @else
-            <div class="obu-editorial-media-placeholder" role="img" aria-label="Imagen de la nota">
-                <i class="bi bi-file-earmark-image" aria-hidden="true"></i>
-                <span>Imagen de la nota</span>
-            </div>
-        @endif
+        <img src="{{ asset('assets/img/nota-prensa-obu.jpg') }}" alt="Nota mensual del OBU" loading="lazy">
     </div>
 </article>
 
+{{-- TODO: Reactivar Alerta bimensual cuando exista contenido editorial.
 <article class="obu-editorial-card obu-editorial-card--alert">
     <div class="obu-editorial-card__copy">
         <span class="obu-public-eyebrow">Alerta bimensual</span>
@@ -47,3 +39,4 @@
         @endif
     </div>
 </article>
+--}}

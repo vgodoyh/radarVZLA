@@ -27,8 +27,11 @@ const sourceLegendPlugin = {
 if (dataElement) {
     const payload = JSON.parse(dataElement.textContent || '{}');
     const historical = payload.historical || [];
+    const universityProtests = payload.universityProtests || [];
     const sources = payload.sources || [];
     const news = payload.news || [];
+    const sourceChart = payload.sourceChart || {};
+    const complaintsRightsChart = payload.complaintsRightsChart || {};
     const findValue = (rows, predicate) => Number(rows.find(predicate)?.value || 0);
 
     const historicalCanvas = document.getElementById('obuHistoricalComplaintsChart');
@@ -38,20 +41,45 @@ if (dataElement) {
         new Chart(historicalCanvas, {
             type: 'line',
             data: { labels: years, datasets: [
-                { label: 'Derechos econ\u00f3micos y sociales', data: valuesFor('economic_social'), borderColor: '#2373c8', pointBackgroundColor: '#2373c8', borderWidth: 2, tension: .25, pointRadius: 4, pointHoverRadius: 6, fill: false },
-                { label: 'Derechos civiles y pol\u00edticos', data: valuesFor('civil_political'), borderColor: '#fd8700', pointBackgroundColor: '#fd8700', borderWidth: 2, tension: .25, pointRadius: 4, pointHoverRadius: 6, fill: false },
+                { label: complaintsRightsChart.economicSocial || '', data: valuesFor('economic_social'), borderColor: '#2373c8', pointBackgroundColor: '#2373c8', borderWidth: 2, tension: .25, pointRadius: 4, pointHoverRadius: 6, fill: false },
+                { label: complaintsRightsChart.civilPolitical || '', data: valuesFor('civil_political'), borderColor: '#fd8700', pointBackgroundColor: '#fd8700', borderWidth: 2, tension: .25, pointRadius: 4, pointHoverRadius: 6, fill: false },
             ] },
             plugins: [legendMarginPlugin],
             options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 8, usePointStyle: true, padding: 8 } }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: '#edf1f6' }, ticks: { precision: 0 } } } },
         });
     }
 
+    const universityProtestsCanvas = document.getElementById('obuUniversityProtestsChart');
+    if (universityProtestsCanvas) {
+        const years = [...new Set(universityProtests.map(item => Number(item.year)))].sort((a, b) => a - b);
+        const values = years.map(year => findValue(universityProtests, item => Number(item.year) === year));
+        const colors = years.map((year, index) => index % 2 === 0 ? '#2373c8' : '#fd8700');
+        const valueLabels = { id: 'obuUniversityProtestValues', afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+            ctx.save();
+            ctx.font = '700 10px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            chart.getDatasetMeta(0).data.forEach((bar, index) => {
+                ctx.fillStyle = colors[index];
+                ctx.fillText(String(values[index]), bar.x, bar.y - 7);
+            });
+            ctx.restore();
+        } };
+        new Chart(universityProtestsCanvas, {
+            type: 'bar',
+            plugins: [valueLabels],
+            data: { labels: years, datasets: [{ label: payload.protestsChart?.axis || '', data: values, backgroundColor: colors, borderRadius: 4, barPercentage: .68, categoryPercentage: .78 }] },
+            options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 18, right: 8, bottom: 0, left: 0 } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: item => `${item.dataset.label}: ${item.raw}` } } }, scales: { x: { grid: { display: false }, ticks: { font: { size: 10 } } }, y: { title: { display: true, text: payload.protestsChart?.axis || '', color: '#52647c', font: { size: 10 } }, beginAtZero: true, max: 120, grid: { color: '#e8eef6' }, ticks: { precision: 0, font: { size: 10 } } } } },
+        });
+    }
+
     const sourceCanvas = document.getElementById('obuComplaintSourcesChart');
     if (sourceCanvas) {
         const years = [...new Set(sources.map(item => Number(item.year)))].sort((a, b) => a - b);
-        const labels = ['Representante estudiantil', 'Autoridad universitaria', 'Representante del gremio docente', 'Representante de sindicatos administrativo y obrero', 'Universidad', 'Otros'];
+        const series = sourceChart.series || [];
+        const labels = series.map(item => item.label);
         const colors = ['#2373c8', '#4cbe92', '#7667c7', '#fd8700', '#25a7a0', '#8291a5'];
-        const valueFor = label => years.map(year => findValue(sources, item => Number(item.year) === year && item.label === label));
+        const valueFor = key => years.map(year => findValue(sources, item => Number(item.year) === year && item.label === key));
         const chartWrap = sourceCanvas.closest('.obu-chart-wrap');
         const manualLegend = document.createElement('div');
         manualLegend.className = 'obu-source-chart-legend';
@@ -79,9 +107,9 @@ if (dataElement) {
         } };
         new Chart(sourceCanvas, {
             type: 'line',
-            data: { labels: years, datasets: labels.map((label, index) => ({ label, data: valueFor(label), borderColor: colors[index], backgroundColor: colors[index], borderWidth: 2, tension: .22, pointRadius: 3, pointHoverRadius: 5, pointBackgroundColor: '#fff', pointBorderWidth: 2, fill: false })) },
+            data: { labels: years, datasets: series.map((item, index) => ({ label: item.label, data: valueFor(item.key), borderColor: colors[index], backgroundColor: colors[index], borderWidth: 2, tension: .22, pointRadius: 3, pointHoverRadius: 5, pointBackgroundColor: '#fff', pointBorderWidth: 2, fill: false })) },
             plugins: [valueLabels, legendMarginPlugin, sourceLegendPlugin],
-            options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, layout: { padding: { top: 10, right: 8, bottom: 0, left: 0 } }, plugins: { legend: { display: true, position: 'top', align: 'start', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, pointStyle: 'circle', padding: 6, color: '#52647c', font: { size: 10 } } }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { title: { display: true, text: 'A\u00f1o', color: '#52647c', font: { size: 10 } }, grid: { display: false }, ticks: { font: { size: 10 } } }, y: { title: { display: true, text: 'Cantidad', color: '#52647c', font: { size: 10 } }, beginAtZero: true, grid: { color: '#e8eef6' }, ticks: { precision: 0, font: { size: 10 } } } } },
+            options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, layout: { padding: { top: 10, right: 8, bottom: 0, left: 0 } }, plugins: { legend: { display: true, position: 'top', align: 'start', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, pointStyle: 'circle', padding: 6, color: '#52647c', font: { size: 10 } } }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { title: { display: true, text: sourceChart.axisX || '', color: '#52647c', font: { size: 10 } }, grid: { display: false }, ticks: { font: { size: 10 } } }, y: { title: { display: true, text: sourceChart.axisY || '', color: '#52647c', font: { size: 10 } }, beginAtZero: true, grid: { color: '#e8eef6' }, ticks: { precision: 0, font: { size: 10 } } } } },
         });
     }
 

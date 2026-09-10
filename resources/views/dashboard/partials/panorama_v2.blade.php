@@ -362,7 +362,7 @@
                                     <div>
                                         <div class="panorama-obu__category-group-type">{{ $group['type'] }}</div>
                                         @if ($group['classification'])
-                                            <div class="panorama-obu__category-group-title">{{ $group['classification'] }}</div>
+                                            <div class="panorama-obu__category-group-type">{{ $group['classification'] }}</div>
                                         @endif
                                     </div>
                                 </header>

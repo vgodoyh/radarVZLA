@@ -25,6 +25,9 @@ class ObuDatasetSeeder extends Seeder
         foreach ([['Paro', 29], ['Concentración', 20], ['Marcha', 14], ['Pancartazo', 7], ['Otro', 5]] as $i => [$label, $value]) {
             $add('protest_types', null, 'protest', $label, $label, $value, null, $i + 1);
         }
+        foreach ([2020 => 53, 2021 => 74, 2022 => 78, 2023 => 103, 2024 => 37, 2025 => 34] as $year => $value) {
+            $add('university_protests_by_year', $year, 'protests', null, 'Protestas universitarias', $value, null, $year - 2019);
+        }
 
         foreach (range(2020, 2025) as $i => $year) {
             $add('historical_complaints', $year, 'economic_social', null, 'Derechos económicos y sociales', [219, 154, 208, 139, 151, 134][$i], null, 1);

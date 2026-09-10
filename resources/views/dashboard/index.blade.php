@@ -11,6 +11,9 @@
                 false
             )
             : null;
+        $obuPulsePeriod = $obuMonitoringPeriod?->period_start && $obuMonitoringPeriod?->period_end
+            ? $obuMonitoringPeriod->period_start->locale(app()->getLocale())->translatedFormat('F').'–'.$obuMonitoringPeriod->period_end->locale(app()->getLocale())->translatedFormat('F').' '.$obuMonitoringPeriod->period_end->year
+            : null;
 
         $pulseStats = [
             [
@@ -33,10 +36,10 @@
             ],
             [
                 'class' => 'obu',
-                'value' => $obuMetrics?->complaints_five_years ?? 0,
+                'value' => $obuMetrics?->complaints ?? 0,
                 'label' => __('dashboard.dashboard_v2.university_complaints'),
                 'organization' => 'OBU',
-                'subtitle' => __('dashboard.obu.complaints_period'),
+                'subtitle' => $obuPulsePeriod,
             ],
         ];
     @endphp

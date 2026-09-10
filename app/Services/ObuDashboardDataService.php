@@ -19,6 +19,7 @@ class ObuDashboardDataService
     public const DATASETS = [
         'documented_complaints',
         'protest_types',
+        'university_protests_by_year',
         'historical_complaints',
         'university_ranking',
         'complaint_sources',
