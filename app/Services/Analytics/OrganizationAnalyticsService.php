@@ -6,6 +6,7 @@ use App\Models\AnalyticsContentClick;
 use App\Models\AnalyticsNavigationClick;
 use App\Models\AnalyticsPageView;
 use App\Models\DashboardSyncRun;
+use App\Models\ObuMonthlyNote;
 use App\Models\Organization;
 use App\Models\Publication;
 use App\Services\DashboardQueryService;
@@ -30,6 +31,10 @@ class OrganizationAnalyticsService
 
         if ($organization === 'jep') {
             return $this->jepDashboard($days);
+        }
+
+        if ($organization === 'universidades') {
+            return $this->obuDashboard($days);
         }
 
         $startDate = today()->subDays($days - 1)->startOfDay();
@@ -70,6 +75,53 @@ class OrganizationAnalyticsService
             'chart' => $this->dailyViews($organization, $startDate),
             'panelOrigin' => $panelOrigin,
             'sync' => $this->syncStatus(),
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function obuDashboard(int $days): array
+    {
+        $startDate = today()->subDays($days - 1)->startOfDay();
+        $page = 'observatorio-universidades';
+        $portalViews = AnalyticsPageView::query()
+            ->where('organization', 'pulso_vzla')->where('page', 'home')
+            ->where('created_at', '>=', $startDate)->count();
+        $panelViews = AnalyticsPageView::query()
+            ->where('organization', 'universidades')->where('page', $page)
+            ->where('created_at', '>=', $startDate)->count();
+        $homeClicks = AnalyticsNavigationClick::query()
+            ->where('organization', 'universidades')->where('target', $page)
+            ->where('source', 'home')->where('created_at', '>=', $startDate)->count();
+        $contentClicks = AnalyticsContentClick::query()
+            ->where('organization', 'universidades')->where('created_at', '>=', $startDate);
+        $contentByType = (clone $contentClicks)
+            ->selectRaw('content_type, COUNT(*) as total')
+            ->groupBy('content_type')->orderBy('content_type')
+            ->pluck('total', 'content_type')
+            ->map(fn ($total): int => (int) $total);
+        $contentTotal = (int) $contentByType->sum();
+
+        return [
+            'summary' => [
+                'home_navigation_clicks' => (int) $homeClicks,
+                'portal_views' => (int) $portalViews,
+                'organization_views' => (int) $panelViews,
+                'content_clicks' => $contentTotal,
+            ],
+            'chart' => $this->dailyViewsFor('universidades', $page, $startDate),
+            'visitsChart' => $this->dailyViewsFor('universidades', $page, $startDate),
+            'panelOrigin' => [
+                'pulso' => (int) $homeClicks,
+                'direct' => max((int) $panelViews - (int) $homeClicks, 0),
+                'total' => (int) $panelViews,
+            ],
+            'sourceDistribution' => [
+                'home' => (int) $homeClicks,
+                'direct' => max((int) $panelViews - (int) $homeClicks, 0),
+            ],
+            'contentClicks' => [...$contentByType->all(), 'total' => $contentTotal],
+            'contentClicksChart' => $this->dailyContentClicksByType('universidades', $startDate),
+            'contentRanking' => $this->contentRankingFor('universidades', $startDate),
         ];
     }
 
@@ -307,6 +359,53 @@ class OrganizationAnalyticsService
             'labels' => $dates->map(fn (CarbonInterface $date): string => $date->format('d/m'))->all(),
             'total' => $dates->map(fn (CarbonInterface $date): int => (int) ($rows->get($date->toDateString()) ?? 0))->all(),
         ];
+    }
+
+    /** @return array{labels: array<int, string>, series: array<int, array{key: string, data: array<int, int>}>} */
+    private function dailyContentClicksByType(string $organization, CarbonInterface $startDate): array
+    {
+        $rows = AnalyticsContentClick::query()
+            ->selectRaw('DATE(created_at) as click_date, content_type, COUNT(*) as total')
+            ->where('organization', $organization)->where('created_at', '>=', $startDate)
+            ->groupBy('click_date', 'content_type')->get();
+        $dates = $this->datesInRange($startDate);
+        $types = $rows->pluck('content_type')->unique()->values();
+
+        return [
+            'labels' => $dates->map(fn (CarbonInterface $date): string => $date->format('d/m'))->all(),
+            'series' => $types->map(function (string $type) use ($rows, $dates): array {
+                $byDate = $rows->where('content_type', $type)->keyBy('click_date');
+
+                return [
+                    'key' => $type,
+                    'data' => $dates->map(fn (CarbonInterface $date): int => (int) ($byDate->get($date->toDateString())?->total ?? 0))->all(),
+                ];
+            })->all(),
+        ];
+    }
+
+    /** @return array<int, array{content_type: string, content_id: int, title: string, clicks: int}> */
+    private function contentRankingFor(string $organization, CarbonInterface $startDate): array
+    {
+        $rows = AnalyticsContentClick::query()
+            ->where('organization', $organization)
+            ->where('created_at', '>=', $startDate)
+            ->select('content_type', 'content_id')
+            ->selectRaw('COUNT(*) as clicks')
+            ->groupBy('content_type', 'content_id')
+            ->orderByDesc('clicks')
+            ->orderBy('content_type')
+            ->get();
+
+        $noteIds = $rows->where('content_type', 'monthly_note')->pluck('content_id');
+        $notes = ObuMonthlyNote::query()->whereIn('id', $noteIds)->pluck('title', 'id');
+
+        return $rows->map(fn ($row): array => [
+            'content_type' => (string) $row->content_type,
+            'content_id' => (int) $row->content_id,
+            'title' => (string) ($notes->get($row->content_id) ?? str_replace('_', ' ', ucfirst((string) $row->content_type))),
+            'clicks' => (int) $row->clicks,
+        ])->all();
     }
 
     private function datesInRange(CarbonInterface $startDate): Collection

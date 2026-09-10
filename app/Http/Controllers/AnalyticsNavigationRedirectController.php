@@ -20,6 +20,11 @@ class AnalyticsNavigationRedirectController extends Controller
             'target' => 'fake-news',
             'route' => 'organizations.fake-news',
         ],
+        'universidades' => [
+            'organization' => 'universidades',
+            'target' => 'observatorio-universidades',
+            'route' => 'organizations.universidades',
+        ],
     ];
 
     public function __invoke(

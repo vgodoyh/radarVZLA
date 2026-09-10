@@ -1,9 +1,12 @@
 import Chart from 'chart.js/auto';
 
-const dataElement = document.getElementById('accessJusticeAnalyticsData');
+const dataElement = document.getElementById('obuAnalyticsData') || document.getElementById('accessJusticeAnalyticsData');
 const analytics = dataElement ? JSON.parse(dataElement.textContent || '{}') : {};
-const lineCanvas = document.getElementById('accessJusticeAnalyticsChart');
-const originCanvas = document.getElementById('accessJusticeOriginChart');
+const isObu = Boolean(document.getElementById('obuVisitsChart'));
+const lineCanvas = document.getElementById('obuVisitsChart') || document.getElementById('accessJusticeAnalyticsChart');
+const originCanvas = document.getElementById('obuSourceChart') || document.getElementById('accessJusticeOriginChart');
+const contentCanvas = document.getElementById('obuContentClicksChart');
+const organizationLabel = isObu ? 'OBU' : 'Acceso a la Justicia';
 
 const commonFont = {
     family: "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
@@ -38,7 +41,7 @@ if (lineCanvas && analytics.chart) {
                     fill: true,
                 },
                 {
-                    label: 'Acceso a la Justicia',
+                    label: organizationLabel,
                     data: chart.organization || [],
                     borderColor: '#f97316',
                     backgroundColor: 'rgba(249, 115, 22, .035)',
@@ -165,6 +168,44 @@ if (originCanvas && analytics.origin) {
                     cornerRadius: 8,
                     padding: 10,
                 },
+            },
+        },
+    });
+}
+
+if (contentCanvas && analytics.content) {
+    const content = analytics.content;
+    const colors = ['#f97316', '#2563eb', '#7c3aed', '#16a085'];
+
+    Chart.getChart(contentCanvas)?.destroy();
+
+    new Chart(contentCanvas, {
+        type: 'line',
+        data: {
+            labels: content.labels || [],
+            datasets: (content.series || []).map((series, index) => ({
+                label: series.key,
+                data: series.data || [],
+                borderColor: colors[index % colors.length],
+                backgroundColor: colors[index % colors.length],
+                borderWidth: 2,
+                pointRadius: 2,
+                pointHoverRadius: 4,
+                tension: .35,
+                fill: false,
+            })),
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: {
+                legend: { position: 'top', align: 'start', labels: { boxWidth: 8, usePointStyle: true, padding: 8 } },
+                tooltip: { mode: 'index', intersect: false },
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, grid: { color: 'rgba(15, 35, 62, .055)' }, ticks: { precision: 0 } },
             },
         },
     });

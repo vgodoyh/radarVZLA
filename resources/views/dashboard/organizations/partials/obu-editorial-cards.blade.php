@@ -4,7 +4,7 @@
         <small>{{ __('dashboard.obu.editorial_content') }}</small>
         <h2>Las continuas violaciones a los derechos laborales movilizan a los universitarios en 2026</h2>
         <p>El OBU registró 59 protestas y 57 denuncias por la exigencia de salarios justos para los universitarios durante los primeros cinco meses de 2026...</p>
-        <a class="obu-editorial-button obu-editorial-button--note" href="https://observatoriodeuniversidades.com/noticias-obu-las-continuas-violaciones-a-los-derechos-laborales-movilizan-a-los-universitarios-en-2026/" target="_blank" rel="noopener noreferrer">{{ __('dashboard.obu.read_full_note') }} <i class="bi bi-arrow-up-right"></i></a>
+        <a class="obu-editorial-button obu-editorial-button--note" href="{{ route('analytics.obu.content.redirect', ['publication' => $obuMonthlyNote['id'] ?? abs(crc32('https://observatoriodeuniversidades.com/noticias-obu-las-continuas-violaciones-a-los-derechos-laborales-movilizan-a-los-universitarios-en-2026/')), 'source' => 'organization']) }}" target="_blank" rel="noopener noreferrer">{{ __('dashboard.obu.read_full_note') }} <i class="bi bi-arrow-up-right"></i></a>
     </div>
     <div class="obu-editorial-card__media">
         <img src="{{ asset('assets/img/nota-prensa-obu.jpg') }}" alt="Nota mensual del OBU" loading="lazy">

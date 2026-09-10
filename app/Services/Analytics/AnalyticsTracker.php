@@ -105,6 +105,7 @@ class AnalyticsTracker
         if (! in_array([$organization, $page], [
             ['acceso_justicia', 'acceso-justicia'],
             ['ovfn', 'fake-news'],
+            ['universidades', 'observatorio-universidades'],
         ], true)) {
             return null;
         }

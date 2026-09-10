@@ -49,10 +49,21 @@
             @endforeach
         </section>
 
+        @php
+            $contentClicksTotal = (int) ($summary['content_clicks'] ?? 0);
+            $contentRanking = collect($contentRanking ?? []);
+            $contentTypes = collect($contentClicks ?? [])->except('total');
+        @endphp
+
         <section class="access-justice-charts obu-analytics-charts">
             <article class="access-justice-card access-justice-chart-card"><header class="access-justice-card__header"><div><h2>Visitas por fecha</h2><p>Visitas al portal y al panel OBU</p></div><span class="access-justice-chart-period">Diaria</span></header><div class="access-justice-line-chart"><canvas id="obuVisitsChart" aria-label="Visitas por fecha" role="img"></canvas></div></article>
-            <div class="access-justice-charts-side"><article class="access-justice-card access-justice-origin-card"><header class="access-justice-card__header"><div><h2>Origen de visitas al panel</h2><p>Distribución de accesos registrados</p></div></header><div class="access-justice-origin-legend"><div><span>Desde Pulso</span><strong>{{ $panelOrigin['pulso'] ?? 0 }}</strong></div><div><span>Acceso directo</span><strong>{{ $panelOrigin['direct'] ?? 0 }}</strong></div><div class="access-justice-origin-legend__total"><span>Total</span><strong>{{ $panelOrigin['total'] ?? 0 }}</strong></div></div></article></div>
+            <div class="access-justice-charts-side">
+                <article class="access-justice-card access-justice-origin-card"><header class="access-justice-card__header"><div><h2>Origen de visitas al panel OBU</h2><p>Distribución de accesos registrados</p></div></header><div class="access-justice-origin-card__content"><div class="access-justice-donut"><canvas id="obuSourceChart" aria-label="Origen de visitas al panel OBU" role="img"></canvas></div><div class="access-justice-origin-legend"><div><span><i class="access-justice-dot access-justice-dot--orange"></i>Desde Pulso</span><strong>{{ number_format($panelOrigin['pulso'] ?? 0, 0, ',', '.') }}</strong></div><div><span><i class="access-justice-dot access-justice-dot--blue"></i>Acceso directo</span><strong>{{ number_format($panelOrigin['direct'] ?? 0, 0, ',', '.') }}</strong></div><div class="access-justice-origin-legend__total"><span>Total</span><strong>{{ number_format($panelOrigin['total'] ?? 0, 0, ',', '.') }}</strong></div></div></div></article>
+                <article class="access-justice-card access-justice-interaction-card"><header class="access-justice-card__header"><div><h2>Interacción con contenidos</h2><p>Distribución de clics registrados</p></div></header><div class="access-justice-interaction-total"><strong>{{ number_format($contentClicksTotal, 0, ',', '.') }}</strong><span>Clics totales</span></div><div class="access-justice-interaction-breakdown">@forelse ($contentTypes as $type => $total)<div class="access-justice-interaction-row"><div class="access-justice-interaction-row__label"><span>{{ str_replace('_', ' ', ucfirst($type)) }}</span><strong>{{ number_format((int) $total, 0, ',', '.') }}</strong></div><div class="access-justice-interaction-bar"><span style="width: {{ $contentClicksTotal > 0 ? round(((int) $total / $contentClicksTotal) * 100) : 0 }}%"></span></div></div>@empty<span class="text-muted text-sm">Todavía no hay clics registrados.</span>@endforelse</div><div class="access-justice-line-chart"><canvas id="obuContentClicksChart" aria-label="Interacción con contenidos" role="img"></canvas></div></article>
+            </div>
         </section>
+
+        <section class="access-justice-card access-justice-ranking" aria-label="Ranking de contenidos OBU"><header class="access-justice-card__header access-justice-ranking__header"><div><h2>Ranking de contenidos</h2><p>Contenidos OBU según clics registrados</p></div></header><div class="access-justice-table-wrap alert-ranking-table-scroll"><table class="table mb-0"><thead><tr><th>Contenido</th><th class="text-end">Clics</th></tr></thead><tbody>@forelse ($contentRanking as $item)<tr><td>{{ $item['title'] }}</td><td class="text-end">{{ number_format($item['clicks'], 0, ',', '.') }}</td></tr>@empty<tr><td colspan="2" class="access-justice-empty-table">Todavía no hay clics registrados.</td></tr>@endforelse</tbody></table></div></section>
 
         @can('edit obu metrics')
             <section class="access-justice-card obu-metrics-editor">
@@ -180,6 +191,6 @@
         session('obu_monitoring_success') ? ['type' => 'success', 'message' => session('obu_monitoring_success')] : null,
         session('obu_monitoring_info') ? ['type' => 'info', 'message' => session('obu_monitoring_info')] : null,
     ]])
-    <script type="application/json" id="obuAnalyticsData">@json(['visits' => $chart ?? [], 'origin' => $panelOrigin ?? []])</script>
+    <script type="application/json" id="obuAnalyticsData">@json(['chart' => $chart ?? [], 'origin' => $panelOrigin ?? [], 'content' => $contentClicksChart ?? []])</script>
     @vite('resources/js/admin-analytics.js')
 </x-layouts::admin>

@@ -6,7 +6,28 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
 
-    <title>@yield('title', config('app.name', 'Pulso VZLA'))</title>
+    @php
+        $seoTitle = trim($__env->yieldContent('title')) ?: config('app.name', 'Pulso Venezuela');
+        $seoDescription = trim($__env->yieldContent('description')) ?: __('dashboard.hero_description');
+        $seoImage = trim($__env->yieldContent('og_image')) ?: asset('assets/img/pulso-venezuela-color.png');
+        $seoUrl = url()->current();
+    @endphp
+
+    <title>{{ $seoTitle }}</title>
+    <meta name="description" content="{{ $seoDescription }}">
+    <link rel="canonical" href="{{ $seoUrl }}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ __('dashboard.site_name') }}">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    <meta property="og:description" content="{{ $seoDescription }}">
+    <meta property="og:url" content="{{ $seoUrl }}">
+    <meta property="og:image" content="{{ $seoImage }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
+    <meta name="twitter:image" content="{{ $seoImage }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

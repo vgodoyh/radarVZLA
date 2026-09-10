@@ -387,7 +387,7 @@
 
                 <footer class="panorama-secondary-card__footer">
                     <span></span>
-                    <a href="{{ route('organizations.universidades') }}">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ route('analytics.navigation.redirect', ['organization' => 'universidades', 'source' => 'home']) }}">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </footer>
             </article>
         </div>

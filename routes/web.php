@@ -36,12 +36,18 @@ Route::get('/fake-news', [PublicDashboardController::class, 'fakeNews'])
     ->middleware('analytics.page:ovfn,fake-news')
     ->name('organizations.fake-news');
 Route::get('/observatorio-universidades', [PublicDashboardController::class, 'universidades'])
+    ->middleware('analytics.page:universidades,observatorio-universidades')
     ->name('organizations.universidades');
 
 Route::get('/analytics/content/{publication}/{source}', AnalyticsContentRedirectController::class)
     ->whereNumber('publication')
     ->whereIn('source', ['home', 'organization'])
     ->name('analytics.content.redirect');
+
+Route::get('/analytics/obu/content/{publication}/{source}', AnalyticsContentRedirectController::class)
+    ->whereNumber('publication')
+    ->whereIn('source', ['home', 'organization'])
+    ->name('analytics.obu.content.redirect');
 
 Route::get('/analytics/ovfn/content/{contentType}/{contentId}', AnalyticsOvfnContentRedirectController::class)
     ->whereIn('contentType', ['analysis', 'noti_fake'])
