@@ -56,7 +56,7 @@ Route::get('/analytics/ovfn/content/{contentType}/{contentId}', AnalyticsOvfnCon
     ->name('analytics.ovfn.content.redirect');
 
 Route::get('/analytics/navigation/{organization}/{source}', AnalyticsNavigationRedirectController::class)
-    ->whereIn('organization', ['acceso-justicia', 'ovfn'])
+    ->whereIn('organization', ['acceso-justicia', 'ovfn', 'universidades'])
     ->whereIn('source', ['home'])
     ->name('analytics.navigation.redirect');
 
