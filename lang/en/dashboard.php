@@ -162,6 +162,7 @@ return [
         'description' => 'We analyze, verify, and document false or misleading content circulating in Venezuela.',
         'metrics_label' => 'Venezuelan Fake News Observatory total fact checks',
         'total_verifications' => 'Total fact checks',
+        'updated_through' => 'Updated through :date',
         'verified_publications' => 'Verified publications',
         'x_publications' => 'Posts on X',
         'breadcrumb_label' => 'Breadcrumb',

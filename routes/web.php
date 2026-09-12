@@ -13,6 +13,7 @@ use App\Http\Middleware\RedirectAccessJusticeUserFromAdmin;
 use App\Http\Middleware\UpdateUserLastActivity;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PublicDashboardController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TipoRedSocialController;
 use App\Http\Controllers\UserController;
@@ -26,6 +27,15 @@ Route::get('/', [PublicDashboardController::class, 'index'])
 
 Route::get('/home', [PublicDashboardController::class, 'index'])
     ->name('home');
+
+Route::get('/sitemap.xml', SitemapController::class)
+    ->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    return response(file_get_contents(public_path('robots.txt')), 200, [
+        'Content-Type' => 'text/plain; charset=UTF-8',
+    ]);
+})->name('robots');
 
 Route::get('/justicia-encuentro-perdon', [PublicDashboardController::class, 'jep'])
     ->middleware('analytics.page:jep,justicia-encuentro-perdon')

@@ -49,6 +49,28 @@ class OvfnPlatformDistributionTest extends TestCase
         $this->get(route('organizations.fake-news'))->assertOk()->assertSee('157');
     }
 
+    public function test_fake_news_verification_date_is_localized_for_each_locale(): void
+    {
+        $this->withoutVite();
+        Http::fake(['https://fakenewsvenezuela.org/*' => Http::response('', 200)]);
+        $organization = $this->organization();
+
+        OvfnVerificationTotal::create([
+            'organization_id' => $organization->id,
+            'total' => 157,
+            'data_date' => '2026-08-31',
+            'valid_from' => now(),
+        ]);
+
+        $this->withSession(['locale' => 'es'])
+            ->get(route('organizations.fake-news'))
+            ->assertSee('Actualizado hasta el 31/08/2026');
+
+        $this->withSession(['locale' => 'en'])
+            ->get(route('organizations.fake-news'))
+            ->assertSee('Updated through 08/31/2026');
+    }
+
     public function test_public_fake_news_page_uses_the_latest_editorial_version_for_updated_card(): void
     {
         $this->withoutVite();

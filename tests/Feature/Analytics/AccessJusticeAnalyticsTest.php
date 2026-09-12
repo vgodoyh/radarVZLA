@@ -139,7 +139,7 @@ class AccessJusticeAnalyticsTest extends TestCase
             $this->get(route('analytics.navigation.redirect', [
                 'organization' => $routeOrganization,
                 'source' => 'header',
-            ]))->assertRedirect(route($destination['route']));
+            ]))->assertRedirect('https://pulsovenezuela.org/'.$destination['target']);
 
             $this->assertDatabaseHas('analytics_navigation_clicks', [
                 'organization' => $destination['organization'],
@@ -429,7 +429,7 @@ class AccessJusticeAnalyticsTest extends TestCase
             'organization' => 'acceso-justicia',
             'source' => 'home',
         ]);
-        $this->get($trackingUrl)->assertRedirect(route('organizations.acceso-justicia'));
+        $this->get($trackingUrl)->assertRedirect('https://pulsovenezuela.org/acceso-justicia');
         $this->get(route('organizations.acceso-justicia'))->assertOk();
 
         $this->assertDatabaseCount('analytics_page_views', 2);

@@ -164,6 +164,7 @@ return [
         'description' => 'Analizamos, verificamos y documentamos contenidos falsos o engañosos que circulan en Venezuela.',
         'metrics_label' => 'Total de verificaciones del Observatorio Venezolano de Fake News',
         'total_verifications' => 'Total de verificaciones',
+        'updated_through' => 'Actualizado hasta el :date',
         'verified_publications' => 'Publicaciones verificadas',
         'x_publications' => 'Publicaciones en X',
         'breadcrumb_label' => 'Ruta de navegación',

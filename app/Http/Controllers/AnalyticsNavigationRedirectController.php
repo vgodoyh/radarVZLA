@@ -34,6 +34,6 @@ class AnalyticsNavigationRedirectController extends Controller
             $request->session()->put('analytics_page_view_source_expires_at', now()->addSeconds(30)->timestamp);
         }
 
-        return redirect()->route($destination['route']);
+        return redirect()->away('https://pulsovenezuela.org/'.$destination['target'], 301);
     }
 }
