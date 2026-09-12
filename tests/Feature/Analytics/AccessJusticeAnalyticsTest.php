@@ -101,16 +101,15 @@ class AccessJusticeAnalyticsTest extends TestCase
     {
         $this->organization('acceso-justicia');
 
-        $trackingUrl = route('analytics.navigation.redirect', [
-            'organization' => 'acceso-justicia',
-            'source' => 'home',
-        ]);
-
         $this->get(route('dashboard.public'))
             ->assertOk()
-            ->assertSee($trackingUrl);
-        $this->get($trackingUrl)
-            ->assertRedirect(route('organizations.acceso-justicia'));
+            ->assertSee(route('organizations.acceso-justicia'), false)
+            ->assertDontSee('/analytics/navigation/');
+        $this->postJson(route('analytics.navigation.store'), [
+            'organization' => 'acceso-justicia',
+            'source' => 'home',
+            'target' => 'acceso-justicia',
+        ])->assertNoContent();
 
         $this->assertDatabaseHas('analytics_navigation_clicks', [
             'organization' => 'acceso_justicia',
@@ -127,12 +126,203 @@ class AccessJusticeAnalyticsTest extends TestCase
         ]);
     }
 
+    public function test_global_header_navigation_tracks_each_public_organization_and_redirects(): void
+    {
+        $destinations = [
+            'jep' => ['organization' => 'jep', 'target' => 'justicia-encuentro-perdon', 'route' => 'organizations.jep'],
+            'acceso-justicia' => ['organization' => 'acceso_justicia', 'target' => 'acceso-justicia', 'route' => 'organizations.acceso-justicia'],
+            'ovfn' => ['organization' => 'ovfn', 'target' => 'fake-news', 'route' => 'organizations.fake-news'],
+            'universidades' => ['organization' => 'universidades', 'target' => 'observatorio-universidades', 'route' => 'organizations.universidades'],
+        ];
+
+        foreach ($destinations as $routeOrganization => $destination) {
+            $this->get(route('analytics.navigation.redirect', [
+                'organization' => $routeOrganization,
+                'source' => 'header',
+            ]))->assertRedirect(route($destination['route']));
+
+            $this->assertDatabaseHas('analytics_navigation_clicks', [
+                'organization' => $destination['organization'],
+                'target' => $destination['target'],
+                'source' => 'header',
+            ]);
+        }
+
+        $this->assertDatabaseCount('analytics_navigation_clicks', 4);
+    }
+
+    public function test_global_header_renders_tracking_links_on_home_and_public_organization_pages(): void
+    {
+        foreach (['jep', 'acceso-justicia', 'fake-news', 'universidades'] as $slug) {
+            $this->organization($slug);
+        }
+
+        $pages = [
+            route('dashboard.public'),
+            route('organizations.jep'),
+            route('organizations.acceso-justicia'),
+            route('organizations.fake-news'),
+            route('organizations.universidades'),
+        ];
+
+        foreach ($pages as $page) {
+            $response = $this->get($page)->assertOk();
+
+            foreach ([
+                'jep' => 'organizations.jep',
+                'acceso-justicia' => 'organizations.acceso-justicia',
+                'ovfn' => 'organizations.fake-news',
+                'universidades' => 'organizations.universidades',
+            ] as $organization => $routeName) {
+                $response->assertSee(route($routeName), false);
+            }
+
+            $response->assertDontSee('/analytics/navigation/');
+        }
+    }
+
+    public function test_background_navigation_endpoint_tracks_home_and_header_without_redirecting(): void
+    {
+        $payloads = [
+            ['organization' => 'jep', 'target' => 'justicia-encuentro-perdon'],
+            ['organization' => 'acceso-justicia', 'target' => 'acceso-justicia'],
+            ['organization' => 'ovfn', 'target' => 'fake-news'],
+            ['organization' => 'universidades', 'target' => 'observatorio-universidades'],
+        ];
+
+        foreach ($payloads as $payload) {
+            $this->postJson(route('analytics.navigation.store'), [...$payload, 'source' => 'home'])
+                ->assertNoContent();
+        }
+
+        $this->postJson(route('analytics.navigation.store'), [
+            'organization' => 'universidades',
+            'source' => 'header',
+            'target' => 'observatorio-universidades',
+        ])->assertNoContent();
+
+        $this->assertDatabaseCount('analytics_navigation_clicks', 5);
+        $this->assertDatabaseHas('analytics_navigation_clicks', [
+            'organization' => 'universidades',
+            'source' => 'header',
+            'target' => 'observatorio-universidades',
+        ]);
+    }
+
+    public function test_repeated_header_clicks_are_recorded_once_per_request_for_jep_and_obu(): void
+    {
+        foreach (['jep', 'universidades'] as $organization) {
+            $this->get(route('analytics.navigation.redirect', [
+                'organization' => $organization,
+                'source' => 'header',
+            ]))->assertRedirect();
+            $this->get(route('analytics.navigation.redirect', [
+                'organization' => $organization,
+                'source' => 'header',
+            ]))->assertRedirect();
+        }
+
+        $this->assertSame(2, AnalyticsNavigationClick::query()
+            ->where('organization', 'jep')
+            ->where('source', 'header')
+            ->count());
+        $this->assertSame(2, AnalyticsNavigationClick::query()
+            ->where('organization', 'universidades')
+            ->where('source', 'header')
+            ->count());
+    }
+
+    public function test_obu_kpis_keep_home_navigation_panel_views_and_content_clicks_separate(): void
+    {
+        Carbon::setTestNow('2026-08-22 13:15:00');
+        $this->organization('universidades');
+
+        AnalyticsPageView::create($this->pageView('pulso_vzla', 'home'));
+        foreach (['home', 'header', 'direct'] as $source) {
+            AnalyticsPageView::create($this->pageView('universidades', 'observatorio-universidades') + ['source' => $source]);
+        }
+
+        foreach (['home', 'home', 'header'] as $source) {
+            AnalyticsNavigationClick::create([
+                'organization' => 'universidades',
+                'target' => 'observatorio-universidades',
+                'source' => $source,
+                'session_id' => hash('sha256', str()->random()),
+            ]);
+        }
+        AnalyticsNavigationClick::create([
+            'organization' => 'jep',
+            'target' => 'justicia-encuentro-perdon',
+            'source' => 'header',
+            'session_id' => hash('sha256', str()->random()),
+        ]);
+
+        foreach (range(1, 2) as $id) {
+            AnalyticsContentClick::create([
+                'organization' => 'universidades',
+                'content_type' => 'monthly_note',
+                'content_id' => $id,
+                'source' => 'organization',
+                'session_id' => hash('sha256', str()->random()),
+            ]);
+        }
+
+        $summary = app(OrganizationAnalyticsService::class)->dashboard('universidades')['summary'];
+
+        $this->assertSame(2, $summary['home_navigation_clicks']);
+        $this->assertSame(3, $summary['organization_views']);
+        $this->assertSame(2, $summary['content_clicks']);
+        $this->assertSame(1, $summary['portal_views']);
+        $this->assertSame(2, app(OrganizationAnalyticsService::class)->dashboard('universidades')['panelOrigin']['pulso']);
+        $this->assertSame(1, app(OrganizationAnalyticsService::class)->dashboard('universidades')['panelOrigin']['direct']);
+    }
+
+    public function test_all_organization_kpis_exclude_header_navigation_from_home_clicks(): void
+    {
+        Carbon::setTestNow('2026-08-22 13:15:00');
+        $organizations = [
+            'jep' => ['page' => 'justicia-encuentro-perdon', 'target' => 'justicia-encuentro-perdon'],
+            'acceso_justicia' => ['page' => 'acceso-justicia', 'target' => 'acceso-justicia'],
+            'ovfn' => ['page' => 'fake-news', 'target' => 'fake-news'],
+            'universidades' => ['page' => 'observatorio-universidades', 'target' => 'observatorio-universidades'],
+        ];
+
+        foreach ($organizations as $organization => $definition) {
+            $this->organization($organization === 'acceso_justicia' ? 'acceso-justicia' : $organization);
+            foreach (range(1, 4) as $index) {
+                AnalyticsPageView::create($this->pageView($organization, $definition['page']));
+            }
+            foreach (['home', 'home', 'header', 'header', 'header'] as $source) {
+                AnalyticsNavigationClick::create([
+                    'organization' => $organization,
+                    'target' => $definition['target'],
+                    'source' => $source,
+                    'session_id' => hash('sha256', "{$organization}-{$source}-".str()->random()),
+                ]);
+            }
+            foreach (range(1, 5) as $contentId) {
+                AnalyticsContentClick::create([
+                    'organization' => $organization,
+                    'content_type' => match ($organization) {
+                        'acceso_justicia' => $contentId === 5 ? 'other_content' : 'alert',
+                        'ovfn' => 'x_post',
+                        default => 'content',
+                    },
+                    'content_id' => $contentId,
+                    'source' => 'organization',
+                    'session_id' => hash('sha256', "{$organization}-content-{$contentId}"),
+                ]);
+            }
+
+            $summary = app(OrganizationAnalyticsService::class)->dashboard($organization)['summary'];
+            $this->assertSame(2, $summary['home_navigation_clicks'], $organization);
+            $this->assertSame(4, $summary['organization_views'], $organization);
+            $this->assertSame(5, $summary['content_clicks'], $organization);
+        }
+    }
+
     public function test_jep_home_panel_and_monthly_alert_links_track_before_redirecting(): void
     {
-        $navigationUrl = route('analytics.navigation.redirect', [
-            'organization' => 'jep',
-            'source' => 'home',
-        ]);
         $alertUrl = route('analytics.jep.content.redirect', [
             'publication' => 0,
             'source' => 'home',
@@ -140,10 +330,15 @@ class AccessJusticeAnalyticsTest extends TestCase
 
         $this->get(route('dashboard.public'))
             ->assertOk()
-            ->assertSee($navigationUrl)
+            ->assertSee(route('organizations.jep'), false)
+            ->assertDontSee('/analytics/navigation/')
             ->assertSee($alertUrl);
 
-        $this->get($navigationUrl)->assertRedirect(route('organizations.jep'));
+        $this->postJson(route('analytics.navigation.store'), [
+            'organization' => 'jep',
+            'source' => 'home',
+            'target' => 'justicia-encuentro-perdon',
+        ])->assertNoContent();
         $this->get($alertUrl)->assertRedirect(route('organizations.jep').'#alerta-del-mes');
 
         $this->assertDatabaseHas('analytics_navigation_clicks', [

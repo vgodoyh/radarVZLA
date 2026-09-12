@@ -84,12 +84,9 @@
                 <div class="analytics-kpi-main">
                     <span class="analytics-kpi-icon" aria-hidden="true"><i class="fa-solid fa-bullhorn"></i></span>
                     <div class="analytics-kpi-content">
-                        <p class="analytics-kpi-title">Clics en alertas</p>
-                        <strong class="analytics-kpi-value">{{ number_format($summary['alert_clicks'], 0, ',', '.') }}</strong>
-                        <small class="analytics-kpi-description">
-                            Pulso: {{ number_format($summary['home_clicks'], 0, ',', '.') }} ·
-                            Panel: {{ number_format($summary['organization_clicks'], 0, ',', '.') }}
-                        </small>
+                        <p class="analytics-kpi-title">Clics en contenidos</p>
+                        <strong class="analytics-kpi-value">{{ number_format($summary['content_clicks'], 0, ',', '.') }}</strong>
+                        <small class="analytics-kpi-description">Interacciones registradas</small>
                     </div>
                 </div>
                 <svg class="analytics-kpi-sparkline" viewBox="0 0 320 42" preserveAspectRatio="none" aria-hidden="true"><path d="M0 27 C25 30 40 18 62 25 S96 36 118 27 S150 14 173 24 S207 31 230 19 S267 11 286 22 S307 29 320 17" /></svg>

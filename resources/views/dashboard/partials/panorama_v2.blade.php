@@ -99,7 +99,7 @@
                         
                     </span>
 
-                    <a href="{{ route('analytics.navigation.redirect', ['organization' => 'jep', 'source' => 'home']) }}">
+                    <a href="{{ route('organizations.jep') }}" data-analytics-navigation data-analytics-organization="jep" data-analytics-source="home" data-analytics-target="justicia-encuentro-perdon">
                         {{ __('dashboard.view_full_dashboard') }}
                         <i class="bi bi-arrow-right" aria-hidden="true"></i>
                     </a>
@@ -274,7 +274,7 @@
 
                 <footer class="panorama-secondary-card__footer">
                     <span></span>
-                    <a href="{{ route('analytics.navigation.redirect', ['organization' => 'acceso-justicia', 'source' => 'home']) }}">{{ __('dashboard.view_more_publications') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ route('organizations.acceso-justicia') }}" data-analytics-navigation data-analytics-organization="acceso-justicia" data-analytics-source="home" data-analytics-target="acceso-justicia">{{ __('dashboard.view_more_publications') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </footer>
             </article>
 
@@ -357,7 +357,7 @@
 
                 <footer class="panorama-secondary-card__footer">
                     <span></span>
-                    <a href="{{ route('analytics.navigation.redirect', ['organization' => 'ovfn', 'source' => 'home']) }}">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ route('organizations.fake-news') }}" data-analytics-navigation data-analytics-organization="ovfn" data-analytics-source="home" data-analytics-target="fake-news">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </footer>
             </article>
 
@@ -419,7 +419,7 @@
 
                 <footer class="panorama-secondary-card__footer">
                     <span></span>
-                    <a href="{{ route('analytics.navigation.redirect', ['organization' => 'universidades', 'source' => 'home']) }}">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ route('organizations.universidades') }}" data-analytics-navigation data-analytics-organization="universidades" data-analytics-source="home" data-analytics-target="observatorio-universidades">{{ __('dashboard.view_full_dashboard') }}<i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </footer>
             </article>
         </div>

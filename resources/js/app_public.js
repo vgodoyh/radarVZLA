@@ -4,6 +4,32 @@ import '../css/obu-dashboard.css';
 import './obu-dashboard.js';
 import Chart from 'chart.js/auto';
 
+document.addEventListener('click', (event) => {
+    const link = event.target.closest?.('a[data-analytics-navigation]');
+    if (!link) return;
+
+    const endpoint = document.querySelector('meta[name="analytics-navigation-endpoint"]')?.content;
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+    if (!endpoint || !token) return;
+
+    fetch(endpoint, {
+        method: 'POST',
+        credentials: 'same-origin',
+        keepalive: true,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({
+            organization: link.dataset.analyticsOrganization,
+            source: link.dataset.analyticsSource,
+            target: link.dataset.analyticsTarget,
+        }),
+    }).catch(() => {});
+});
+
 const locale = document.documentElement.lang.startsWith('en') ? 'en' : 'es';
 const t = {
     es: {

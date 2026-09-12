@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ObuDashboardController;
 use App\Http\Controllers\Admin\JepDashboardController;
 use App\Http\Controllers\AnalyticsContentRedirectController;
 use App\Http\Controllers\AnalyticsNavigationRedirectController;
+use App\Http\Controllers\AnalyticsNavigationStoreController;
 use App\Http\Controllers\AnalyticsOvfnContentRedirectController;
 use App\Http\Middleware\RedirectAccessJusticeUserFromAdmin;
 use App\Http\Middleware\UpdateUserLastActivity;
@@ -73,8 +74,11 @@ Route::get('/analytics/ovfn/content/{contentType}/{contentId}', AnalyticsOvfnCon
 
 Route::get('/analytics/navigation/{organization}/{source}', AnalyticsNavigationRedirectController::class)
     ->whereIn('organization', ['acceso-justicia', 'jep', 'ovfn', 'universidades'])
-    ->whereIn('source', ['home'])
+    ->whereIn('source', ['home', 'header'])
     ->name('analytics.navigation.redirect');
+
+Route::post('/analytics/navigation', AnalyticsNavigationStoreController::class)
+    ->name('analytics.navigation.store');
 
 Route::get('/language/{locale}', function (string $locale) {
     abort_unless(in_array($locale, ['es', 'en'], true), 404);

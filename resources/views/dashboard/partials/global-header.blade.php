@@ -2,10 +2,10 @@
     $headerAccent = $headerAccent ?? '#1769f6';
     $navigationItems = [
         ['label' => 'Inicio', 'route' => 'dashboard.public'],
-        ['label' => 'JEP', 'route' => 'organizations.jep'],
-        ['label' => 'Acceso a la Justicia', 'route' => 'organizations.acceso-justicia'],
-        ['label' => 'Fake News', 'route' => 'organizations.fake-news'],
-        ['label' => 'OBU', 'route' => 'organizations.universidades'],
+        ['label' => 'JEP', 'route' => 'organizations.jep', 'trackingOrganization' => 'jep'],
+        ['label' => 'Acceso a la Justicia', 'route' => 'organizations.acceso-justicia', 'trackingOrganization' => 'acceso-justicia'],
+        ['label' => 'Fake News', 'route' => 'organizations.fake-news', 'trackingOrganization' => 'ovfn'],
+        ['label' => 'OBU', 'route' => 'organizations.universidades', 'trackingOrganization' => 'universidades'],
     ];
 @endphp
 
@@ -24,6 +24,12 @@
                 @foreach ($navigationItems as $item)
                     <a
                         href="{{ route($item['route']) }}"
+                        @if (isset($item['trackingOrganization']))
+                            data-analytics-navigation
+                            data-analytics-organization="{{ $item['trackingOrganization'] }}"
+                            data-analytics-source="header"
+                            data-analytics-target="{{ trim((string) parse_url(route($item['route']), PHP_URL_PATH), '/') }}"
+                        @endif
                         class="{{ request()->routeIs($item['route']) ? 'active' : '' }}"
                         @if (request()->routeIs($item['route'])) aria-current="page" @endif
                     >{{ $item['label'] }}</a>

@@ -43,6 +43,7 @@ class OrganizationAnalyticsService
         $portalViews = AnalyticsPageView::query()
             ->where('organization', 'pulso_vzla')
             ->where('page', 'home')
+            ->where('created_at', '>=', $startDate)
             ->count();
         $organizationViews = AnalyticsPageView::query()
             ->where('organization', $organization)
@@ -53,10 +54,12 @@ class OrganizationAnalyticsService
             ->where('organization', $organization)
             ->where('target', $page)
             ->where('source', 'home')
+            ->where('created_at', '>=', $startDate)
             ->count();
-        $clicks = AnalyticsContentClick::query()
+        $contentClicks = AnalyticsContentClick::query()
             ->where('organization', $organization)
-            ->where('content_type', 'alert');
+            ->where('created_at', '>=', $startDate);
+        $alertClicks = (clone $contentClicks)->where('content_type', 'alert');
         $panelOrigin = [
             'pulso' => $homeNavigationClicks,
             'direct' => max($organizationViews - $homeNavigationClicks, 0),
@@ -68,9 +71,10 @@ class OrganizationAnalyticsService
                 'portal_views' => $portalViews,
                 'organization_views' => $organizationViews,
                 'home_navigation_clicks' => $homeNavigationClicks,
-                'alert_clicks' => (clone $clicks)->count(),
-                'home_clicks' => (clone $clicks)->where('source', 'home')->count(),
-                'organization_clicks' => (clone $clicks)->where('source', 'organization')->count(),
+                'content_clicks' => (clone $contentClicks)->count(),
+                'alert_clicks' => (clone $alertClicks)->count(),
+                'home_clicks' => (clone $contentClicks)->where('source', 'home')->count(),
+                'organization_clicks' => (clone $contentClicks)->where('source', 'organization')->count(),
             ],
             'chart' => $this->dailyViews($organization, $startDate),
             'panelOrigin' => $panelOrigin,
