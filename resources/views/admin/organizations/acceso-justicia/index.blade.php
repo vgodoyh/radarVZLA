@@ -36,27 +36,10 @@
         <header class="access-justice-header">
             <div class="access-justice-header__copy">
                 <span class="access-justice-header__accent" aria-hidden="true"></span>
-                <div>
+                <div class="col-12">
                     <h1>Acceso a la Justicia</h1>
                     <p>Resumen de analítica y rendimiento del módulo</p>
                 </div>
-            </div>
-
-            <div class="access-justice-header__actions" aria-label="Controles del período">
-                <span class="access-justice-period" aria-label="Período actual del dashboard">
-                    <i class="bi bi-calendar3" aria-hidden="true"></i>
-                    <span>{{ $analyticsPeriodLabel }}</span>
-                </span>
-                <button
-                    type="button"
-                    class="access-justice-export"
-                    disabled
-                    aria-disabled="true"
-                    title="La exportación aún no está disponible"
-                >
-                    <i class="bi bi-download" aria-hidden="true"></i>
-                    <span>Exportar</span>
-                </button>
             </div>
         </header>
 

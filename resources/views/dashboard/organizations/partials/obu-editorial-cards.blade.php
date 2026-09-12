@@ -1,15 +1,19 @@
+@if ($obuMonthlyNote)
 <article class="obu-editorial-card obu-editorial-card--note">
     <div class="obu-editorial-card__copy">
         <span class="obu-public-eyebrow">{{ __('dashboard.obu.monthly_note') }}</span>
         <small>{{ __('dashboard.obu.editorial_content') }}</small>
-        <h2>Las continuas violaciones a los derechos laborales movilizan a los universitarios en 2026</h2>
-        <p>El OBU registró 59 protestas y 57 denuncias por la exigencia de salarios justos para los universitarios durante los primeros cinco meses de 2026...</p>
-        <a class="obu-editorial-button obu-editorial-button--note" href="{{ route('analytics.obu.content.redirect', ['publication' => $obuMonthlyNote['id'] ?? abs(crc32('https://observatoriodeuniversidades.com/noticias-obu-las-continuas-violaciones-a-los-derechos-laborales-movilizan-a-los-universitarios-en-2026/')), 'source' => 'organization']) }}" target="_blank" rel="noopener noreferrer">{{ __('dashboard.obu.read_full_note') }} <i class="bi bi-arrow-up-right"></i></a>
+        <h2>{{ $obuMonthlyNote['title'] }}</h2>
+        <p>{{ $obuMonthlyNote['excerpt'] }}</p>
+        @if (filled($obuMonthlyNote['url']))
+            <a class="obu-editorial-button obu-editorial-button--note" href="{{ route('analytics.obu.content.redirect', ['publication' => $obuMonthlyNote['id'], 'source' => 'organization']) }}" target="_blank" rel="noopener noreferrer">{{ __('dashboard.obu.read_full_note') }} <i class="bi bi-arrow-up-right"></i></a>
+        @endif
     </div>
     <div class="obu-editorial-card__media">
-        <img src="{{ asset('assets/img/nota-prensa-obu.jpg') }}" alt="Nota mensual del OBU" loading="lazy">
+        <img src="{{ $obuMonthlyNote['image_path_url'] ?: asset('assets/img/nota-prensa-obu.jpg') }}" alt="{{ $obuMonthlyNote['title'] }}" loading="lazy">
     </div>
 </article>
+@endif
 
 {{-- TODO: Reactivar Alerta bimensual cuando exista contenido editorial.
 <article class="obu-editorial-card obu-editorial-card--alert">

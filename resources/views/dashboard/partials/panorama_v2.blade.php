@@ -99,7 +99,7 @@
                         
                     </span>
 
-                    <a href="{{ route('organizations.jep') }}">
+                    <a href="{{ route('analytics.navigation.redirect', ['organization' => 'jep', 'source' => 'home']) }}">
                         {{ __('dashboard.view_full_dashboard') }}
                         <i class="bi bi-arrow-right" aria-hidden="true"></i>
                     </a>
@@ -125,7 +125,7 @@
                     <h3>{{ $monthlyAlertTitle }}</h3>
                 </div>
                 <p class="panorama-jep__alert-text">{{ $jepMetrics?->monthly_alert_excerpt ?: __('dashboard.jep_page.indicators.alert_text') }}</p>
-                <a href="{{ route('organizations.jep') }}#alerta-del-mes">
+                <a href="{{ route('analytics.jep.content.redirect', ['publication' => data_get($jepMetrics, 'id', 0), 'source' => 'home']) }}">
                     {{ __('dashboard.jep_page.indicators.view_alert') }}
                     <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </a>
@@ -155,6 +155,8 @@
                 : '';
             $obuPeriodStart = $obuMonitoringPeriod?->period_start;
             $obuPeriodEnd = $obuMonitoringPeriod?->period_end;
+            $obuComplaintValues = collect($obuDatasets['documented_complaints'] ?? []);
+            $obuProtestValues = collect($obuDatasets['protest_types'] ?? []);
             $obuMetricItems = [
                 ['value' => $obuMonitoringPeriod?->analyzed_information, 'label' => __('dashboard.obu.analyzed_information')],
                 ['value' => $obuMetrics?->protests, 'label' => __('dashboard.protests')],
@@ -163,7 +165,37 @@
             $obuPeriod = $obuPeriodStart && $obuPeriodEnd
                 ? $obuPeriodStart->locale(app()->getLocale())->translatedFormat('F').'–'.$obuPeriodEnd->locale(app()->getLocale())->translatedFormat('F').' '.$obuPeriodEnd->year
                 : null;
-            $obuRightsBreakdown = $obuMetrics?->rights_breakdown ?? [];
+            // Resolve editorial values by their dataset identity, never by the physical row order.
+            $obuDatasetIdentity = static fn ($row): string => implode('|', [
+                (string) data_get($row, 'category', ''),
+                \Illuminate\Support\Str::slug((string) (data_get($row, 'subgroup') ?: data_get($row, 'label', ''))),
+            ]);
+            $obuValueByIdentity = $obuComplaintValues
+                ->merge($obuProtestValues)
+                ->mapWithKeys(fn ($row) => [$obuDatasetIdentity($row) => (int) data_get($row, 'value', 0)]);
+            $obuValue = static function (string $category, array $labels) use ($obuValueByIdentity): int {
+                foreach ($labels as $label) {
+                    $key = $category.'|'.\Illuminate\Support\Str::slug($label);
+                    if ($obuValueByIdentity->has($key)) {
+                        return (int) $obuValueByIdentity->get($key);
+                    }
+                }
+
+                return 0;
+            };
+            $obuRightsBreakdown = [
+                'fair_wages' => $obuValue('economic_social', [__('dashboard.obu.decent_wages'), 'Salarios dignos']),
+                'infrastructure_damage' => $obuValue('economic_social', [__('dashboard.obu.infrastructure_damage'), 'Daños en infraestructura', 'DaÃ±os en infraestructura']),
+                'student_welfare' => $obuValue('economic_social', [__('dashboard.obu.student_welfare'), 'Providencias estudiantiles']),
+                'university_autonomy' => $obuValue('civil_political', [__('dashboard.obu.university_autonomy'), 'Autonomía universitaria', 'AutonomÃ­a universitaria']),
+                'freedom_of_expression' => $obuValue('civil_political', [__('dashboard.obu.freedom_of_expression'), 'Libertad de expresión', 'Libertad de expresiÃ³n']),
+                'public_affairs_participation' => $obuValue('civil_political', [__('dashboard.obu.public_affairs_participation'), 'Participación en asuntos públicos', 'ParticipaciÃ³n en asuntos pÃºblicos']),
+                'strike' => $obuValue('protest', [__('dashboard.obu.strike'), 'Paro']),
+                'gathering' => $obuValue('protest', [__('dashboard.obu.gathering'), 'Concentración', 'ConcentraciÃ³n']),
+                'banner_protest' => $obuValue('protest', [__('dashboard.obu.banner_protest'), 'Pancartazo']),
+                'march' => $obuValue('protest', [__('dashboard.obu.march'), 'Marcha']),
+                'other' => $obuValue('protest', [__('dashboard.obu.other'), 'Otro']),
+            ];
             $obuRightsGroups = [
                 [
                     'type' => __('dashboard.complaints'),

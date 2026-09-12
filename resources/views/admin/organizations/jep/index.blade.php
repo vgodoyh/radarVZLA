@@ -70,6 +70,19 @@
         $groupHistory = $historyFor([], 'vulnerableGroups', 'groups_history_page');
         $centerHistory = $historyFor([], 'detentionCenters', 'centers_history_page');
         $contentBreakdown = collect($contentClicks ?? [])->except('total');
+        $contentTypeLabels = [
+            'featured_instagram' => 'Instagram del destacado',
+            'featured_x' => 'X del destacado',
+            'featured_read_more' => 'Leer más del destacado',
+            'monthly_alert' => 'Alerta del mes',
+            'monthly_alert_x' => 'Publicación en X de la alerta',
+            'criteria' => 'Criterios de contabilización',
+            'instagram' => 'Instagram del destacado',
+            'x_post' => 'X del destacado',
+        ];
+        $friendlyContentBreakdown = $contentBreakdown->mapWithKeys(
+            fn ($total, $type) => [$contentTypeLabels[$type] ?? str($type)->replace('_', ' ')->title() => $total]
+        );
         $sparklinePath = function (array $values): string {
             $values = array_map('intval', $values);
             $count = count($values);
@@ -88,6 +101,9 @@
             ['green', 'fa-window-maximize', 'Visitas al panel JEP', $summary['organization_views'] ?? 0, 'Entradas al panel del módulo', $visitsChart['labels'] ?? [], $visitsChart['organization'] ?? []],
             ['purple', 'fa-bullhorn', 'Clics en contenidos', $summary['content_clicks'] ?? 0, $contentBreakdown->isEmpty() ? 'Sin clics de contenido trackeados' : $contentBreakdown->map(fn ($total, $type) => str($type)->replace('_', ' ')->title().': '.$total)->implode(' · '), $contentClicksChart['labels'] ?? [], $contentClicksChart['total'] ?? []],
         ];
+        $analyticsKpis[3][4] = $friendlyContentBreakdown->isEmpty()
+            ? 'Sin clics de contenido trackeados'
+            : $friendlyContentBreakdown->map(fn ($total, $type) => $type.': '.$total)->implode(' · ');
         $deathFields = [
             ['key' => 'home_arrest', 'label' => 'Arresto domiciliario', 'sort_order' => 1],
             ['key' => 'detention_centers', 'label' => 'En centros de reclusión', 'sort_order' => 2],
@@ -113,7 +129,13 @@
 
     <main class="access-justice-dashboard jep-admin-dashboard">
         <header class="access-justice-header">
-            <div class="access-justice-header__copy"><span class="access-justice-header__accent"></span><div><h1>Justicia, Encuentro y Perdón</h1><p>Resumen de analítica y métricas editoriales JEP</p></div></div>
+            <div class="access-justice-header__copy">
+                <span class="access-justice-header__accent"></span>
+                <div class="col-12">
+                    <h1>Justicia, Encuentro y Perdón</h1>
+                    <p>Resumen de analítica y métricas editoriales JEP</p>
+                </div>
+            </div>
         </header>
 
         <section class="access-justice-kpis">

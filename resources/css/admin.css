@@ -933,6 +933,231 @@ body.auth-login-page input:-webkit-autofill:active {
 .sidenav .organization-link--ovfn.active { --organization-accent: #f2c600; }
 .sidenav .organization-link--obu.active { --organization-accent: #2373c8; }
 
+.obu-metrics-editor {
+    margin-top: 20px;
+    padding: 24px;
+}
+
+.obu-metrics-editor form {
+    margin-top: 24px;
+}
+
+.obu-metrics-editor form > .row {
+    row-gap: 18px !important;
+}
+
+.obu-metrics-editor form label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.obu-metrics-editor form > .btn {
+    display: block;
+    margin-left: auto;
+}
+
+.obu-simple-dataset-card {
+    margin-top: 20px;
+    padding: 24px;
+}
+
+.obu-monthly-note-editor {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr);
+    margin-top: 24px;
+}
+
+.obu-monthly-note-fields {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+}
+
+.obu-bimonthly-alert-periods {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.obu-monthly-note-field,
+.obu-monthly-note-meta > div {
+    min-width: 0;
+}
+
+.obu-monthly-note-field label,
+.obu-monthly-note-meta label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.obu-monthly-note-field .form-text {
+    color: #64748b;
+    font-size: .75rem;
+    margin-top: 6px;
+}
+
+.obu-monthly-note-preview-column {
+    min-width: 0;
+}
+
+.obu-monthly-note-preview-title {
+    color: #1f3b63;
+    font-size: .85rem;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+
+.obu-monthly-note-preview {
+    align-items: center;
+    background: #f6f8fb;
+    border: 1px solid #e5e9f0;
+    border-radius: 12px;
+    color: #64748b;
+    display: flex;
+    height: 260px;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+    width: 100%;
+}
+
+.obu-monthly-note-preview img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.obu-monthly-note-preview span {
+    font-size: .8rem;
+    font-weight: 600;
+    padding: 16px;
+}
+
+.obu-monthly-note-preview-help {
+    align-items: flex-start;
+    background: #f8fafc;
+    border: 1px solid #e5e9f0;
+    border-radius: 10px;
+    color: #64748b;
+    display: flex;
+    gap: 9px;
+    margin-top: 12px;
+    padding: 10px 12px;
+}
+
+.obu-monthly-note-preview-help > i {
+    color: #2373c8;
+    font-size: .9rem;
+    margin-top: 2px;
+}
+
+.obu-monthly-note-preview-help span {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.obu-monthly-note-preview-help strong,
+.obu-monthly-note-preview-help small {
+    font-size: .72rem;
+    line-height: 1.35;
+}
+
+.obu-monthly-note-preview-help strong {
+    color: #42536d;
+}
+
+.obu-monthly-note-meta {
+    margin-top: 20px;
+    max-width: 760px;
+}
+
+.obu-simple-dataset-card form {
+    margin-top: 24px;
+}
+
+.obu-simple-dataset-group + .obu-simple-dataset-group {
+    margin-top: 24px;
+}
+
+.obu-simple-dataset-group > h3 {
+    color: #1f3b63;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+}
+
+.obu-simple-dataset-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.obu-simple-dataset-item {
+    background: #f8fafc;
+    border: 1px solid rgba(35, 115, 200, 0.14);
+    border-radius: 11px;
+    padding: 16px;
+}
+
+.obu-simple-dataset-item h4 {
+    color: #1f3b63;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.35;
+    margin: 0 0 18px;
+    min-height: 2.45em;
+}
+
+.obu-simple-dataset-item label {
+    color: #667085;
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.obu-simple-dataset-item .form-control {
+    width: 100%;
+}
+
+.obu-simple-dataset-grid--protests {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 991.98px) {
+    .obu-simple-dataset-grid,
+    .obu-simple-dataset-grid--protests {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .obu-simple-dataset-card {
+        padding: 18px;
+    }
+
+    .obu-simple-dataset-grid,
+    .obu-simple-dataset-grid--protests {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .obu-metrics-editor { padding: 18px; }
+    .obu-metrics-editor form > .btn { width: 100%; }
+    .obu-monthly-note-editor { grid-template-columns: 1fr; }
+    .obu-bimonthly-alert-periods { grid-template-columns: 1fr; }
+    .obu-monthly-note-preview { height: 210px; }
+}
+
 .jep-admin-dashboard .jep-monthly-alert-fetch,
 .obu-metrics-editor .jep-monthly-alert-fetch {
     display: flex;

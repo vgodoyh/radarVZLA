@@ -127,12 +127,12 @@
 
             @can('view obu dashboard')
                 <li class="nav-item">
-                    <div class="nav-link text-white organization-link organization-link--obu {{ request()->routeIs('admin.obu.*') ? 'active' : '' }}">
+                    <a class="nav-link text-white organization-link organization-link--obu {{ request()->routeIs('admin.obu.*') ? 'active' : '' }}" href="{{ route('admin.obu.index') }}" @if(request()->routeIs('admin.obu.*')) aria-current="page" @endif>
                         <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-graduation-cap text-sm text-gray-600"></i>
                         </div>
                         <span class="nav-link-text ms-1">OBU</span>
-                    </div>
+                    </a>
                 </li>
             @endcan
 

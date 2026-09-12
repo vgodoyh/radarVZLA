@@ -28,7 +28,7 @@
         @php
             $monitoringPeriod = $obuMonitoringPeriod;
             $monitoringLabel = $monitoringPeriod?->period_start && $monitoringPeriod?->period_end
-                ? $monitoringPeriod->period_start->locale('es')->isoFormat('MMMM').' – '.$monitoringPeriod->period_end->locale('es')->isoFormat('MMMM YYYY')
+                ? $monitoringPeriod->period_start->locale(app()->getLocale())->isoFormat('MMMM').' – '.$monitoringPeriod->period_end->locale(app()->getLocale())->isoFormat('MMMM YYYY')
                 : 'Período no disponible';
             $complaintsByGroup = collect($obuDatasets['documented_complaints'] ?? [])->groupBy('category');
             $ranking = collect($obuDatasets['university_ranking'] ?? []);

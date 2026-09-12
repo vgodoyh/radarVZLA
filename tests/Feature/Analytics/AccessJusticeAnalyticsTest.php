@@ -6,6 +6,8 @@ use App\Livewire\Admin\Analytics\AccesoJusticiaAlertRanking;
 use App\Models\AnalyticsContentClick;
 use App\Models\AnalyticsNavigationClick;
 use App\Models\AnalyticsPageView;
+use App\Models\JepMetricSnapshot;
+use Database\Seeders\JepMetricSnapshotSeeder;
 use App\Models\DashboardSyncRun;
 use App\Models\Organization;
 use App\Models\Publication;
@@ -122,6 +124,90 @@ class AccessJusticeAnalyticsTest extends TestCase
             'organization' => 'acceso_justicia',
             'page' => 'acceso-justicia',
             'source' => 'home',
+        ]);
+    }
+
+    public function test_jep_home_panel_and_monthly_alert_links_track_before_redirecting(): void
+    {
+        $navigationUrl = route('analytics.navigation.redirect', [
+            'organization' => 'jep',
+            'source' => 'home',
+        ]);
+        $alertUrl = route('analytics.jep.content.redirect', [
+            'publication' => 0,
+            'source' => 'home',
+        ]);
+
+        $this->get(route('dashboard.public'))
+            ->assertOk()
+            ->assertSee($navigationUrl)
+            ->assertSee($alertUrl);
+
+        $this->get($navigationUrl)->assertRedirect(route('organizations.jep'));
+        $this->get($alertUrl)->assertRedirect(route('organizations.jep').'#alerta-del-mes');
+
+        $this->assertDatabaseHas('analytics_navigation_clicks', [
+            'organization' => 'jep',
+            'target' => 'justicia-encuentro-perdon',
+            'source' => 'home',
+        ]);
+        $this->assertDatabaseHas('analytics_content_clicks', [
+            'organization' => 'jep',
+            'content_type' => 'monthly_alert',
+            'content_id' => 0,
+            'source' => 'home',
+        ]);
+    }
+
+    public function test_jep_featured_links_resolve_dynamic_snapshot_urls_and_track_by_type(): void
+    {
+        $this->organization('jep');
+        $this->seed(JepMetricSnapshotSeeder::class);
+        $snapshot = JepMetricSnapshot::query()->current()->firstOrFail();
+        $snapshot->update([
+            'featured_indicator_instagram_url' => 'https://instagram.com/p/dynamic-post',
+            'featured_indicator_x_url' => 'https://x.com/jepvzla/status/dynamic-post',
+            'featured_indicator_read_more_url' => 'https://example.org/dynamic-article',
+            'monthly_alert_x_url' => 'https://x.com/jepvzla/status/dynamic-alert',
+        ]);
+
+        foreach ([
+            'featured_instagram' => 'https://instagram.com/p/dynamic-post',
+            'featured_x' => 'https://x.com/jepvzla/status/dynamic-post',
+            'featured_read_more' => 'https://example.org/dynamic-article',
+        ] as $type => $url) {
+            $this->get(route('analytics.jep.featured.redirect', [
+                'publication' => $snapshot->id,
+                'type' => $type,
+                'source' => 'organization',
+            ]))->assertRedirect($url);
+        }
+
+        $this->get(route('analytics.jep.alert.redirect', [
+            'publication' => $snapshot->id,
+            'source' => 'organization',
+        ]))->assertRedirect('https://x.com/jepvzla/status/dynamic-alert');
+
+        $this->assertDatabaseCount('analytics_content_clicks', 4);
+        $this->assertDatabaseHas('analytics_content_clicks', [
+            'organization' => 'jep',
+            'content_type' => 'featured_instagram',
+            'content_id' => $snapshot->id,
+        ]);
+        $this->assertDatabaseHas('analytics_content_clicks', [
+            'organization' => 'jep',
+            'content_type' => 'featured_x',
+            'content_id' => $snapshot->id,
+        ]);
+        $this->assertDatabaseHas('analytics_content_clicks', [
+            'organization' => 'jep',
+            'content_type' => 'featured_read_more',
+            'content_id' => $snapshot->id,
+        ]);
+        $this->assertDatabaseHas('analytics_content_clicks', [
+            'organization' => 'jep',
+            'content_type' => 'monthly_alert_x',
+            'content_id' => $snapshot->id,
         ]);
     }
 

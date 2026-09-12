@@ -10,6 +10,11 @@ class AnalyticsNavigationRedirectController extends Controller
 {
     /** @var array<string, array{organization: string, target: string, route: string}> */
     private const DESTINATIONS = [
+        'jep' => [
+            'organization' => 'jep',
+            'target' => 'justicia-encuentro-perdon',
+            'route' => 'organizations.jep',
+        ],
         'acceso-justicia' => [
             'organization' => 'acceso_justicia',
             'target' => 'acceso-justicia',

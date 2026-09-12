@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ObuBimonthlyAlert;
 use App\Models\ObuDatasetValue;
+use App\Models\ObuDatasetValueVersion;
 use App\Models\ObuMetricSnapshot;
 use App\Models\ObuMonitoringPeriod;
 use App\Models\ObuMonthlyNote;
@@ -55,6 +56,12 @@ class ObuDashboardDataService
                 : null,
             Schema::hasTable('obu_bimonthly_alerts')
                 ? ObuBimonthlyAlert::query()->where('organization_id', $organizationId)->max('created_at')
+                : null,
+            Schema::hasTable('obu_dataset_values')
+                ? ObuDatasetValue::query()->where('organization_id', $organizationId)->max('updated_at')
+                : null,
+            Schema::hasTable('obu_dataset_value_versions')
+                ? ObuDatasetValueVersion::query()->where('organization_id', $organizationId)->max('valid_until')
                 : null,
         ])->filter()->map(fn ($value) => $value instanceof CarbonInterface ? $value : Carbon::parse($value));
 

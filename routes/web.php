@@ -49,6 +49,22 @@ Route::get('/analytics/obu/content/{publication}/{source}', AnalyticsContentRedi
     ->whereIn('source', ['home', 'organization'])
     ->name('analytics.obu.content.redirect');
 
+Route::get('/analytics/jep/content/{publication}/{source}', AnalyticsContentRedirectController::class)
+    ->whereNumber('publication')
+    ->whereIn('source', ['home', 'organization'])
+    ->name('analytics.jep.content.redirect');
+
+Route::get('/analytics/jep/alert/{publication}/{source}', AnalyticsContentRedirectController::class)
+    ->whereNumber('publication')
+    ->whereIn('source', ['home', 'organization'])
+    ->name('analytics.jep.alert.redirect');
+
+Route::get('/analytics/jep/featured/{publication}/{type}/{source}', AnalyticsContentRedirectController::class)
+    ->whereNumber('publication')
+    ->whereIn('type', ['featured_instagram', 'featured_x', 'featured_read_more'])
+    ->whereIn('source', ['home', 'organization'])
+    ->name('analytics.jep.featured.redirect');
+
 Route::get('/analytics/ovfn/content/{contentType}/{contentId}', AnalyticsOvfnContentRedirectController::class)
     ->whereIn('contentType', ['analysis', 'noti_fake'])
     ->whereNumber('contentId')
@@ -56,7 +72,7 @@ Route::get('/analytics/ovfn/content/{contentType}/{contentId}', AnalyticsOvfnCon
     ->name('analytics.ovfn.content.redirect');
 
 Route::get('/analytics/navigation/{organization}/{source}', AnalyticsNavigationRedirectController::class)
-    ->whereIn('organization', ['acceso-justicia', 'ovfn', 'universidades'])
+    ->whereIn('organization', ['acceso-justicia', 'jep', 'ovfn', 'universidades'])
     ->whereIn('source', ['home'])
     ->name('analytics.navigation.redirect');
 
@@ -134,6 +150,9 @@ Route::middleware(['auth', 'verified', UpdateUserLastActivity::class])->group(fu
     Route::patch('/admin/obu/monitoring-period', [ObuDashboardController::class, 'updateMonitoringPeriod'])
         ->middleware('permission:edit obu metrics')
         ->name('admin.obu.monitoring-period.update');
+    Route::patch('/admin/obu/dataset', [ObuDashboardController::class, 'updateDataset'])
+        ->middleware('permission:edit obu metrics')
+        ->name('admin.obu.dataset.update');
     Route::post('/admin/acceso-justicia/sync', AccesoJusticiaSyncController::class)
         ->middleware('permission:sync acceso justicia dashboard')
         ->name('admin.acceso-justicia.sync');

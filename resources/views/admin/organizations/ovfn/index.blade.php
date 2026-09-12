@@ -16,7 +16,13 @@
     @endphp
     <main class="access-justice-dashboard ovfn-dashboard">
         <header class="access-justice-header">
-            <div class="access-justice-header__copy"><span class="access-justice-header__accent"></span><div><h1>Observatorio Venezolano de Fake News</h1><p>Resumen de analítica y rendimiento del módulo</p></div></div>
+            <div class="access-justice-header__copy">
+                <span class="access-justice-header__accent"></span>
+                <div class="col-12">
+                    <h1>Observatorio Venezolano de Fake News</h1>
+                    <p>Resumen de analítica y rendimiento del módulo</p>
+                </div>
+            </div>
         </header>
         <section class="access-justice-kpis">
             @foreach ([['orange','fa-arrow-pointer','Clics desde Pulso',$summary['home_navigation_clicks'] ?? 0,'Navegación hacia el panel'],['blue','fa-eye','Visitas al portal Pulso Venezuela',$summary['portal_views'] ?? 0,'Total de visitas al portal'],['green','fa-window-maximize','Visitas al panel Fake News',$summary['organization_views'] ?? 0,'Entradas al panel del módulo'],['purple','fa-bullhorn','Clics en contenidos',$contentTotal,'X: '.($content['x_post'] ?? 0).' · Noti Fake: '.($content['noti_fake'] ?? 0).' · En profundidad: '.($content['analysis'] ?? 0)]] as $kpi)

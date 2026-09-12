@@ -60,9 +60,9 @@
                         @if (filled($jepMonthlyAlertExcerpt))
                             <blockquote class="jep-monthly-alert__text">{{ $jepMonthlyAlertExcerpt }}</blockquote>
                         @endif
-                        @if (filled($jepMonthlyAlertXUrl))
+                        @if ($jepSnapshot && filled($jepMonthlyAlertXUrl))
                             <div class="jep-monthly-alert__footer">
-                                <a class="jep-monthly-alert__external" href="{{ $jepMonthlyAlertXUrl }}" target="_blank" rel="noopener noreferrer">{{ __('dashboard.jep_page.indicators.view_original_x_post') }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a>
+                                <a class="jep-monthly-alert__external" href="{{ route('analytics.jep.alert.redirect', ['publication' => $jepSnapshot->id, 'source' => 'organization']) }}" target="_blank" rel="noopener noreferrer">{{ __('dashboard.jep_page.indicators.view_original_x_post') }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a>
                             </div>
                         @endif
                     </div>
